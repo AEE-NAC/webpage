@@ -26,6 +26,7 @@
     "react-router-dom": "^6.26.0",
     "rrweb": "^2.0.0-alpha.4",
     "rrweb-snapshot": "^2.0.0-alpha.17",
+    "supabase": "^1.200.3",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7"
   },

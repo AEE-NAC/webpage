@@ -6,6 +6,7 @@ import {
 } from "react-country-state-city";
 import { useState } from "react";
 import "react-country-state-city/dist/react-country-state-city.css";
+import supabase from "../services/supabase"; // Supabase service
 
 const Signup = () => {
   const [countryid, setCountryid] = useState(0);
@@ -19,21 +20,28 @@ const Signup = () => {
     const data = Object.fromEntries(formData);
 
     try {
-      // Submit the form data
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Insert the form data into the 'users' table
+      const { error } = await supabase.from('users').insert([
+        {
+          nom: data.nom,
+          prenom: data.prenom,
+          username: data.username,
+          status: parseInt(data.roles), // Parse status as integer
+          telephone: data.telephone,
+          email: data.email,
+          country: data.country,
+          state: data.state,
+          password: data.password, // Ideally, hash the password before storing
         },
-        body: JSON.stringify(data),
-      });
+      ]);
 
-      if (response.ok) {
-        // Handle success
-        alert("Signup successful!");
-      } else {
+      if (error) {
         // Handle error
         alert("Signup failed. Please try again.");
+        console.error("Error inserting data:", error.message);
+      } else {
+        // Handle success
+        alert("Signup successful!");
       }
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -49,7 +57,7 @@ const Signup = () => {
         </div>
         <div className="max-w-lg w-full">
           <h1 className="text-4xl font-bold mb-6 text-center">Create an Account</h1>
-          <form method="POST">
+          <form>
             <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full">
                 <label htmlFor="nom" className="text-sm font-medium">Nom</label>
