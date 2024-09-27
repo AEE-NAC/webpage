@@ -7,6 +7,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Donation from './pages/Donation';
+import ResetPassword from './pages/ResetPassword';
 import Library from './pages/library';
 import './App.css';
 
@@ -24,11 +25,12 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/donation" element={<Donation />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </Router>
     </AppContext.Provider>

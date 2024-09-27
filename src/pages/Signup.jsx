@@ -2,46 +2,68 @@ import {
   CitySelect,
   CountrySelect,
   StateSelect,
-  LanguageSelect,
 } from "react-country-state-city";
 import { useState } from "react";
 import "react-country-state-city/dist/react-country-state-city.css";
+import "react-phone-input-2/lib/style.css"; // Import the phone input styles
+import PhoneInput from "react-phone-input-2"; // Import PhoneInput component
 import supabase from "../services/supabase"; // Supabase service
 
 const Signup = () => {
   const [countryid, setCountryid] = useState(0);
   const [stateid, setStateid] = useState(0);
+  const [phone, setPhone] = useState(""); // State for phone number
+  const [error, setError] = useState(""); // State for error messages
 
   // Form submission function
   const send = async () => {
+    // Validate the phone number
+    if (!phone) {
+      setError("Phone number is required.");
+      return;
+    }
+
     // Get the form data
     const formData = new FormData(document.querySelector("form"));
-    // Convert formData to JSON object
     const data = Object.fromEntries(formData);
 
+    // Generate username from nom and prenom
+    const generatedUsername = `${data.prenom.toLowerCase()}.${data.nom.toLowerCase()}`;
+
     try {
-      // Insert the form data into the 'users' table
-      const { error } = await supabase.from('users').insert([
-        {
-          nom: data.nom,
-          prenom: data.prenom,
-          username: data.username,
-          status: parseInt(data.roles), // Parse status as integer
-          telephone: data.telephone,
-          email: data.email,
-          country: data.country,
-          state: data.state,
-          password: data.password, // Ideally, hash the password before storing
-        },
-      ]);
+      // Signup with Supabase
+      const { user, error: signupError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (signupError) {
+        alert("Signup failed. Please try again.");
+        console.error("Error during signup:", signupError.message);
+        return;
+      }
+
+      // Insert the user data into the 'users' table
+      const { error } = await supabase.from('users').insert([{
+        nom: data.nom,
+        prenom: data.prenom,
+        username: generatedUsername, // Use the generated username
+        status: parseInt(data.roles), // Parse status as integer
+        telephone: phone, // Use the phone number
+        email: data.email,
+        country: countryid,
+        state: stateid,
+        // Password is not stored in the database as it is managed by Supabase
+      }]);
 
       if (error) {
         // Handle error
-        alert("Signup failed. Please try again.");
+        alert("Failed to store user data. Please try again.");
         console.error("Error inserting data:", error.message);
       } else {
         // Handle success
         alert("Signup successful!");
+        console.log("User JWT token:", supabase.auth.session().access_token); // Access the JWT token
       }
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -84,17 +106,6 @@ const Signup = () => {
             </div>
             <div className="flex flex-col md:flex-row gap-4 mt-4">
               <div className="w-full">
-                <label htmlFor="username" className="text-sm font-medium">Username</label>
-                <input
-                  name="username"
-                  id="username"
-                  className="block w-full rounded-md border bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
-                  placeholder="Doe"
-                  type="text"
-                  required
-                />
-              </div>
-              <div className="w-full">
                 <label htmlFor="status" className="text-sm font-medium">Status</label>
                 <select
                   id="status"
@@ -116,13 +127,14 @@ const Signup = () => {
             </div>
             <div className="mt-4">
               <label htmlFor="telephone" className="text-sm font-medium">Téléphone</label>
-              <input
-                name="telephone"
-                id="telephone"
-                type="tel"
+              <PhoneInput
+                country={"us"} // Default country can be set here
+                value={phone}
+                onChange={setPhone} // Update the phone state
                 className="block w-full rounded-md border bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
                 required
               />
+              {error && <p className="text-red-500 text-sm">{error}</p>} {/* Display error message */}
             </div>
             <div className="mt-4">
               <label htmlFor="email" className="text-sm font-medium">Email</label>
@@ -169,6 +181,16 @@ const Signup = () => {
             >
               Submit
             </button>
+            <div className="space-y-2" style={{ display: 'none' }} id="Singnin">
+                <span className="text-sm text-gray-500 dark:text-blue-400">
+                  <a href="../signup">I don't have an account</a>
+                </span>
+              </div>
+              <div className="space-y-2" style={{ display: 'none' }} id="forgot">
+                <span className="text-sm text-gray-500 dark:text-blue-400" onClick={() => setHiddenValue('forgot')}>
+                  <a href="../forgot">I forgot my password</a>
+                </span>
+              </div>
           </form>
         </div>
       </div>

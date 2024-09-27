@@ -12,6 +12,7 @@
   "dependencies": {
     "@sanity/client": "^6.21.1",
     "@sentry/react": "^8.22.0",
+    "@supabase/supabase-js": "^2.45.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.21",
@@ -22,6 +23,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^15.0.0",
     "react-icons": "^5.2.1",
+    "react-phone-input-2": "^2.15.1",
     "react-responsive-masonry": "^2.3.0",
     "react-router-dom": "^6.26.0",
     "rrweb": "^2.0.0-alpha.4",
