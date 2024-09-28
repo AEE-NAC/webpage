@@ -5,26 +5,27 @@ const Header = () => (
     <header className="fixed w-full top-0  bg-[#fdfff4ff] border-b border-[#878578ff]" style={{zIndex:999
     }}>
     <div className="container flex items-center justify-between h-16 px-4 md:px-6">
-      <a className="flex items-center gap-2" href="#" rel="ugc">
+      <a className="flex items-center gap-2 row" href="#" rel="ugc">
        <img className='h-12 w-12' src='/images/favicon.png'/>
+       <span className='text-[1.19em] text-[#2b2b3f]'>Child Evangelism Fellowship</span>
       </a>
-      <nav className="hidden md:flex items-center gap-6">
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+      <nav className="hidden md:flex items-center gap-6 text-[1em]">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           Home
         </a>
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           About
         </a>
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           Ministries
         </a>
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           Weekly Word
         </a>
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           Blog
         </a>
-        <a className="text-sm font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
+        <a className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]" href="#" rel="ugc">
           FAQ
         </a>
       </nav>
