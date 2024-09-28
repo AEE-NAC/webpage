@@ -12,9 +12,13 @@ const LandingPage = () => {
                <Header></Header>
                <div className='flex h-full mb-[250px]'>
                <Carousel></Carousel>
-               <div className=' px-12 h-[200px] rounded-[12px] bg-transparent  left-0 w-[200] absolute top-[220px]'>
-                <h1 className='p-2 rounded-[12px] mb-3 bg-white' >Lorem ipsum Dolor amer </h1>
-                <p className='p-3 rounded-[12px] bg-white w-1/3 relative left-0'>Lorem ipsum dolor sit amer </p>
+                        <div className='flex px-12 h-[200px] flex-col rounded-[12px] bg-transparent gap-1 column w-full items-center left-0 w-[200] absolute top-[220px]'>
+              <span className='p-2 rounded-[12px] text-[#000] bg-white bg-opacity-5 backdrop-blur-sm text-[2.5em] font-bold mb-3'>
+                Bienvenue sur le site de l’Association pour l’Évangélisation des Enfants
+              </span>
+              <p className='p-3 rounded-[12px] text-[#000]  text-[1.8em] flex items-center font-bold bg-white bg-opacity-10 backdrop-blur-sm w-4/5 relative left-0'>
+                De la Région Nord/Sud Amérique et Caraïbes Créolophone et Francophone
+              </p>
                </div>
                </div>
                <About></About>
