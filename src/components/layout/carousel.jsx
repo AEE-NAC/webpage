@@ -1,12 +1,21 @@
 import React from 'react';
 
 const Carousel = () => (
-  <section className="bg-[#fdfff4ff] py-12 md:py-34 lg:py-[-32px] absolute w-full h-full">
-    <div className="container w-full">
-            <div aria-roledescription="carousel" className="relative rounded-2xl overflow-hidden w-full" role="region">
-                <video className="sticky z-0 w-full h-full object-cover" autoPlay loop muted>
+  <section className="relative w-full h-screen overflow-hidden">
+    <div className="w-full h-full">
+      <div
+        aria-roledescription="carousel"
+        className="relative w-full h-full overflow-hidden rounded-b-2xl border-b-4 border-white"
+        role="region"
+      >
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+        >
           <source src="/videos/video-intro.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
+          Votre navigateur ne supporte pas la balise vidéo.
         </video>
       </div>
     </div>
