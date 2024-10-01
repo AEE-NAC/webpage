@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import Donation from './pages/Donation';
 import ResetPassword from './pages/ResetPassword';
 import Library from './pages/library';
+import ProfileForm from './pages/profile';
 import './App.css';
 
 // Création du contexte
@@ -31,6 +32,7 @@ function App() {
           <Route path="/donation" element={<Donation />} />
           <Route path="/library" element={<Library />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/profile" element={<ProfileForm />} />
         </Routes>
       </Router>
     </AppContext.Provider>
