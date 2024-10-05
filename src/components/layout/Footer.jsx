@@ -25,7 +25,7 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li><a className="hover:underline" href="#" rel="ugc">FAQs</a></li>
                 <li><a className="hover:underline" href="#" rel="ugc">Support Center</a></li>
-                <li><a className="hover:underline" href="#" rel="ugc">Contact Us</a></li>
+                <li><a className="hover:underline" href="#" rel="ugc">Contactez-nous</a></li>
               </ul>
             </div>
           
@@ -37,7 +37,7 @@ const Footer = () => {
   
           <div className="flex flex-col md:flex-row justify-between items-center mt-8 space-y-4 md:space-y-0">
             <div>
-              <p className="text-black">&copy; 2024 Child Evangelism Fellowship</p>
+              <p className="text-black">&copy; 2024 Association pour l’Évangélisation des Enfants  </p>
             </div>
             <div className="flex space-x-4">
               <a href="#!" role="button">
