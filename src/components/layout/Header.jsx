@@ -23,42 +23,35 @@ const Header = () => {
             href="#"
             rel="ugc"
           >
-            Home
+            Acceuil
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
             href="#"
             rel="ugc"
           >
-            About
+            A propos
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
             href="#"
             rel="ugc"
           >
-            Ministries
+            Ministères
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
             href="#"
             rel="ugc"
           >
-            Weekly Word
+            Impliquez-vous
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
             href="#"
             rel="ugc"
           >
-            Blog
-          </a>
-          <a
-            className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-            href="#"
-            rel="ugc"
-          >
-            FAQ
+            Contactez-nous
           </a>
         </nav>
         {/* Bouton d'inscription */}
