@@ -75,7 +75,7 @@ const Signup = () => {
       {/* Left side - Form */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4 bg-white">
         <div className="fixed top-0 left-0 p-4">
-          <img src="/images/favicon.png" alt="DJONDJON Logo" className="w-12 h-12" />
+        <a href="../"><img src="/images/favicon.png" alt="DJONDJON Logo" className="w-12 h-12" /></a>
         </div>
         <div className="max-w-lg w-full">
           <h1 className="text-4xl font-bold mb-6 text-center">Create an Account</h1>

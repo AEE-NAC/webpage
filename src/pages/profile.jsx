@@ -1,5 +1,5 @@
 // src/components/ProfileForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import supabase from '../services/supabase';
 import {
   User,
@@ -42,6 +42,8 @@ const ProfileForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isEditing, setIsEditing] = useState(false); // Indique si l'utilisateur est en mode édition
+  const userIdRef = useRef(null); // Référence pour stocker l'ID utilisateur
 
   const steps = [
     { id: 1, label: 'Informations de Base', icon: User },
@@ -49,6 +51,63 @@ const ProfileForm = () => {
     { id: 3, label: 'Détails Éducatifs', icon: Book },
     { id: 4, label: 'Église & Formations', icon: Church },
   ];
+
+  // Références pour gérer le focus des champs
+  const formRefs = useRef([]);
+
+  // Fonction pour ajouter des références dynamiques
+  const addToRefs = (el) => {
+    if (el && !formRefs.current.includes(el)) {
+      formRefs.current.push(el);
+    }
+  };
+
+  // Effet pour vérifier si un utilisateur existe et charger ses données
+  useEffect(() => {
+    const checkUser = async () => {
+      const token = supabase.auth.session()?.access_token; // Récupérer le token d'authentification
+      if (token) {
+        // Décoder le token pour obtenir l'ID utilisateur (selon votre implémentation)
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('*')
+          .single();
+
+        if (userData) {
+          setFormData({
+            nom: userData.nom || '',
+            prenom: userData.prenom || '',
+            username: userData.username || '',
+            status: userData.status || '',
+            telephone: userData.telephone || '',
+            email: userData.email || '',
+            country: userData.country || '',
+            state: userData.state || '',
+            nationality: userData.nationality || '',
+            birth_date: userData.birth_date
+              ? new Date(userData.birth_date).toISOString().substr(0, 10)
+              : '',
+            phone_number: userData.phone_number || '',
+            gender: userData.gender || '',
+            children_number: userData.children_number || '',
+            educate_level: userData.educate_level || '',
+            studies: userData.studies || '',
+            skills: userData.skills || '',
+            church_name: userData.church_name || '',
+            church_address: userData.church_address || '',
+            church_website: userData.church_website || '',
+            pastor_name: userData.pastor_name || '',
+            pastor_email: userData.pastor_email || '',
+            old_formation: userData.old_formation || [],
+          });
+          userIdRef.current = userData.id; // Stocker l'ID utilisateur
+          setIsEditing(true);
+        }
+      }
+    };
+
+    checkUser();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,10 +161,22 @@ const ProfileForm = () => {
 
   const handleNext = () => {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+    // Déplacer le focus vers le premier champ du prochain step
+    setTimeout(() => {
+      if (formRefs.current[currentStep]) {
+        formRefs.current[currentStep].focus();
+      }
+    }, 100);
   };
 
   const handlePrevious = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
+    // Déplacer le focus vers le premier champ du step précédent
+    setTimeout(() => {
+      if (formRefs.current[currentStep - 2]) {
+        formRefs.current[currentStep - 2].focus();
+      }
+    }, 100);
   };
 
   const handleSubmit = async (e) => {
@@ -125,18 +196,18 @@ const ProfileForm = () => {
     let oldFormationParsed = formData.old_formation.map((formation) => ({
       formation_levels: formation.formation_levels,
       formation_dates: formation.formation_dates,
-      formation_locations:formation.formation_locations,
+      formation_locations: formation.formation_locations,
       formation_mentions: formation.formation_mentions,
       formation_completion_dates: formation.formation_completion_dates,
       formation_certificates: formation.formation_certificates,
       formation_trainers: formation.formation_trainers,
     }));
 
-    // Insérer les données dans la table 'users'
-    const { data, error } = await supabase
-      .from('users')
-      .insert([
-        {
+    if (isEditing && userIdRef.current) {
+      // Mettre à jour les données existantes
+      const { data, error } = await supabase
+        .from('users')
+        .update({
           nom: formData.nom,
           prenom: formData.prenom,
           username: formData.username,
@@ -159,23 +230,62 @@ const ProfileForm = () => {
           pastor_name: formData.pastor_name,
           pastor_email: formData.pastor_email,
           old_formation: oldFormationParsed,
-        },
-      ]);
+        })
+        .eq('id', userIdRef.current);
 
-    if (error) {
-      setMessage(`Erreur: ${error.message}`);
+      if (error) {
+        setMessage(`Erreur: ${error.message}`);
+      } else {
+        setMessage('Profil mis à jour avec succès !');
+      }
     } else {
-      setMessage('Profil complété avec succès !');
-      setFormData(initialState);
-      setCurrentStep(1);
+      // Insérer les données dans la table 'users'
+      const { data, error } = await supabase
+        .from('users')
+        .insert([
+          {
+            nom: formData.nom,
+            prenom: formData.prenom,
+            username: formData.username,
+            status: parseInt(formData.status, 10),
+            telephone: formData.telephone,
+            email: formData.email,
+            country: formData.country,
+            state: formData.state,
+            nationality: formData.nationality,
+            birth_date: formData.birth_date ? new Date(formData.birth_date) : null,
+            phone_number: formData.phone_number,
+            gender: formData.gender,
+            children_number: formData.children_number ? parseInt(formData.children_number, 10) : null,
+            educate_level: formData.educate_level,
+            studies: formData.studies,
+            skills: formData.skills,
+            church_name: formData.church_name,
+            church_address: formData.church_address,
+            church_website: formData.church_website,
+            pastor_name: formData.pastor_name,
+            pastor_email: formData.pastor_email,
+            old_formation: oldFormationParsed,
+          },
+        ]);
+
+      if (error) {
+        setMessage(`Erreur: ${error.message}`);
+      } else {
+        setMessage('Profil complété avec succès !');
+        setFormData(initialState);
+        setCurrentStep(1);
+      }
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-center">Compléter votre Profil</h2>
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-md mt-10 overflow-y-auto max-h-screen">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        {isEditing ? 'Modifier votre Profil' : 'Compléter votre Profil'}
+      </h2>
       {message && <p className="text-center mb-4 text-red-500">{message}</p>}
       <form onSubmit={handleSubmit}>
         {/* Progress Bar */}
@@ -225,6 +335,7 @@ const ProfileForm = () => {
                 value={formData.nom}
                 onChange={handleChange}
                 required
+                ref={addToRefs}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -278,7 +389,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 Suivant
                 <ArrowRight className="ml-2" />
@@ -301,6 +412,7 @@ const ProfileForm = () => {
                 value={formData.telephone}
                 onChange={handleChange}
                 required
+                ref={addToRefs}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -354,7 +466,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handlePrevious}
-                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <ArrowLeft className="mr-2" />
                 Précédent
@@ -362,7 +474,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 Suivant
                 <ArrowRight className="ml-2" />
@@ -384,6 +496,7 @@ const ProfileForm = () => {
                 name="nationality"
                 value={formData.nationality}
                 onChange={handleChange}
+                ref={addToRefs}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -453,7 +566,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handlePrevious}
-                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <ArrowLeft className="mr-2" />
                 Précédent
@@ -461,7 +574,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 Suivant
                 <ArrowRight className="ml-2" />
@@ -484,6 +597,7 @@ const ProfileForm = () => {
                 name="educate_level"
                 value={formData.educate_level}
                 onChange={handleChange}
+                ref={addToRefs}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -596,7 +710,7 @@ const ProfileForm = () => {
                     <button
                       type="button"
                       onClick={() => removeFormation(index)}
-                      className="flex items-center text-red-500 hover:text-red-700"
+                      className="flex items-center text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
                     >
                       <Trash2 className="mr-1" />
                       Supprimer
@@ -731,7 +845,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={addFormation}
-                className="flex items-center mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                className="flex items-center mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
               >
                 <PlusCircle className="mr-2" />
                 Ajouter une Formation
@@ -743,7 +857,7 @@ const ProfileForm = () => {
               <button
                 type="button"
                 onClick={handlePrevious}
-                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                className="flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <ArrowLeft className="mr-2" />
                 Précédent
@@ -751,7 +865,7 @@ const ProfileForm = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                className="flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 {loading ? 'Soumission en cours...' : 'Soumettre'}
               </button>

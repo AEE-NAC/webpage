@@ -6,7 +6,7 @@ import About from '../components/layout/About';
 import Carousel from '../components/layout/carousel';
 import WeeklyWord from '../components/layout/weekly';
 import Blog from '../components/layout/Blog';
-
+import Popsurvey from "../components/common/popsurvey";
 const LandingPage = () => {
     return (
         <>
@@ -27,6 +27,7 @@ const LandingPage = () => {
             <Ministries />
             <WeeklyWord />
             <Blog />
+            <Popsurvey />
             <Footer />
         </>
     );
