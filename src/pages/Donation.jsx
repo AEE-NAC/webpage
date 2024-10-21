@@ -147,7 +147,7 @@ const Donation = () => {
     <div className="min-h-screen w-full flex flex-col md:flex-row overflow-hidden">
       {/* Left side - Form or Info Container */}
       <div className="w-full md:w-1/2 flex flex-col items-center p-2 bg-white">
-        <div className="w-full p-4  top-0 left-0 bg-white ">
+        <div className="w-full p-4 fixed md:relative top-0 left-0 bg-white z-10 md:z-0 shadow-md">
           <a href="../" className="flex items-center gap-4">
             <img
               src="/images/favicon.png"
@@ -185,12 +185,12 @@ const Donation = () => {
               </div>
               <div className="p-6">
                 <div className="grid gap-4">
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="flex flex-row items-center gap-4">
                     <button
                       className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 ${
                         donationType === 'monetary'
                           ? 'bg-primary text-primary-foreground'
-                          : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                          : 'border border-input bg-white hover:bg-accent hover:text-accent-foreground'
                       }`}
                       onClick={() => setDonationType('monetary')}
                     >
@@ -200,7 +200,7 @@ const Donation = () => {
                       className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 ${
                         donationType === 'material'
                           ? 'bg-primary text-primary-foreground'
-                          : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                          : 'border border-input bg-white hover:bg-accent hover:text-accent-foreground'
                       }`}
                       onClick={() => setDonationType('material')}
                     >
@@ -210,7 +210,7 @@ const Donation = () => {
                       className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 ${
                         donationType === 'service'
                           ? 'bg-primary text-primary-foreground'
-                          : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                          : 'border border-input bg-white hover:bg-accent hover:text-accent-foreground'
                       }`}
                       onClick={() => setDonationType('service')}
                     >
@@ -379,14 +379,14 @@ const Donation = () => {
                       <button
                         type="button"
                         onClick={handleAddDonation}
-                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
                       >
                         Ajouter un don
                       </button>
                       <button
                         type="button"
                         onClick={handleSaveDonation}
-                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
                       >
                         Sauvegarder le don
                       </button>
@@ -397,7 +397,7 @@ const Donation = () => {
                       <button
                         onClick={handlePreviousDonation}
                         disabled={currentDonationIndex === 0}
-                        className="inline-flex items-center justify-center rounded-full text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                        className="inline-flex items-center justify-center rounded-full text-sm font-medium border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 w-10"
                       >
                         &#8592;
                       </button>
@@ -407,7 +407,7 @@ const Donation = () => {
                       <button
                         onClick={handleNextDonation}
                         disabled={currentDonationIndex >= donations.length - 1}
-                        className="inline-flex items-center justify-center rounded-full text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                        className="inline-flex items-center justify-center rounded-full text-sm font-medium border border-input bg-white hover:bg-accent hover:text-accent-foreground h-10 w-10"
                       >
                         &#8594;
                       </button>
