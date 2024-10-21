@@ -147,7 +147,7 @@ const Donation = () => {
     <div className="min-h-screen w-full flex flex-col md:flex-row overflow-hidden">
       {/* Left side - Form or Info Container */}
       <div className="w-full md:w-1/2 flex flex-col items-center p-2 bg-white">
-        <div className="w-full p-4 fixed md:relative top-0 left-0 bg-white z-10 md:z-0 shadow-md">
+        <div className="w-full p-4 fixed md:relative top-0 left-0 bg-white z-10 md:z-0 ">
           <a href="../" className="flex items-center gap-4">
             <img
               src="/images/favicon.png"

@@ -1,91 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
+import supabase from '../services/supabase'; // Ensure supabase.js configures your instance correctly
 
 const Contact = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      // Replace this with your actual submission logic
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert([{ name, email, message }]);
+
+      if (error) {
+        console.error("Error submitting form:", error.message);
+        alert('Form submission failed. Please try again.');
+      } else {
+        alert('Thank you for your message. We will get back to you soon!');
+        setName('');
+        setEmail('');
+        setMessage('');
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      alert('An error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-full w-full flex flex-col md:flex-row overflow-hidden">
-    {/* Left side - Form */}
-    <div className="fixed top-0 left-0 p-4">
-          <img src="/images/favicon.png" alt="DJONDJON Logo" className="w-12 h-12" />
+    <div className="min-h-screen w-full flex flex-col md:flex-row overflow-hidden">
+      {/* Left side - Form */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4 bg-white">
+        <div className="fixed top-0 left-0 p-4">
+          <a href="../" className='flex items-center gap-4'>
+            <img
+              src="/images/favicon.png"
+              alt="CEF Logo"
+              className="w-12 h-12"
+            />
+            <span className="text-[1.59em] text-[#2b2b3f]">
+              Child Evangelism Fellowship
+            </span>
+          </a> 
         </div>
-    <div className="flex flex-col rounded-lg border bg-card text-card-foreground  w-1/2  py-28" data-v0-t="card">
-    
-        <div className="flex flex-col space-y-1.5 p-6">
-          <h3 className="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Contact Us</h3>
-          <p className="text-sm text-muted-foreground">
-            Fill out the form below and we'll get back to you as soon as possible.
-          </p>
-        </div>
-        <div className="p-6">
-          <form className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  htmlFor="first-name"
-                >
-                  First name
-                </label>
-                <input
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  id="first-name"
-                  placeholder="Enter your first name"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  htmlFor="last-name"
-                >
-                  Last name
-                </label>
-                <input
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  id="last-name"
-                  placeholder="Enter your last name"
-                />
-              </div>
+        <div className="max-w-md w-full mx-auto mt-20 md:mt-0">
+          <h1 className="text-4xl font-bold mb-6 text-center">Contact Us</h1>
+          <form onSubmit={handleSubmit} className="w-full px-4 md:px-0 space-y-4">
+            <div>
+              <label className="text-sm font-medium leading-none" htmlFor="name">
+                Name
+              </label>
+              <input
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                id="name"
+                placeholder="Your Name"
+                type="text"
+                required
+              />
             </div>
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                htmlFor="email"
-              >
+            <div>
+              <label className="text-sm font-medium leading-none" htmlFor="email">
                 Email
               </label>
               <input
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 id="email"
-                placeholder="Enter your email"
+                placeholder="you@example.com"
                 type="email"
+                required
               />
             </div>
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                htmlFor="message"
-              >
+            <div>
+              <label className="text-sm font-medium leading-none" htmlFor="message">
                 Message
               </label>
               <textarea
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
+                name="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex h-32 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 id="message"
-                placeholder="Enter your message"
-              ></textarea>
+                placeholder="Your message here..."
+                required
+              />
             </div>
-            <button
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
-              type="submit"
-            >
-              Submit
-            </button>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-white hover:bg-primary-dark h-10 px-4 py-2 w-full"
+              >
+                {loading ? 'Sending...' : 'Send Message'}
+              </button>
+            </div>
           </form>
         </div>
       </div>
-    <div
-      className="hidden md:block sm:hidden   h-screen md:w-1/2 bg-cover bg-center"
-      style={{ backgroundImage: 'url(/images/signup.jpg)' }}
-    ></div>
-  </div>
+
+      {/* Right side - Background Image for larger screens */}
+      <div
+        className="hidden md:block h-screen md:w-1/2 bg-cover bg-center"
+        style={{ backgroundImage: 'url(/images/signup.jpg)' }}
+      ></div>
+    </div>
   );
 };
 

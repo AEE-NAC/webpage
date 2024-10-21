@@ -20,28 +20,28 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-6 text-[1em]">
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-            href="#"
+            href="../"
             rel="ugc"
           >
             Acceuil
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-            href="#"
+            href="../apropos"
             rel="ugc"
           >
             A propos
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-            href="#"
+            href="../#ministries"
             rel="ugc"
           >
             Ministères
           </a>
           <a
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-            href="#"
+            href="../implicate"
             rel="ugc"
           >
             Impliquez-vous
@@ -113,28 +113,28 @@ const Header = () => {
           <div className="container px-4 py-4">
             <a
               className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-              href="#"
+              href="../"
               rel="ugc"
             >
               Acceuil
             </a>
             <a
               className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-              href="#"
+              href="../apropos"
               rel="ugc"
             >
               A propos
             </a>
             <a
               className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-              href="#"
+              href="../#ministries"
               rel="ugc"
             >
               Ministères
             </a>
             <a
               className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-              href="#"
+              href="../implicate"
               rel="ugc"
             >
               Impliquez-vous

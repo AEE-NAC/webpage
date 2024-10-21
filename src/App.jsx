@@ -5,12 +5,14 @@ import SignUp from './pages/Signup';
 import SignIn from './pages/Signin';
 import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
-import Contact from './pages/Contact';
 import Donation from './pages/Donation';
 import ResetPassword from './pages/ResetPassword';
 import Library from './pages/library';
 import ProfileForm from './pages/profile';
 import Complete_profile from './pages/complete-profile.jsx';
+import Ministries from './pages/apropos.jsx';
+import Contact from './pages/Contact.jsx';
+import ImpliquezVous from './pages/implicate.jsx';
 import './App.css';
 
 // Création du contexte
@@ -34,6 +36,8 @@ function App() {
           <Route path="/library" element={<Library />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/profile" element={<Complete_profile/>} />
+          <Route path="/apropos" element={<Ministries />} />
+          <Route path="/implicate" element={<ImpliquezVous />} />
         </Routes>
       </Router>
     </AppContext.Provider>

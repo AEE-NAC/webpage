@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const PopupCFA = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAdCard, setShowAdCard] = useState(true);
   const [surveyStep, setSurveyStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -14,6 +15,7 @@ const PopupCFA = () => {
 
   const openPopup = () => {
     setIsOpen(true);
+    setShowAdCard(false);
   };
 
   const closePopup = () => {
@@ -52,32 +54,13 @@ const PopupCFA = () => {
   return (
     <>
       {/* Carte publicitaire pour le CFA */}
-      {!isOpen && (
+      {showAdCard && (
         <div
-          className="fixed bottom-4 right-4 bg-white shadow-2xl rounded-lg p-6 flex items-center space-x-4 z-50 max-w-sm border border-gray-200"
+          className="fixed columns bottom-4 right-4 bg-white bg-opacity-80 shadow-2xl rounded-lg p-6 flex items-center space-x-4 z-50 max-w-sm border border-gray-200"
         >
-          {/* Logo ou image du CFA */}
-          <img
-            src="/cfa.jpg" // Assurez-vous que l'image du CFA est disponible à cet emplacement
-            alt="CFA"
-            className="w-16 h-16 object-contain"
-          />
-
-          {/* Texte et bouton */}
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-800">Découvrez notre événement CFA en décembre !</h3>
-            <p className="text-sm text-gray-600 mb-4">Rejoignez-nous pour une expérience inoubliable.</p>
-            <button
-              onClick={openPopup}
-              className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              En savoir plus
-            </button>
-          </div>
-
           {/* Bouton de fermeture de la carte */}
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={() => setShowAdCard(false)}
             className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
             aria-label="Fermer"
           >
@@ -92,6 +75,25 @@ const PopupCFA = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+
+          {/* Logo ou image du CFA */}
+          <img
+            src="/cfa.png" // Assurez-vous que l'image du CFA est disponible à cet emplacement
+            alt="CFA"
+            className="w-24 h-24 object-contain"
+          />
+
+          {/* Texte et bouton */}
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-800">Découvrez notre événement CFA en décembre !</h3>
+            <p className="text-sm text-gray-600 mb-4">Rejoignez-nous pour une expérience inoubliable.</p>
+            <button
+              onClick={openPopup}
+              className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              En savoir plus
+            </button>
+          </div>
         </div>
       )}
 
@@ -103,7 +105,7 @@ const PopupCFA = () => {
           aria-modal="true"
         >
           {/* Contenu du Popup */}
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6 relative overflow-y-auto max-h-full">
+          <div className="bg-white bg-opacity-90 rounded-lg shadow-lg max-w-md p-6 relative overflow-y-auto max-h-full border border-gray-200">
             {/* Bouton de fermeture */}
             <button
               onClick={closePopup}
@@ -127,9 +129,9 @@ const PopupCFA = () => {
               <div className="text-center">
                 {/* Image ou logo du CFA */}
                 <img
-                  src="/cfa.jpg"
+                  src="/cfa.png"
                   alt="CFA"
-                  className="mx-auto mb-4 w-24 h-24 sm:w-28 sm:h-28 object-contain"
+                  className="mx-auto mb-4 w-32 h-32 sm:w-36 sm:h-36 object-contain"
                 />
 
                 {/* Texte de l'événement */}
@@ -338,7 +340,6 @@ const PopupCFA = () => {
                 </button>
               </div>
             )}
-
           </div>
         </div>
       )}
