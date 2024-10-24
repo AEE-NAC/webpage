@@ -92,17 +92,30 @@ export default function MinistersPage() {
           <Card 
             icon={<UserGroupIcon className="w-12 h-12" />}
             title="Chaque enfant" 
-            content="Nous nous engageons à atteindre chaque enfant avec la Bonne Nouvelle du Seigneur Jésus-Christ, en croissant de 15% chaque année."
+            content="Dieu a donné à son peuple une mission claire – celle d’atteindre chaque créature avec la Bonne Nouvelle du Seigneur Jésus-Christ. Notre mission spéciale à l’AEE est d'évangéliser chaque enfant. L’AEE s'est engagée à croitre à un rythme de 15 % de plus chaque année. Les choix stratégiques du ministère, tels que le Club de la Bonne Nouvelle, le Ministère Biblique dans les écoles publiques et privées, les Clubs Spéciaux tels : les Clubs de Fin d’Année, Les Clubs de Cinq jours et Club de Pâques, nous aiderons à atteindre cet objectif.
+
+Marc 16 :15, « Puis il leur dit : Allez par tout le monde et prêchez la bonne nouvelle à toute la création ». 
+ 
+"
           />
           <Card 
             icon={<GlobeAltIcon className="w-12 h-12" />}
             title="Chaque nation" 
-            content="L'AEE est un ministère international qui œuvre dans toutes les régions du monde de manière sans cesse croissante."
+            content="L’AEE est un ministère international qui œuvre dans toutes les régions du monde de manière sans cesse croissante.
+
+Matthieu 28 :19, « Allez faites de toutes les nations des disciples, les baptisant au nom du Père, du fils et du Saint Esprit. ». 
+"
           />
           <Card 
             icon={<CalendarIcon className="w-12 h-12" />}
             title="Chaque jour" 
-            content="Nous nous sommes engagés à conduire les enfants à se plonger chaque jour dans la Parole de Dieu pour développer un caractère pieux."
+            content="Nous nous sommes engagés conduire les enfants à se plonger chaque jour dans la Parole de Dieu. Au fur et à mesure que les enfants grandissent dans leur relation avec le Seigneur en méditant sur Sa Parole, ils développent un caractère pieux, qui produit beaucoup de fruits à la gloire de Dieu, y compris la propagation de l'Évangile à leurs pairs. 
+
+Psaume 119 :2, « Heureux ceux qui gardent ses préceptes, et qui le recherchent de tout le cœur. »
+
+Ce n'est que lorsque nous faisons confiance à Dieu et que nous l'invoquons que nous sommes en mesure d'accomplir sa volonté. Les programmes viennent après la prière, jamais avant. 
+Nous avons plus de x ouvriers dans notre région francophone, dirigée par un directeur régional, un directeur de zone et un assistant directeur de l’éducation. Dieu travaille par l'intermédiaire de son peuple, de ses dirigeants pieux, du personnel et des volontaires pour atteindre nos objectifs. Il faudra noter qu’a travers le monde entier qu’il y a des dizaines de milliers de bénévoles est ce pourquoi il est dit que le soleil ne se couche jamais sur l’AEE. Nous dispensons des formations, équipons nos ouvriers de matériels pédagogiques pour le ministère et nous les soutenons en collectant des fonds et le développement du Ministère.
+"
           />
         </div>
       </Section>
@@ -112,15 +125,21 @@ export default function MinistersPage() {
           {[
             {
               title: "La formation",
-              content: "Nous offrons un vaste programme de formation pour les chrétiens impliqués dans l'évangélisation des enfants."
+              content: `Ce que veut l'AEE, c'est atteindre les enfants du monde entier avec l'Evangile par le biais de missionnaires formés. L'AEE dispose d'un vaste programme de formation, de cours de formation hebdomadaires, de conférences, de cours de formation pour les églises, d'ateliers et d'écoles de formation offrant une formation aux chrétiens impliqués dans l'évangélisation des enfants. Les centres de formation de l’AEE (les instituts) ont lieu dans de nombreux pays, dont Haïti dans la région Créolophone et Francophone et des équipes de formateurs qualifiés se déplacent pour aider les missionnaires de l'AEE dans presque toutes les régions du monde. 
+La formation du personnel de l'AEE s'étend à toutes les phases et à tous les niveaux de l'AEE`
+
             },
             {
               title: "Fourniture de supports pédagogiques",
-              content: "Nous fournissons des matériels de qualité pour évangéliser efficacement les enfants."
+              content: `Pour atteindre efficacement les enfants, les enseignants ont besoin de matériels. Beaucoup de nos moniteurs formés n'ont pas les moyens d'acheter le matériel de qualité dont ils ont besoin pour
+Évangéliser efficacement les enfants. Les Ministères internationaux s'engagent à les doter des outils dont ils ont besoin pour accomplir leur tâche, qu'il s'agisse de littérature imprimée, de sites web ou d'autres médias.`
+
             },
             {
               title: "Assistance",
-              content: "Nous soutenons les missionnaires de l'AEE dans le besoin pour permettre au ministère de continuer à s'épanouir."
+              content: `La politique financière est de « demander à Dieu et de le dire à son peuple ». Les missionnaires de l'AEE dans le monde entier monde vivent par la foi et font confiance à Dieu pour subvenir à leurs besoins. Cependant, beaucoup d'entre eux vivent dans des situations où il est impossible de commencer ou de poursuivre leur ministère en raison du manque de ressources à cause du manque de soutien indigène.  
+Pour permettre au ministère de continuer à s'épanouir, nous devons soutenir les missionnaires de l'AEE qui sont dans le besoin. Grâce à des programmes tels que Sponsor-A-National (SPAN), le Quartier General International aide le ministère à se développer de manière exponentielle dans le monde entier.
+`
             }
           ].map((item, index) => (
             <motion.div 

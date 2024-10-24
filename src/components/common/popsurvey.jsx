@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 
 const PopupCFA = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +8,8 @@ const PopupCFA = () => {
     name: '',
     hasParticipated: '',
     hasCreatedClub: '',
+    prierPourCFA: '',
+    fairePartieCellulePriere: '',
     region: '',
     email: '',
     additionalInfo: '',
@@ -25,6 +27,8 @@ const PopupCFA = () => {
       name: '',
       hasParticipated: '',
       hasCreatedClub: '',
+      prierPourCFA: '',
+      fairePartieCellulePriere: '',
       region: '',
       email: '',
       additionalInfo: '',
@@ -32,11 +36,31 @@ const PopupCFA = () => {
   };
 
   const handleNext = () => {
-    setSurveyStep((prev) => prev + 1);
+    // Logique conditionnelle pour les nouvelles questions
+    if (surveyStep === 4) {
+      if (formData.prierPourCFA === 'Oui') {
+        setSurveyStep(5);
+      } else {
+        setSurveyStep(6);
+      }
+    } else if (surveyStep === 5) {
+      setSurveyStep(6);
+    } else {
+      setSurveyStep((prev) => prev + 1);
+    }
   };
 
   const handleBack = () => {
-    setSurveyStep((prev) => prev - 1);
+    // Logique conditionnelle pour le bouton Retour
+    if (surveyStep === 6) {
+      if (formData.prierPourCFA === 'Oui') {
+        setSurveyStep(5);
+      } else {
+        setSurveyStep(4);
+      }
+    } else {
+      setSurveyStep((prev) => prev - 1);
+    }
   };
 
   const handleChange = (e) => {
@@ -48,7 +72,7 @@ const PopupCFA = () => {
     e.preventDefault();
     // Logique de soumission du formulaire ici
     console.log(formData);
-    setSurveyStep((prev) => prev + 1);
+    setSurveyStep(7);
   };
 
   return (
@@ -249,6 +273,106 @@ const PopupCFA = () => {
             )}
 
             {surveyStep === 4 && (
+              <form>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800">Voulez-vous prier pour la CFA ?</h3>
+
+                <div className="mb-6">
+                  <label className="inline-flex items-center text-base sm:text-lg text-gray-700">
+                    <input
+                      type="radio"
+                      name="prierPourCFA"
+                      value="Oui"
+                      onChange={handleChange}
+                      className="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2">Oui</span>
+                  </label>
+                  <label className="inline-flex items-center ml-6 text-base sm:text-lg text-gray-700">
+                    <input
+                      type="radio"
+                      name="prierPourCFA"
+                      value="Non"
+                      onChange={handleChange}
+                      className="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2">Non</span>
+                  </label>
+                </div>
+
+                {/* Boutons de navigation */}
+                <div className="flex justify-between mt-6">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    Retour
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.prierPourCFA}
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {surveyStep === 5 && (
+              <form>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800">Voulez-vous faire partie d'une cellule de prière ?</h3>
+
+                <div className="mb-6">
+                  <label className="inline-flex items-center text-base sm:text-lg text-gray-700">
+                    <input
+                      type="radio"
+                      name="fairePartieCellulePriere"
+                      value="Oui"
+                      onChange={handleChange}
+                      className="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2">Oui</span>
+                  </label>
+                  <label className="inline-flex items-center ml-6 text-base sm:text-lg text-gray-700">
+                    <input
+                      type="radio"
+                      name="fairePartieCellulePriere"
+                      value="Non"
+                      onChange={handleChange}
+                      className="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2">Non</span>
+                  </label>
+                </div>
+
+                {/* Boutons de navigation */}
+                <div className="flex justify-between mt-6">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    Retour
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.fairePartieCellulePriere}
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {surveyStep === 6 && (
               <form onSubmit={handleSubmit}>
                 <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800">Vos informations</h3>
 
@@ -328,7 +452,7 @@ const PopupCFA = () => {
               </form>
             )}
 
-            {surveyStep === 5 && (
+            {surveyStep === 7 && (
               <div className="text-center">
                 <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800">Merci pour votre participation !</h3>
                 <p className="mb-6 text-base sm:text-lg text-gray-600">Nous vous contacterons prochainement avec plus d'informations.</p>
