@@ -5,49 +5,73 @@ export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState('en');
-  const [translations, setTranslations] = useState({});
+  const [translationsCache, setTranslationsCache] = useState({}); // Cache for loaded component translations
 
-  // Load translations when language changes
-  useEffect(() => {
-    const loadTranslations = async () => {
-      try {
-        const response = await fetch(`/lang/translations/${currentLang}.json`);
-        const data = await response.json();
-        console.log(data);
-        setTranslations(data);
-        updateDOMTranslations(data); // Update DOM translations immediately after loading new translations
-      } catch (error) {
-        console.error('Failed to load translations:', error);
-      }
-    };
+  // Load translations for a specific component
+  const loadComponentTranslations = async (component) => {
+    if (translationsCache[component]) {
+      // If already cached, return immediately
+      return translationsCache[component];
+    }
 
-    loadTranslations();
-  }, [currentLang]);
+    try {
+      const response = await fetch(`/lang/translations/${component}.json`);
+      const data = await response.json();
+      setTranslationsCache((prevCache) => ({
+        ...prevCache,
+        [component]: data,
+      }));
+      return data;
+    } catch (error) {
+      console.error(`Failed to load translations for ${component}:`, error);
+      return {};
+    }
+  };
 
-  // Automatically update translations when `translations` changes
-  useEffect(() => {
-    updateDOMTranslations(translations);
-  }, [translations]);
-
-  // Update DOM elements with translations
-  const updateDOMTranslations = (translationsData) => {
-    console.log('Updating DOM translations:', translationsData);
+  // Update DOM translations for all elements
+  const updateDOMTranslations = async () => {
     const elements = document.querySelectorAll('[i18-id]');
-    console.log('Found elements:', elements)
-    elements.forEach(element => {
-      const translationKey = element.getAttribute('i18-id');
-      console.log('Translation key:', translationKey);
-      const translation = translationsData[translationKey];
-        console.log('Translation:', translation);
-      if (translationsData[translationKey]) {
-        element.textContent = translationsData[translationKey];
+    const componentsToLoad = new Set();
+
+    // Extract unique component names from `i18-id` attributes
+    elements.forEach((element) => {
+      const i18Id = element.getAttribute('i18-id');
+      const component = i18Id.split('-')[0];
+      componentsToLoad.add(component);
+    });
+
+    // Load translations for all required components
+    const loadedTranslations = {};
+    await Promise.all(
+      Array.from(componentsToLoad).map(async (component) => {
+        const data = await loadComponentTranslations(component);
+        loadedTranslations[component] = data;
+      })
+    );
+
+    // Update the DOM with the correct translations
+    elements.forEach((element) => {
+      const i18Id = element.getAttribute('i18-id');
+      const component = i18Id.split('-')[0];
+      const translationKey = i18Id;
+      const translation = loadedTranslations[component]?.[translationKey]?.[currentLang];
+
+      if (translation) {
+        element.textContent = translation;
       }
     });
   };
 
-  // Function to get translation by key (optional for dynamic use cases)
-  const translate = (key) => {
-    return translations[key] || key;
+  // Watch for changes in language and refresh translations
+  useEffect(() => {
+    updateDOMTranslations();
+  }, [currentLang]);
+
+  // Function to get translation dynamically
+  const translate = async (key) => {
+    const component = key.split('-')[0];
+    const componentTranslations = await loadComponentTranslations(component);
+    return componentTranslations[key]?.[currentLang] || key;
   };
 
   return (
@@ -55,7 +79,6 @@ export const LanguageProvider = ({ children }) => {
       currentLang, 
       setLang: setCurrentLang,
       translate,
-      translations 
     }}>
       {children}
     </LanguageContext.Provider>
@@ -70,4 +93,3 @@ export const useTranslation = () => {
   }
   return context;
 };
-

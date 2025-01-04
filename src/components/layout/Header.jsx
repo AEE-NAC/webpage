@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SignupButton from '../common/btn-signup';
-import LanguageSwitcher from '../common/lang-switcher';
 
 const Header = () => {
     const { t } = useTranslation();
@@ -62,7 +61,7 @@ const Header = () => {
                 {/* Bouton d'inscription */}
                 <SignupButton />
                 {/* Bouton du menu mobile */}
-                <LanguageSwitcher />
+                
                 <button
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 md:hidden"
                     type="button"
