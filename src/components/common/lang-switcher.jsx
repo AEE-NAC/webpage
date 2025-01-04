@@ -12,8 +12,9 @@ const LangButton = styled.button`
   gap: 8px;
   padding: 8px 16px;
   border-radius: 20px;
-  border: 1px solid #ddd;
-  background: white;
+  color: #2b2b3f !important;
+  border: 1px solid #981a3c;
+  background: #fdfff4ff;
   cursor: pointer;
   transition: all 0.2s;
   
