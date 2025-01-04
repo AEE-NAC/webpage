@@ -150,12 +150,12 @@ const Donation = () => {
         <div className="w-full p-4 fixed md:relative top-0 left-0 bg-white z-10 md:z-0 ">
           <a href="../" className="flex items-center gap-4">
             <img
-              src="/images/favicon.png"
+              src="/images/logo_1st.png"
               alt="DJONDJON Logo"
-              className="w-12 h-12"
+              className="w-52 h-24"
             />
             <span className="text-lg md:text-xl lg:text-2xl text-[#2b2b3f]">
-              Child Evangelism Fellowship
+              
             </span>
           </a>
         </div>

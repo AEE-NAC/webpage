@@ -6,7 +6,7 @@ const Card = () => (
 
 const Engagements = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center bg-black py-10 text-white">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-black py-10 text-white">
       <h2 className="text-[3.2em] font-bold text-blue-400 mb-4">
         Engagez, Connectez et Réussissez
       </h2>

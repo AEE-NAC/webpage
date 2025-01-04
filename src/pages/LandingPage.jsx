@@ -22,13 +22,14 @@ const LandingPage = () => {
     </p>
   </div>
 </div>
-
+<div className="flex flex-col items-center justify-center">
             <About />
             <Ministries />
             <WeeklyWord />
             <Blog />
             <Popsurvey />
             <Footer />
+</div>
         </>
     );
 };

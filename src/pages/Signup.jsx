@@ -77,12 +77,12 @@ const Signup = () => {
         <div className="fixed top-0 left-0 p-4">
         <a href="../" className='flex  items-center gap-4'>
             <img
-              src="/images/favicon.png"
+              src="/images/logo_1st.png"
               alt="DJONDJON Logo"
-              className="w-12 h-12"
+              className="w-52 h-24"
             />
              <span className="text-[1.59em] text-[#2b2b3f]">
-            Child Evangelism Fellowship
+            
           </span>
           </a> 
         </div>
