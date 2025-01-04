@@ -15,7 +15,7 @@ const About = () => (
         />
       </div>
       <div className="space-y-4">
-        <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">About Us</div>
+        <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">Qui sommes-nous</div>
         <h2 className="text-3xl font-bold text-[#0f0f0fff]">Empowering Children, Transforming Lives</h2>
         <p className="text-[#0f0f0fff]">
           Children's Hope is a non-profit Christian organization dedicated to providing education, healthcare, and
