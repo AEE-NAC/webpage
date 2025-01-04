@@ -11,10 +11,7 @@ const Header = () => {
     >
       <div className="container flex items-center justify-between h-16 px-4 md:px-6">
         <a className="flex items-center gap-2" href="#" rel="ugc">
-          <img className="h-12 w-12" src="/images/favicon.png" />
-          <span className="text-[1.19em] text-[#2b2b3f]">
-            Child Evangelism Fellowship
-          </span>
+          <img className="h-12 w-full" src="/images/logo_1st.png" />
         </a>
         {/* Navigation pour les écrans moyens et plus grands */}
         <nav className="hidden md:flex items-center gap-6 text-[1em]">

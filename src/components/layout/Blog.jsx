@@ -6,11 +6,11 @@ const Blog = () => {
       <div className="container">
         <div className="space-y-4 text-center">
           <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
-            From the Blog
+            Du Blog
           </div>
-          <h2 className="text-3xl font-bold text-[#0f0f0fff]">Inspiring Stories, Uplifting Insights</h2>
+          <h2 className="text-3xl font-bold text-[#0f0f0fff]">Histoires Inspirantes, Insights Élevateurs</h2>
           <p className="text-[#878578ff]">
-            Stay up-to-date with the latest news, stories, and updates from Children's Hope.
+            Restez informé des dernières nouvelles, histoires et mises à jour de l'Espoir des Enfants.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
@@ -22,20 +22,20 @@ const Blog = () => {
               src="/placeholder.svg"
               width="400"
               height="250"
-              alt="Blog Post 1"
+              alt="Article de Blog 1"
               className="w-full h-48 object-cover"
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
               <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
-                Education
+                Éducation
               </div>
-              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Empowering the Next Generation</h3>
+              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Empowerment de la Prochaine Génération</h3>
               <p className="text-[#878578ff]">
-                Learn how our education programs are transforming the lives of underprivileged children.
+                Apprenez comment nos programmes d'éducation transforment les vies des enfants défavorisés.
               </p>
               <a className="inline-flex items-center gap-2 text-[#D8394D] hover:underline" href="#" rel="ugc">
-                Read More
+                Lire Plus
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -62,20 +62,20 @@ const Blog = () => {
               src="/placeholder.svg"
               width="400"
               height="250"
-              alt="Blog Post 2"
+              alt="Article de Blog 2"
               className="w-full h-48 object-cover"
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
               <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
-                Healthcare
+                Soins de Santé
               </div>
-              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Providing Vital Medical Care</h3>
+              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Fournir des Soins Médicaux Essentiels</h3>
               <p className="text-[#878578ff]">
-                Discover how our healthcare initiatives are improving the lives of children in need.
+                Découvrez comment nos initiatives de santé améliorent les vies des enfants en difficulté.
               </p>
               <a className="inline-flex items-center gap-2 text-[#D8394D] hover:underline" href="#" rel="ugc">
-                Read More
+                Lire Plus
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -102,20 +102,20 @@ const Blog = () => {
               src="/placeholder.svg"
               width="400"
               height="250"
-              alt="Blog Post 3"
+              alt="Article de Blog 3"
               className="w-full h-48 object-cover"
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
               <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
-                Spiritual Guidance
+                Guidance Spirituelle
               </div>
-              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Nurturing the Soul, Uplifting the Spirit</h3>
+              <h3 className="text-xl font-semibold text-[#0f0f0fff]">Nourrir l'Âme, Élever l'Esprit</h3>
               <p className="text-[#878578ff]">
-                Explore how our spiritual programs are helping children find hope and inspiration.
+                Explorez comment nos programmes spirituels aident les enfants à trouver de l'espoir et de l'inspiration.
               </p>
               <a className="inline-flex items-center gap-2 text-[#D8394D] hover:underline" href="#" rel="ugc">
-                Read More
+                Lire Plus
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

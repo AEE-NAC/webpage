@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8" style={{color: '#2a2c41'}}>
           
             <div className="text-center md:text-left">
-              <img src="./images/logo_Colour_CEF_Logo_v2-0.png" alt="Logo" className="mx-auto md:mx-0"/>
+              <img src="./images/logo_1st.png" alt="Logo" className="mx-auto md:mx-0"/>
             </div>
         
             <div>
