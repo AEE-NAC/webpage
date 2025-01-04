@@ -1,10 +1,10 @@
 import React from 'react';
 
 const Ministries = () => (
-  <section id="ministries" className="bg-[#fdfff4ff] py-12 md:py-24 lg:py-32">
+  <section id="ministries" className="bg-[#fdfff4ff] w-full flex justify-center  py-12 md:py-24 lg:py-32">
     <div className="container">
       <div className="space-y-4 text-center">
-        <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
+        <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">
           Nos Ministères
         </div>
         <h2 className="text-3xl font-bold text-[#0f0f0fff]">Transformer les Vies par Nos Ministères</h2>

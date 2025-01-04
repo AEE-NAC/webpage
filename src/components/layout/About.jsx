@@ -1,7 +1,7 @@
 import React from 'react';
 
 const About = () => (
-    <section id="about" className=" bg-trnsparent px-[26px]  h-screen items-center   py-12 md:py-24 lg:py-32">
+    <section id="about" className=" bg-trnsparent px-[26px] w-full flex justify-center  h-screen items-center   py-12 md:py-24 lg:py-32">
     <div>
     <div className="bg-[#e45a83ff] rounded-[12px] p-6  container grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div>
@@ -15,9 +15,9 @@ const About = () => (
         />
       </div>
       <div className="space-y-4">
-        <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">Qui sommes-nous</div>
+        <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">Qui sommes-nous</div>
         <h2 className="text-3xl font-bold text-[#0f0f0fff]">Empowering Children, Transforming Lives</h2>
-        <p className="text-[#0f0f0fff]">
+        <p className="text-[#010000]">
           Children's Hope is a non-profit Christian organization dedicated to providing education, healthcare, and
           spiritual guidance to underprivileged children around the world. Our mission is to break the cycle of
           poverty and give these children a brighter future.

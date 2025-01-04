@@ -2,10 +2,10 @@ import React from 'react';
 
 const WeeklyWord = () => {
   return (
-    <section id="weekly-word" className="px-[26px] py-12 md:py-24 lg:py-32">
+    <section id="weekly-word" className="px-[26px] w-full flex justify-center  py-12 md:py-24 lg:py-32">
       <div className="container p-6 rounded-[12px] bg-[#423c5eff] grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className="space-y-4">
-          <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">Mot de la Semaine</div>
+          <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">Mot de la Semaine</div>
           <h2 className="text-3xl font-bold text-[#fdfff4ff]">Qu'est-ce que le FRET ? Comment le définiriez-vous ? Connaissez-vous quelqu'un qui en est coupable ? Cette personne est-elle vous ?</h2>
           <p className="text-[#bdbdbcff]">
             Le FRET est plus courant que vous ne le pensez, même parmi les vrais disciples du Christ. La première question que j'ai posée appelle une réponse de votre part. L'INQUIETUDE est définie comme suit : être anxieux, tourmenté, irritable, contrarié, vexé ou malheureux à propos de quelque chose qui vous ronge. L'angoisse est à votre esprit ce que l'acide est au métal. C'est quelque chose dans votre esprit qui vous ronge comme une bactérie mangeuse de chair le ferait avec votre peau.

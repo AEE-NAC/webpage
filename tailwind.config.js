@@ -2,7 +2,11 @@
 export default {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        '#d8ae34ff': '#f2e288',
+      },
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

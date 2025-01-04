@@ -2,10 +2,10 @@ import React from 'react';
 
 const Blog = () => {
   return (
-    <section id="blog" className="bg-[#fdfff4ff] px-[26px] py-12 md:py-24 lg:py-32">
+    <section id="blog" className="bg-[#fdfff4ff] w-full flex justify-center  px-[26px] py-12 md:py-24 lg:py-32">
       <div className="container">
         <div className="space-y-4 text-center">
-          <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
+          <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">
             Du Blog
           </div>
           <h2 className="text-3xl font-bold text-[#0f0f0fff]">Histoires Inspirantes, Insights Élevateurs</h2>
@@ -27,7 +27,7 @@ const Blog = () => {
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
-              <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
+              <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">
                 Éducation
               </div>
               <h3 className="text-xl font-semibold text-[#0f0f0fff]">Empowerment de la Prochaine Génération</h3>
@@ -67,7 +67,7 @@ const Blog = () => {
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
-              <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
+              <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">
                 Soins de Santé
               </div>
               <h3 className="text-xl font-semibold text-[#0f0f0fff]">Fournir des Soins Médicaux Essentiels</h3>
@@ -107,7 +107,7 @@ const Blog = () => {
               style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
             />
             <div className="p-6 space-y-2">
-              <div className="inline-block rounded-full bg-[#d8ae34ff] px-4 py-1 text-sm text-[#0f0f0fff]">
+              <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff]">
                 Guidance Spirituelle
               </div>
               <h3 className="text-xl font-semibold text-[#0f0f0fff]">Nourrir l'Âme, Élever l'Esprit</h3>
