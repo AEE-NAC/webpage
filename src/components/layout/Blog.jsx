@@ -59,7 +59,7 @@ const Blog = () => {
             data-v0-t="card"
           >
             <img
-              src="/placeholder.svg"
+              src="/images/CBN_haiti.jpeg"
               width="400"
               height="250"
               alt="Article de Blog 2"

@@ -18,7 +18,15 @@ const Ministries = () => (
           data-v0-t="card"
         >
           <div className="p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-[#0f0f0fff]">Découvrez Nos Missions Transformatrices</h3>
+          <img
+              src="/images/CBN_haiti.jpeg"
+              width="400"
+              height="250"
+              alt="Article de Blog 1"
+              className="w-full h-48 object-cover rounded-2xl"
+              style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
+            />
+            <h3 className="text-xl font-semibold text-[#0f0f0fff]">Club de la bonne nouvelle</h3>
             <p className="text-[#878578ff]">
               Rencontre les enfants là où ils sont, dans les écoles, les centres communautaires, les églises et les foyers de quartier. Les enseignants sont formés et équipés pour animer des clubs de Bonnes Nouvelles chaque semaine, offrant les vérités intemporelles de la Bible de manière passionnante et engageante. Les enfants apprennent l'Évangile, et beaucoup en viennent à connaître Jésus comme leur Sauveur.
             </p>
@@ -29,6 +37,14 @@ const Ministries = () => (
           data-v0-t="card"
         >
           <div className="p-6 space-y-4">
+          <img
+              src="/images/font_1.jpg"
+              width="400"
+              height="250"
+              alt="Article de Blog 1"
+              className="w-full h-48 object-cover rounded-2xl"
+              style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
+            />
             <h3 className="text-xl font-semibold text-[#0f0f0fff]">Club de 5 Jours</h3>
             <p className="text-[#878578ff]">
               Situé dans leur quartier, un club de 5 jours est facile pour un enfant d'avoir accès lors de sa pause estivale. Les enseignants sont formés et équipés pour diriger des clubs de 5 jours remplis d'action pendant une semaine solide, fournissant les vérités intemporelles de la Bible de manière passionnante et engageante. Les enfants apprennent l'Évangile, et beaucoup en viennent à connaître Jésus comme leur Sauveur.
@@ -40,6 +56,14 @@ const Ministries = () => (
           data-v0-t="card"
         >
           <div className="p-6 space-y-4">
+          <img
+              src="/images/CP_pichon.jpeg"
+              width="400"
+              height="250"
+              alt="Article de Blog 1"
+              className="w-full h-48 object-cover rounded-2xl"
+              style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
+            />
             <h3 className="text-xl font-semibold text-[#0f0f0fff]">CYA - Jeunes Chrétiens en Action</h3>
             <p className="text-[#878578ff]">
               CYA est un programme conçu pour vous former, vous et une équipe d'autres jeunes, à des manières efficaces et engageantes d'enseigner Dieu aux enfants. Vous participerez à une école de formation d'une à deux semaines où vous apprendrez à présenter clairement l'Évangile au niveau d'un enfant, à conseiller un enfant pour le salut et à diriger un ministère dynamique de club pour les enfants. Les éléments de ce club comprennent l'enseignement d'une leçon biblique, d'une histoire missionnaire réelle et d'un verset biblique, ainsi que des chants, des jeux et un temps de révision amusant.
