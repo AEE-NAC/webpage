@@ -5,6 +5,7 @@ import SignUp from './pages/Signup';
 import SignIn from './pages/Signin';
 import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
+import { LanguageProvider } from './context/Languagecontext';
 import Donation from './pages/Donation';
 import ResetPassword from './pages/ResetPassword';
 import Library from './pages/library';
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <AppContext.Provider value={{ user, setUser }}>
+      <LanguageProvider>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -40,6 +42,7 @@ function App() {
           <Route path="/implicate" element={<ImpliquezVous />} />
         </Routes>
       </Router>
+      </LanguageProvider>
     </AppContext.Provider>
   );
 }

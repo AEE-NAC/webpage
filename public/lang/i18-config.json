@@ -1,0 +1,8 @@
+{
+    "languages": {
+        "fr": "/lang/translations/fr.json",
+        "en": "/lang/translations/en.json",
+        "es": "/lang/translations/es.json",
+        "kr": "/lang/translations/kr.json"
+    }
+}
