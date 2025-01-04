@@ -6,7 +6,7 @@ const Header = () => {
 
   return (
     <header
-      className="fixed w-full top-0 bg-[#fdfff4ff] border-b border-[#878578ff]"
+      className="fixed w-full top-0 bg-[#fdfff4ff] flex justify-around border-b border-[#878578ff]"
       style={{ zIndex: 999 }}
     >
       <div className="container flex items-center justify-between h-16 px-4 md:px-6">
