@@ -4,5 +4,28 @@
         "source": "/(.*)",
         "destination": "/"
       }
-    ]
+    ],
+    "redirects": [
+      {
+          "source": "/",
+          "has": [
+              {
+                  "type": "host",
+                  "value": "haiti.aeenac.com"
+              }
+          ],
+          "destination": "https://vercel.com/docs/projects/project-configuration#redirects"
+      }
+      ,
+      {
+          "source": "/",
+          "has": [
+              {
+                  "type": "host",
+                  "value": "members.aeenac.com"
+              }
+          ],
+          "destination": "bing.com"
+      }
+  ]
   }
