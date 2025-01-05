@@ -1,31 +1,32 @@
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/"
-      }
-    ],
-    "redirects": [
-      {
-          "source": "/",
-          "has": [
-              {
-                  "type": "host",
-                  "value": "haiti.aeenac.org"
-              }
-          ],
-          "destination": "https://vercel.com/docs/projects/project-configuration#redirects"
-      }
-      ,
-      {
-          "source": "/",
-          "has": [
-              {
-                  "type": "host",
-                  "value": "members.aeenac.org"
-              }
-          ],
-          "destination": "bing.com"
-      }
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "haiti.aeenac.org"
+        }
+      ],
+      "destination": "https://cefonline.com",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "members.aeenac.org"
+        }
+      ],
+      "destination": "https://bing.com",
+      "permanent": true
+    }
   ]
-  }
+}
