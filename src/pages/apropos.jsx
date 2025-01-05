@@ -24,7 +24,7 @@ const Card = ({ icon, title, content }) => (
     whileHover={{ scale: 1.05 }}
     className="bg-white rounded-3xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl"
   >
-    <div className="text-blue-600 mb-4">{icon}</div>
+    <div className="text-[#981a3c] mb-4">{icon}</div>
     <h3 className="text-2xl font-semibold mb-4 text-gray-800">{title}</h3>
     <p className="text-gray-600">{content}</p>
   </motion.div>
@@ -34,7 +34,7 @@ const Button = ({ children }) => (
   <motion.button 
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    className="bg-blue-600 text-white px-8 py-4 rounded-full font-medium text-lg transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    className="bg-[#981a3c] text-white px-8 py-4 rounded-full font-medium text-lg transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
   >
     {children}
   </motion.button>
@@ -44,7 +44,7 @@ export default function MinistersPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
         <Header></Header>
-      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+      <header className="bg-gradient-to-r from-[#981a3c] to-[#981a3c] text-white">
         <div className="container mx-auto px-4 py-24 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
@@ -71,7 +71,7 @@ export default function MinistersPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-medium text-blue-600 mb-8"
+            className="text-3xl md:text-4xl font-medium text-[#981a3c] mb-8"
           >
             « Chaque enfant, chaque nation, chaque jour. »
           </motion.p>
@@ -150,7 +150,7 @@ Pour permettre au ministère de continuer à s'épanouir, nous devons soutenir l
               className="flex items-center space-x-8"
             >
               <div className="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <ChevronRightIcon className="w-8 h-8 text-blue-600" />
+                <ChevronRightIcon className="w-8 h-8 text-[#981a3c]" />
               </div>
               <div>
                 <h3 className="text-2xl font-semibold text-gray-800 mb-2">{item.title}</h3>
