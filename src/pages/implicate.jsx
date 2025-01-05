@@ -35,7 +35,7 @@ const ImpliquezVous = () => {
     <Header></Header>
     <div className="bg-gray-100 py-16">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-12 text-blue-600">Impliquez-vous</h1>
+        <h1 className="text-4xl font-bold text-center mb-12 text-[#981a3c]">Impliquez-vous</h1>
         <p className="text-center text-xl mb-12 max-w-3xl mx-auto text-gray-600">
           Rejoignez notre communauté dynamique et faites la différence. Que vous soyez visiteur, membre ou bénévole, il y a une place pour vous !
         </p>
@@ -43,9 +43,9 @@ const ImpliquezVous = () => {
           {cards.map((card, index) => (
             <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 ease-in-out hover:shadow-2xl transform hover:-translate-y-1">
               <div className="p-6">
-                <h2 className="font-bold text-2xl mb-4 text-blue-600">{card.title}</h2>
+                <h2 className="font-bold text-2xl mb-4 text-[#981a3c]">{card.title}</h2>
                 <p className="text-gray-700 text-base mb-6">{card.description}</p>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+                <button className="bg-[#981a3c] hover:bg-[#981a3c] text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
                   {card.buttonText}
                 </button>
               </div>
