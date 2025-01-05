@@ -33,7 +33,7 @@ const ImpliquezVous = () => {
   return (
     <>
     <Header></Header>
-    <div className="bg-gray-100 py-16">
+    <div className="bg-[#fdfff4ff] py-16">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12 text-[#981a3c]">Impliquez-vous</h1>
         <p className="text-center text-xl mb-12 max-w-3xl mx-auto text-gray-600">
