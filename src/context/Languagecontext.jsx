@@ -1,34 +1,71 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import Cookies from 'js-cookie';
 
 export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-    const [currentLang, setCurrentLang] = useState('en');
+    const defaultLang = 'fr';
+    const [currentLang, setCurrentLang] = useState(() => {
+        return Cookies.get('language') || defaultLang;
+    });
     const [translationsCache, setTranslationsCache] = useState({});
 
-    // Modified to use useCallback and avoid state updates during render
+    // Load translations from localStorage
+    const loadTranslationsFromLocalStorage = useCallback((component) => {
+        const cachedData = localStorage.getItem(`translations_${component}`);
+        return cachedData ? JSON.parse(cachedData) : null;
+    }, []);
+
+    // Save translations to localStorage
+    const saveTranslationsToLocalStorage = useCallback((component, data) => {
+        localStorage.setItem(`translations_${component}`, JSON.stringify(data));
+    }, []);
+
+    // Register service worker to update cache
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+        }
+    }, []);
+
     const loadComponentTranslations = useCallback(async (component) => {
-        // First check cache
+        // Check cache in state
         if (translationsCache[component]) {
             return translationsCache[component];
         }
 
+        // Check localStorage cache
+        const localData = loadTranslationsFromLocalStorage(component);
+        if (localData) {
+            setTranslationsCache((prevCache) => ({
+                ...prevCache,
+                [component]: localData,
+            }));
+            return localData;
+        }
+
         try {
+            // Fetch from server if not in localStorage
             const response = await fetch(`/lang/translations/${component}.json`);
             const data = await response.json();
-            
-            // Update cache in useEffect to avoid render-time updates
-            setTranslationsCache(prevCache => ({
+
+            // Save to cache and localStorage
+            setTranslationsCache((prevCache) => ({
                 ...prevCache,
                 [component]: data,
             }));
-            
+            saveTranslationsToLocalStorage(component, data);
+
             return data;
         } catch (error) {
             console.error(`Failed to load translations for ${component}:`, error);
             return {};
         }
-    }, [translationsCache]);
+    }, [translationsCache, loadTranslationsFromLocalStorage, saveTranslationsToLocalStorage]);
 
     const updateDOMTranslations = useCallback(async () => {
         const elements = document.querySelectorAll('[i18-id]');
@@ -60,20 +97,45 @@ export const LanguageProvider = ({ children }) => {
         });
     }, [currentLang, loadComponentTranslations]);
 
+    // Monitor mutations for dynamic translation
     useEffect(() => {
-        const fetchLanguagePreference = async () => {
-            try {
-                const response = await fetch('/api/user/language-preference');
-                const data = await response.json();
-                setCurrentLang(data.language || 'en');
-            } catch (error) {
-                console.error('Failed to fetch language preference:', error);
-            }
-        };
+        const observer = new MutationObserver((mutationsList) => {
+            mutationsList.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        console.log('Node added:', node);
+                        if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('i18-id')) {
+                            console.log('Translating:', node);
+                            const i18Id = node.getAttribute('i18-id');
+                            const component = i18Id.split('-')[0];
 
-        fetchLanguagePreference();
+                            loadComponentTranslations(component).then((data) => {
+                                const translation = data[i18Id]?.[currentLang];
+                                if (translation) {
+                                    node.textContent = translation;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [currentLang, loadComponentTranslations]);
+
+    useEffect(() => {
         updateDOMTranslations();
     }, [updateDOMTranslations]);
+
+    const setLang = useCallback((lang) => {
+        setCurrentLang(lang);
+        Cookies.set('language', lang);
+    }, []);
 
     const translate = useCallback(async (key) => {
         const component = key.split('-')[0];
@@ -84,7 +146,7 @@ export const LanguageProvider = ({ children }) => {
     return (
         <LanguageContext.Provider value={{ 
             currentLang, 
-            setLang: setCurrentLang,
+            setLang,
             translate,
         }}>
             {children}

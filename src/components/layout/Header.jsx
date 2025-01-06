@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../context/Languagecontext';
 import SignupButton from '../common/btn-signup';
 
 const Header = () => {
-    const { t } = useTranslation();
+
+    const { translate } = useTranslation();
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
         <header
-            className="fixed w-full top-0 bg-[#fdfff4ff] flex justify-around border-b border-[#878578ff]"
+            className="fixed w-full top-0 bg-[#fdfff4ff] flex flex-col md:flex-row md:justify-around border-b border-[#878578ff]"
             style={{ zIndex: 999 }}
         >
             <div className="container flex items-center justify-between h-16 px-4 md:px-6">
@@ -23,7 +24,7 @@ const Header = () => {
                         rel="ugc"
                         i18-id="header-home"
                     >
-                        {t('header-home')}
+                        {'header-home'}
                     </a>
                     <a
                         className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
@@ -31,7 +32,7 @@ const Header = () => {
                         rel="ugc"
                         i18-id="header-about"
                     >
-                        {t('header-about')}
+                        {'header-about'}
                     </a>
                     <a
                         className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
@@ -39,7 +40,7 @@ const Header = () => {
                         rel="ugc"
                         i18-id="header-ministries"
                     >
-                        {t('header-ministries')}
+                        {'header-ministries'}
                     </a>
                     <a
                         className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
@@ -47,7 +48,7 @@ const Header = () => {
                         rel="ugc"
                         i18-id="header-get-involved"
                     >
-                        {t('header-get-involved')}
+                        {'header-get-involved'}
                     </a>
                     <a
                         className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
@@ -55,13 +56,14 @@ const Header = () => {
                         rel="ugc"
                         i18-id="header-contact-us"
                     >
-                        {t('header-contact-us')}
+                        {'header-contact-us'}
                     </a>
                 </nav>
                 {/* Bouton d'inscription */}
-                <SignupButton />
+                <div className="hidden md:block">
+                    <SignupButton />
+                </div>
                 {/* Bouton du menu mobile */}
-                
                 <button
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 md:hidden"
                     type="button"
@@ -70,7 +72,6 @@ const Header = () => {
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
                     {menuOpen ? (
-                        // Icône de fermeture
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="w-6 h-6"
@@ -96,7 +97,6 @@ const Header = () => {
                             />
                         </svg>
                     ) : (
-                        // Icône hamburger
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="w-6 h-6"
@@ -109,53 +109,57 @@ const Header = () => {
                             <line x1="4" y1="18" x2="20" y2="18" strokeWidth="2" />
                         </svg>
                     )}
-                    <span className="sr-only">{t('header-toggle-navigation')}</span>
+                    <span className="sr-only">{'header-toggle-navigation'}</span>
                 </button>
             </div>
             {/* Menu mobile */}
             {menuOpen && (
-                <nav className="md:hidden bg-[#fdfff4ff] border-b border-[#878578ff]">
-                    <div className="container px-4 py-4">
+                <nav className="flex flex-col md:hidden bg-[#fdfff4ff] border-b border-[#878578ff]">
+                    <div className="flex flex-col px-4 py-4 gap-2">
                         <a
-                            className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
                             href="../"
                             rel="ugc"
                             i18-id="header-home"
                         >
-                            {t('header-home')}
+                           
                         </a>
                         <a
-                            className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
                             href="../apropos"
                             rel="ugc"
                             i18-id="header-about"
                         >
-                            {t('header-about')}
+                           
                         </a>
                         <a
-                            className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
                             href="../#ministries"
                             rel="ugc"
                             i18-id="header-ministries"
                         >
-                            {t('header-ministries')}
+                           
                         </a>
                         <a
-                            className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
                             href="../implicate"
                             rel="ugc"
                             i18-id="header-get-involved"
                         >
-                            {t('header-get-involved')}
+                           
                         </a>
                         <a
-                            className="block py-2 text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
                             href="#"
                             rel="ugc"
                             i18-id="header-contact-us"
                         >
-                            {t('header-contact-us')}
+                           
                         </a>
+                        {/* Bouton d'inscription */}
+                        <div className="mt-4">
+                            <SignupButton />
+                        </div>
                     </div>
                 </nav>
             )}
