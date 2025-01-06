@@ -6,7 +6,7 @@ const About = () => (
             <div className="bg-[#e45a83ff] rounded-[12px] p-6 container grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
                     <img
-                        src="/images/week_word.jpg"
+                        src="/images/font_1.jpg"
                         width="600"
                         height="400"
                         alt="About Image"

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronRightIcon, GlobeAltIcon, UserGroupIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import Footer from "../components/layout/Footer"
 import Header from '../components/layout/Header';
+import TextRoll from '../components/specific/textroll';
 const Section = ({ title, children, dark = false }) => (
   <section className={dark ? 'bg-gray-900 text-white py-24' : 'bg-white py-24'}>
     <div className="container mx-auto px-4">
@@ -45,22 +46,22 @@ export default function MinistersPage() {
     <div className="bg-gray-50 min-h-screen">
         <Header></Header>
       <header className="bg-gradient-to-r from-[#981a3c] to-[#981a3c] text-white">
-        <div className="container mx-auto px-4 py-24 text-center">
+        <div className="container mx-auto px-4 py-24 text-center flex flex-col items-center">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-5xl flex   md:text-7xl font-bold mb-6"
+            style={{width: '35%'}}
           >
-            Ministers
+            "Every <TextRoll words={['child', 'nation', 'day']} />."
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light max-w-3xl mx-auto"
+            className="text-xl md:text-2xl font-light max-w-3xl mx-auto" i18-id="apropos-sub1"
           >
-            Inspirant la prochaine génération à travers la foi et l'éducation
           </motion.p>
         </div>
       </header>
@@ -70,20 +71,12 @@ export default function MinistersPage() {
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-medium text-[#981a3c] mb-8"
-          >
-            « Chaque enfant, chaque nation, chaque jour. »
-          </motion.p>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-gray-600 mb-12 text-lg"
+            i18-id="apropos-sub2"
           >
-            L'Association pour l'Évangélisation des Enfants est une organisation mondiale centrée sur la Bible, composée de croyants nés de nouveau dont le but est d'évangéliser les garçons et les filles avec l'évangile du Seigneur Jésus-Christ et de les établir (disciples) dans la parole de Dieu et dans une église locale pour vivre leur vie chrétienne.
           </motion.p>
-          <Button>En savoir plus</Button>
+          <Button i18-id="apropos-btn1" ></Button>
         </div>
       </Section>
 
@@ -201,14 +194,13 @@ Pour permettre au ministère de continuer à s'épanouir, nous devons soutenir l
             className="md:w-1/2"
           >
             <h3 className="text-3xl font-bold mb-6 text-gray-800">Jesse Irvin Overholtzer</h3>
-            <p className="text-gray-600 mb-4 text-lg">
-              L'AEE a été fondée par Jesse Irvin Overholtzer en 1937. Ayant grandi dans une famille religieuse, Jesse a été convaincu de son propre péché à l'âge de 12 ans et a demandé conseil à sa mère. Celle-ci lui a répondu : « Mon fils, tu es trop jeune ».
+            <p className="text-gray-600 mb-4 text-lg" i18-id="apropos-sub3">
             </p>
-            <p className="text-gray-600 mb-4 text-lg">
-              Ce n'est qu'à l'université que Jesse Overholtzer a entendu l'Évangile et a accepté Christ comme son Sauveur. Plus tard, en tant que pasteur, M. Overholtzer a lu un sermon de Charles Spurgeon qui disait : « Un enfant de cinq ans, s'il est correctement instruit, peut croire et être régénéré aussi véritablement qu'un adulte ».
+            <p className="text-gray-600 mb-4 text-lg" i18-id="apropos-sub4">
+              
             </p>
-            <p className="text-gray-600 text-lg">
-              Le Seigneur a utilisé cette déclaration dans la vie de M. O pour l'amener à commencer le ministère de l'Association pour l'Évangélisation des Enfants à l'âge de 60 ans. Ce ministère est devenu la plus importante mission d'évangélisation auprès des enfants dans le monde.
+            <p className="text-gray-600 text-lg" i18-id="apropos-sub5">
+             
             </p>
           </motion.div>
         </div>
