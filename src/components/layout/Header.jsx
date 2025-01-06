@@ -52,7 +52,7 @@ const Header = () => {
                     </a>
                     <a
                         className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
-                        href="#"
+                        href="../contact"
                         rel="ugc"
                         i18-id="header-contact-us"
                     >
