@@ -185,6 +185,13 @@ const Donation = () => {
               </div>
               <div className="p-6">
                 <div className="grid gap-4">
+                <div className="grid gap-4">
+              <div className="flex flex-row items-center gap-4">
+                <p className="text-sm font-medium leading-none mb-2">
+                  Please select the type of donation you wish to make:
+                </p>
+              </div>
+              </div>
                   <div className="flex flex-row items-center gap-4">
                     <button
                       className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 ${
