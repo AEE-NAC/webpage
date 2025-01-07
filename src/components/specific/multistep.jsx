@@ -18,6 +18,7 @@ const MultiStepForm = ({ config, onSubmit, apiClient }) => {
   const [tempMultipleData, setTempMultipleData] = useState({});
   const [editingIndex, setEditingIndex] = useState(null);
   const [language, setLanguage] = useState('EN'); // État pour la langue courante
+  const [showMultipleForm, setShowMultipleForm] = useState(false); // État pour afficher/masquer le formulaire multiple
   const formRefs = useRef([]);
 
   const changeLanguage = (lang) => {
@@ -68,6 +69,7 @@ const MultiStepForm = ({ config, onSubmit, apiClient }) => {
       }));
     }
     setTempMultipleData((prev) => ({ ...prev, [fieldKey]: {} }));
+    setShowMultipleForm(false); // Masquer le formulaire après l'enregistrement
   };
 
   const handleStartEdit = (fieldKey, index) => {
@@ -76,11 +78,13 @@ const MultiStepForm = ({ config, onSubmit, apiClient }) => {
       ...prev,
       [fieldKey]: { ...formData[fieldKey][index] },
     }));
+    setShowMultipleForm(true); // Afficher le formulaire pour la modification
   };
 
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setTempMultipleData({});
+    setShowMultipleForm(false); // Masquer le formulaire en cas d'annulation
   };
 
   const handleRemove = (fieldKey, index) => {
@@ -268,96 +272,113 @@ const MultiStepForm = ({ config, onSubmit, apiClient }) => {
                           {field.label}
                         </h3>
 
-                        <div className="bg-gray-50 rounded-xl p-4">
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            {field.fields.map((subField) => (
-                              <div key={subField.key}>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  {subField.label}
-                                </label>
-                                {subField.type === 'select' ? (
-                                  <select
-                                    name={subField.key}
-                                    value={tempMultipleData[field.key]?.[subField.key] || ''}
-                                    onChange={(e) => handleTempChange(e, field.key)}
-                                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-gray-400"
-                                  >
-                                    <option value="">Sélectionnez une option</option>
-                                    {subField.options.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
-                                ) : (
-                                  <input
-                                    type={subField.type || 'text'}
-                                    name={subField.key}
-                                    value={tempMultipleData[field.key]?.[subField.key] || ''}
-                                    onChange={(e) => handleTempChange(e, field.key)}
-                                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-gray-400"
-                                    placeholder={subField.placeholder}
-                                  />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="flex justify-end gap-2 mt-4">
-                            {editingIndex !== null && (
-                              <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="button"
-                                onClick={handleCancelEdit}
-                                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 flex items-center"
-                              >
-                                <X className="w-4 h-4 mr-2" />
-                                {t('cancel')}
-                              </motion.button>
-                            )}
+                        {!showMultipleForm && (
+                          <>
                             <motion.button
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               type="button"
-                              onClick={() => handleAddOrUpdateMultiple(field.key)}
-                              className={`flex items-center px-4 py-2 rounded-lg text-white transition-colors duration-200 ${
-                                editingIndex !== null
-                                  ? 'bg-green-500 hover:bg-green-600'
-                                  : 'bg-blue-600 hover:bg-blue-700'
-                              }`}
+                              onClick={() => setShowMultipleForm(true)}
+                              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                             >
-                              {editingIndex !== null ? (
-                                <>
-                                  <Save className="w-4 h-4 mr-2" />
-                                  {t('update')}
-                                </>
-                              ) : (
-                                <>
-                                  <PlusCircle className="w-4 h-4 mr-2" />
-                                  {t('add')}
-                                </>
-                              )}
+                              <PlusCircle className="w-4 h-4 mr-2" />
+                              {t('add')}
                             </motion.button>
-                          </div>
-                        </div>
 
-                        {formData[field.key]?.length > 0 && (
-                          <div className="mt-6">
-                            <div className="flex items-center mb-4">
-                              <h4 className="text-base font-medium text-gray-900">
-                                {field.previewTitle || t('addedItems')}
-                              </h4>
-                              <span className="ml-3 px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                                {formData[field.key].length} élément
-                                {formData[field.key].length > 1 ? 's' : ''}
-                              </span>
+                            {formData[field.key]?.length > 0 && (
+                              <div className="mt-6">
+                                <div className="flex items-center mb-4">
+                                  <h4 className="text-base font-medium text-gray-900">
+                                    {field.previewTitle || t('addedItems')}
+                                  </h4>
+                                  <span className="ml-3 px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                                    {formData[field.key].length} élément
+                                    {formData[field.key].length > 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                                <AnimatePresence>
+                                  {formData[field.key].map((item, index) =>
+                                    renderPreviewCard(field, item, index)
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                        {showMultipleForm && (
+                          <div className="bg-gray-50 rounded-xl p-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              {field.fields.map((subField) => (
+                                <div key={subField.key}>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    {subField.label}
+                                  </label>
+                                  {subField.type === 'select' ? (
+                                    <select
+                                      name={subField.key}
+                                      value={tempMultipleData[field.key]?.[subField.key] || ''}
+                                      onChange={(e) => handleTempChange(e, field.key)}
+                                      className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-gray-400"
+                                    >
+                                      <option value="">Sélectionnez une option</option>
+                                      {subField.options.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  ) : (
+                                    <input
+                                      type={subField.type || 'text'}
+                                      name={subField.key}
+                                      value={tempMultipleData[field.key]?.[subField.key] || ''}
+                                      onChange={(e) => handleTempChange(e, field.key)}
+                                      className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-gray-400"
+                                      placeholder={subField.placeholder}
+                                    />
+                                  )}
+                                </div>
+                              ))}
                             </div>
-                            <AnimatePresence>
-                              {formData[field.key].map((item, index) =>
-                                renderPreviewCard(field, item, index)
+
+                            <div className="flex justify-end gap-2 mt-4">
+                              {editingIndex !== null && (
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  type="button"
+                                  onClick={handleCancelEdit}
+                                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 flex items-center"
+                                >
+                                  <X className="w-4 h-4 mr-2" />
+                                  {t('cancel')}
+                                </motion.button>
                               )}
-                            </AnimatePresence>
+                              <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="button"
+                                onClick={() => handleAddOrUpdateMultiple(field.key)}
+                                className={`flex items-center px-4 py-2 rounded-lg text-white transition-colors duration-200 ${
+                                  editingIndex !== null
+                                    ? 'bg-green-500 hover:bg-green-600'
+                                    : 'bg-blue-600 hover:bg-blue-700'
+                                }`}
+                              >
+                                {editingIndex !== null ? (
+                                  <>
+                                    <Save className="w-4 h-4 mr-2" />
+                                    {t('update')}
+                                  </>
+                                ) : (
+                                  <>
+                                    <Save className="w-4 h-4 mr-2" />
+                                    {t('save')}
+                                  </>
+                                )}
+                              </motion.button>
+                            </div>
                           </div>
                         )}
                       </div>

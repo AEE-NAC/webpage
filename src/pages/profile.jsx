@@ -126,10 +126,40 @@ const config = {
   ],
   icons: [User, Phone, Book, Church, Book], // Icônes pour chaque étape
 };
+const apiClient = {
+  save: async (data) => {
+    // Simulate an API call
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Data saved:', data);
+        resolve({ success: true });
+      }, 100);
+    });
+  },
+};
 
+const handleSubmit = async (formData) => {
+  //e.preventDefault();
+  /*try {
+    const { data, error } = await supabase
+      .from('votre_table')
+      .insert([formData]);
+
+    if (error) {
+      throw error;
+    }
+
+    console.log('Données insérées avec succès:', data);
+    onSubmit?.(formData); // Appel de la fonction de rappel si elle existe
+  } catch (error) {
+    console.error('Erreur lors de l\'insertion des données:', error);
+    alert('Une erreur est survenue lors de la sauvegarde');
+  }*/
+ console.log(formData);
+};
 
 const ProfileForm = () => {
-  return <MultiStepForm config={config} />;
+  return <MultiStepForm config={config} onSubmit={handleSubmit} />
 };
 
 export default ProfileForm;
