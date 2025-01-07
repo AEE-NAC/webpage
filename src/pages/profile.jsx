@@ -139,23 +139,14 @@ const apiClient = {
 };
 
 const handleSubmit = async (formData) => {
-  //e.preventDefault();
-  /*try {
-    const { data, error } = await supabase
-      .from('votre_table')
-      .insert([formData]);
-
-    if (error) {
-      throw error;
-    }
-
-    console.log('Données insérées avec succès:', data);
-    onSubmit?.(formData); // Appel de la fonction de rappel si elle existe
-  } catch (error) {
-    console.error('Erreur lors de l\'insertion des données:', error);
-    alert('Une erreur est survenue lors de la sauvegarde');
-  }*/
  console.log(formData);
+ //send the formdata to the users table with supabase use supabase api
+ //convert the value of key old_formation in formData  to json to send them 
+ const { old_formation, ...rest } = formData;
+  const { data, error } = await supabase.from('users').insert([{...rest, old_formation: JSON.stringify(old_formation)}]);
+  if (error) {
+    console.error(error);
+  }
 };
 
 const ProfileForm = () => {
