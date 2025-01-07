@@ -1,0 +1,26 @@
+{
+    "EN": {
+      "email": "Email",
+      "next": "Next",
+      "previous": "Previous",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "add": "Add",
+      "update": "Update",
+      "addedItems": "Added Items"
+    },
+    "FR": {
+      "email": "Email",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "add": "Ajouter",
+      "update": "Mettre à jour",
+      "addedItems": "Éléments ajoutés"
+    }
+  }
