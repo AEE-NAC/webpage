@@ -1,5 +1,5 @@
 {
-    "EN": {
+    "en": {
       "email": "Email",
       "next": "Next",
       "previous": "Previous",
@@ -11,7 +11,7 @@
       "update": "Update",
       "addedItems": "Added Items"
     },
-    "FR": {
+    "fr": {
       "email": "Email",
       "next": "Suivant",
       "previous": "Précédent",
@@ -22,5 +22,29 @@
       "add": "Ajouter",
       "update": "Mettre à jour",
       "addedItems": "Éléments ajoutés"
-    }
+    },
+    "es": {
+      "email": "Email",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "add": "Añadir",
+      "update": "Actualizar",
+      "addedItems": "Elementos añadidos"
+    },
+    "kr": {
+    "email": "Imèl",
+    "next": "Vin",
+    "previous": "Anvan",
+    "save": "So",
+    "cancel": "Anile",
+    "edit": "Modifye",
+    "delete": "Efase",
+    "add": "Ajoute",
+    "update": "Metye ajou",
+    "addedItems": "Bagay ajoute"
+  }
   }

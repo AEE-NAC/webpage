@@ -8,16 +8,24 @@ import {
   import "react-phone-input-2/lib/style.css"; // Import the phone input styles
   import PhoneInput from "react-phone-input-2"; // Import PhoneInput component
   import supabase from "../services/supabase"; // Supabase service
+  import LanguageSwitcher from "../components/common/lang-switcher.jsx";
 import ProfileForm from "./profile.jsx"
   const Complete_profile = () => {
     return (
       <div className="min-h-screen w-full flex flex-col md:flex-row overflow-hidden">
         {/* Left side - Form */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4 bg-white">
-          <div className="fixed top-0 left-0 p-4">
-            <img src="/images/favicon.png" alt="DJONDJON Logo" className="w-12 h-12" />
+        <div className="w-full md:w-1/2 flex flex-col justify-start items-center p-4 bg-white overflow-hidden">
+          <div className="w-full flex align-center fixed top-0 left-0 p-4">
+          <img
+              src="/images/logo_1st.png"
+              alt="DJONDJON Logo"
+              className="w-52 h-20"
+            />
+            <div className="absolute self-center right-2">
+            <LanguageSwitcher />
+            </div>
           </div>
-          <div className="max-w-lg w-full ">
+          <div className="mt-24 max-w-lg w-full h-full flex align-center justify-center">
             <ProfileForm/>
           </div>
         </div>
@@ -30,4 +38,3 @@ import ProfileForm from "./profile.jsx"
   };
   
   export default Complete_profile;
-  

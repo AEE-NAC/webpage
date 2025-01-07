@@ -160,7 +160,7 @@ const Donation = () => {
           </a>
         </div>
 
-        <div className="w-full pt-24 px-4">
+        <div className="w-full pt-4 px-4">
           {!showInfo ? (
             // Formulaire de Don
             <div className="relative rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-2xl mx-auto p-6">
