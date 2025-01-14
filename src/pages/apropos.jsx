@@ -45,14 +45,13 @@ export default function MinistersPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
         <Header></Header>
-      <header className="bg-gradient-to-r from-[#981a3c] to-[#981a3c] text-white">
-        <div className="container mx-auto px-4 py-24 text-center flex flex-col items-center">
+      <header className=" p-6 bg-gradient-to-r from-[#981a3c] to-[#981a3c] text-white">
+               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl flex   md:text-7xl font-bold mb-6"
-            style={{width: '35%'}}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 mx-auto max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[35%]"
           >
             "Every <TextRoll words={['child', 'nation', 'day']} />."
           </motion.h1>
@@ -60,7 +59,8 @@ export default function MinistersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light max-w-3xl mx-auto" i18-id="apropos-sub1"
+            className="text-lg sm:text-xl md:text-2xl font-light max-w-[95%] sm:max-w-2xl md:max-w-3xl mx-auto px-4"
+            i18-id="apropos-sub1"
           >
           </motion.p>
         </div>
@@ -73,6 +73,7 @@ export default function MinistersPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-gray-600 mb-12 text-lg"
+            content="L'Association pour l'Évangélisation des Enfants est une organisation mondiale centrée sur la Bible, composée de croyants nés de nouveau dont le but est d'évangéliser les garçons et les filles avec l'évangile du Seigneur Jésus-Christ et de les établir (disciples) dans la parole de Dieu et dans une église locale pour vivre leur vie chrétienne."
             i18-id="apropos-sub2"
           >
           </motion.p>

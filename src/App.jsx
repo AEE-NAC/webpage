@@ -14,6 +14,11 @@ import Complete_profile from './pages/complete-profile.jsx';
 import Ministries from './pages/apropos.jsx';
 import Contact from './pages/Contact.jsx';
 import ImpliquezVous from './pages/implicate.jsx';
+import Haiti_page from './pages/country/haiti.jsx';
+import Guyanne_page from './pages/country/guyanne.jsx';
+import Martinique_page from './pages/country/martinique.jsx';
+import STMARTIN_page from './pages/country/stmartin.jsx';
+import Canada_page from './pages/country/canada.jsx';
 import './App.css';
 
 // Création du contexte
@@ -40,6 +45,11 @@ function App() {
           <Route path="/profile" element={<Complete_profile/>} />
           <Route path="/apropos" element={<Ministries />} />
           <Route path="/implicate" element={<ImpliquezVous />} />
+          <Route path="/haiti" element={<Haiti_page />} />
+          <Route path="/guyanne" element={<Guyanne_page />} />
+          <Route path="/martinique" element={<Martinique_page />} />
+          <Route path="/stmartin" element={<STMARTIN_page />} />
+          <Route path="/canada" element={<Canada_page />} />
         </Routes>
       </Router>
       </LanguageProvider>
