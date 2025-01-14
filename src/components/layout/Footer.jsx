@@ -17,23 +17,23 @@ const Footer = () => {
                         <div>
                             <h3 className="font-bold mb-4 text-black" i18-id="footer-quick-links-title">{t('footer-quick-links-title')}</h3>
                             <ul className="space-y-2">
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-home">{t('footer-home')}</a></li>
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-about">{t('footer-about')}</a></li>
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-ministry">{t('footer-ministry')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-home">{t('footer-home')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-about">{t('footer-about')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-ministry">{t('footer-ministry')}</a></li>
                             </ul>
                         </div>
 
                         <div>
                             <h3 className="font-bold mb-4 text-black" i18-id="footer-support-title">{t('footer-support-title')}</h3>
                             <ul className="space-y-2">
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-faqs">{t('footer-faqs')}</a></li>
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-support-center">{t('footer-support-center')}</a></li>
-                                <li><a className="hover:underline" href="#" rel="ugc" i18-id="footer-contact-us">{t('footer-contact-us')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-faqs">{t('footer-faqs')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-support-center">{t('footer-support-center')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-contact-us">{t('footer-contact-us')}</a></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h3 className="font-bold mb-4 text-black" i18-id="footer-cef-title">{t('footer-cef-title')}</h3>
+                            <h3 className="font-bold mb-4 text-black " i18-id="footer-cef-title">{t('footer-cef-title')}</h3>
                             <p className="text-black" i18-id="footer-cef-description">{t('footer-cef-description')}</p>
                         </div>
                     </div>

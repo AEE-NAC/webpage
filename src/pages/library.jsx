@@ -1,119 +1,85 @@
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { MultiStepForm } from '../components/specific/multistep';
+import supabase from '../services/supabase';
+import { Book, BookOpen, MapPin } from 'react-feather';
+import { LanguageContext } from '../context/Languagecontext';
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+//import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
+registerPlugin(FilePondPluginImagePreview);
 
-import React from 'react';
+const config_fr = {
+  steps: [
+    {
+      title: 'Informations de Base',
+      subtitle: 'Renseignez les informations de base du livre',
+      fields: [
+        { key: 'titre', type: 'text', label: 'Titre', required: true },
+        { key: 'auteur', type: 'text', label: 'Auteur', required: true },
+        { key: 'theme', type: 'text', label: 'Thème', required: true },
+        { key: 'ISBN', type: 'text', label: 'ISBN', required: true },
+        { key: 'image_couverture', type: 'filepond', label: 'Image de couverture', accept: 'image/*' },
+        { key: 'page', type: 'number', label: 'Nombre de pages', required: true, min: 0 },
+        { key: 'quantite_totale', type: 'number', label: 'Quantité totale', required: true, min: 0 },
+        { key: 'annee_publication', type: 'number', label: 'Année de publication', required: true, min: 0 },
+        { key: 'format_livre', type: 'select', label: 'Format du livre', required: true, options: [] }, // Les options seront dynamiquement remplies
+        { key: 'editeur', type: 'text', label: 'Éditeur', required: true },
+        { key: 'langue', type: 'text', label: 'Langue', required: true },
+        { key: 'disponibilite', type: 'select', label: 'Disponibilité', required: true, options: [] }, // Les options seront dynamiquement remplies
+      ],
+    },
+    {
+      title: 'Description et Mots-clés',
+      subtitle: 'Ajoutez une description et des mots-clés pour le livre',
+      fields: [
+        { key: 'description', type: 'textarea', label: 'Description', required: true, rows: 3 },
+        { key: 'mots_cles', type: 'textarea', label: 'Mots-clés', rows: 3 },
+      ],
+    },
+    {
+      title: 'Localisation et Clubs',
+      subtitle: 'Renseignez la localisation et les clubs associés',
+      fields: [
+        { key: 'pays', type: 'select', label: 'Pays', options: [] }, // Les options seront dynamiquement remplies
+        { key: 'villes', type: 'select', label: 'Villes', options: [] }, // Les options seront dynamiquement remplies
+        { key: 'clubs', type: 'text', label: 'Clubs' },
+      ],
+    },
+  ],
+  icons: [Book, BookOpen, MapPin], // Icônes pour chaque étape
+};
+
+const handleSubmit = async (formData) => {
+  console.log(formData);
+  
+  const { data, error } = await supabase.from('livre').insert([formData]);
+  if (error) {
+    console.error(error);
+  }
+};
 
 const Library = () => {
-  const books = [
-    {
-      title: 'The Great Gatsby',
-      author: 'F. Scott Fitzgerald',
-      image: '/placeholder.svg',
-      status: 'In Stock',
-      buttonLabel: 'Borrow'
-    },
-    {
-      title: 'To Kill a Mockingbird',
-      author: 'Harper Lee',
-      image: '/placeholder.svg',
-      status: 'In Stock',
-      buttonLabel: 'Borrow'
-    },
-    {
-      title: '1984',
-      author: 'George Orwell',
-      image: '/placeholder.svg',
-      status: 'In Stock',
-      buttonLabel: 'Borrow'
-    },
-    {
-      title: 'Pride and Prejudice',
-      author: 'Jane Austen',
-      image: '/placeholder.svg',
-      status: 'In Stock',
-      buttonLabel: 'Borrow'
-    },
-  ];
+  const { currentLang } = useContext(LanguageContext);
+  const [files, setFiles] = useState([]);
 
-  const borrowedBooks = [
-    {
-      title: 'The Catcher in the Rye',
-      author: 'J.D. Salinger',
-      image: '/placeholder.svg',
-      status: 'Overdue',
-      statusClass: 'text-red-500',
-      buttonLabel: 'Return'
-    },
-    {
-      title: 'The Hobbit',
-      author: 'J.R.R. Tolkien',
-      image: '/placeholder.svg',
-      status: 'Due in 3 days',
-      statusClass: 'text-green-500',
-      buttonLabel: 'Return'
-    },
-    {
-      title: 'The Lord of the Rings',
-      author: 'J.R.R. Tolkien',
-      image: '/placeholder.svg',
-      status: 'Due in 7 days',
-      statusClass: 'text-green-500',
-      buttonLabel: 'Return'
-    },
-    {
-      title: 'The Shining',
-      author: 'Stephen King',
-      image: '/placeholder.svg',
-      status: '',
-      statusClass: '',
-      buttonLabel: 'Return'
-    },
-  ];
-
-  const renderBooks = (books) =>
-    books.map((book, index) => (
-      <div
-        key={index}
-        className="border bg-card text-card-foreground shadow-sm rounded-lg overflow-hidden"
-        data-v0-t="card"
-      >
-        <div className="p-4">
-          <img
-            src={book.image}
-            alt="Book Cover"
-            width="200"
-            height="300"
-            className="w-full h-48 object-cover rounded-lg"
-            style={{ aspectRatio: '200 / 300', objectFit: 'cover' }}
-          />
-          <div className="mt-4">
-            <h3 className="text-lg font-bold">{book.title}</h3>
-            <p className="text-muted-foreground text-sm">{book.author}</p>
-          </div>
-        </div>
-        <div className="p-6 bg-card-foreground/10 px-4 py-2 flex items-center justify-between">
-          <button className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-            {book.buttonLabel}
-          </button>
-          <div className={`text-muted-foreground text-sm ${book.statusClass}`}>{book.status}</div>
-        </div>
-      </div>
-    ));
+  useEffect(() => {
+    console.log('Language changed to:', currentLang);
+    // Perform any action needed when the language change
+  }, [currentLang]);
 
   return (
-    <main className="flex-1 overflow-y-auto">
-      <div className="container mx-auto py-8 px-4 md:px-6">
-        <h2 className="text-2xl font-bold mb-4">Available Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {renderBooks(books)}
-        </div>
-      </div>
-      <div className="container mx-auto py-8 px-4 md:px-6">
-        <h2 className="text-2xl font-bold mb-4">Borrowed Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {renderBooks(borrowedBooks)}
-        </div>
-      </div>
-    </main>
+    <div>
+      <h1>Library</h1>
+      <MultiStepForm config={config_fr} onSubmit={handleSubmit} language={currentLang} />
+      <FilePond
+        files={files}
+        allowMultiple={true}
+        onupdatefiles={setFiles}
+        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+      />
+    </div>
   );
 };
 
