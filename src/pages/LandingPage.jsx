@@ -7,6 +7,7 @@ import Carousel from '../components/layout/carousel';
 import WeeklyWord from '../components/layout/weekly';
 import Blog from '../components/layout/Blog';
 import Popsurvey from "../components/common/popsurvey";
+import EventMap from '../components/specific/maps';
 const LandingPage = () => {
     return (
       <>
@@ -29,6 +30,7 @@ const LandingPage = () => {
         </div>
         <div className="flex flex-col items-center w-screen justify-center">
           <About />
+          <EventMap/>
           <Ministries />
           <WeeklyWord />
           <Blog />

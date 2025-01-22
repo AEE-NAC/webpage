@@ -19,6 +19,9 @@ import Guyanne_page from './pages/country/guyanne.jsx';
 import Martinique_page from './pages/country/martinique.jsx';
 import STMARTIN_page from './pages/country/stmartin.jsx';
 import Canada_page from './pages/country/canada.jsx';
+import ClubSave from './pages/backoffice/club_save.jsx';
+import Staff from './pages/staff.jsx';
+import HaitiForm from './pages/country/haiti/form.jsx';
 import './App.css';
 
 // Création du contexte
@@ -50,6 +53,9 @@ function App() {
           <Route path="/martinique" element={<Martinique_page />} />
           <Route path="/stmartin" element={<STMARTIN_page />} />
           <Route path="/canada" element={<Canada_page />} />
+          <Route path="/club-save" element={<ClubSave />} />
+          <Route path="/staff" element={<Staff />} />
+          <Route path="haiti/form" element={<HaitiForm />} />
         </Routes>
       </Router>
       </LanguageProvider>
