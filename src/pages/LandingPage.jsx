@@ -14,7 +14,7 @@ const LandingPage = () => {
         <Header />
         <div className="flex flex-col md:flex-row h-full relative rounded-[12px]">
           <Carousel />
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center p-4 rounded-[12px] bg-white bg-opacity-30 w-full">
+          <div className="absolute h-[250px] bottom-0 left-0 right-0 flex flex-col items-center justify-center p-4 rounded-[12px] bg-white bg-opacity-30 w-full">
             <span className="text-[#000]  text-xl md:text-[2.5em] font-bold mb-3 text-center">
               Bienvenue sur le site de <br/>
               l'Association pour <br/>

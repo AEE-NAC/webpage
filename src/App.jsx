@@ -48,11 +48,11 @@ function App() {
           <Route path="/profile" element={<Complete_profile/>} />
           <Route path="/apropos" element={<Ministries />} />
           <Route path="/implicate" element={<ImpliquezVous />} />
-          <Route path="/haiti" element={<Haiti_page />} />
-          <Route path="/guyanne" element={<Guyanne_page />} />
-          <Route path="/martinique" element={<Martinique_page />} />
-          <Route path="/stmartin" element={<STMARTIN_page />} />
-          <Route path="/canada" element={<Canada_page />} />
+          <Route path="country/haiti" element={<Haiti_page />} />
+          <Route path="country/guyanne-francaise" element={<Guyanne_page />} />
+          <Route path="country/martinique" element={<Martinique_page />} />
+          <Route path="country/st-martin" element={<STMARTIN_page />} />
+          <Route path="country/canada" element={<Canada_page />} />
           <Route path="/club-save" element={<ClubSave />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="haiti/form" element={<HaitiForm />} />

@@ -1,20 +1,20 @@
-# Utiliser Node.js v20 comme base
-FROM node:20
+# Utiliser la dernière version de Node.js
+FROM node:latest
 
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de dépendances
+# Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
+# Installer toutes les dépendances, y compris les devDependencies
 RUN npm install
 
-# Copier les fichiers du projet
+# Copier le reste des fichiers du projet
 COPY . .
 
-# Exposer le port 3000
+# Exposer le port pour le serveur de développement (généralement 3000 pour React)
 EXPOSE 3000
 
-# Lancer l'application avec npx vite
-CMD ["npx", "vite", "--port", "3000", "--host", "0.0.0.0"]
+# Lancer en mode développement
+CMD ["npm", "run", "dev"]
