@@ -13,6 +13,7 @@ export default function Navbar() {
         <a href="#" className="h-12 flex items-center text-xl px-4 py-2 text-white">
           Tarifs
         </a>
+        <
       </nav>
     )
   }

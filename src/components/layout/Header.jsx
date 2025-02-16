@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../context/Languagecontext';
 import SignupButton from '../common/btn-signup';
+import CountryBar from '../specific/country_bar';
 
 const Header = () => {
 
     const { translate } = useTranslation();
     const [menuOpen, setMenuOpen] = useState(false);
-
+    const countries=['Haiti','Canada','Guyanne Francaise','Martinique','Guadeloupe','St Martin','Sint Maarten'];
     return (
         <header
-            className="fixed w-full top-0 bg-[#fdfff4ff] flex flex-col md:flex-row md:justify-around border-b border-[#878578ff]"
+            className="fixed w-full top-0 bg-[#fdfff4ff] flex flex-col md:justify-around border-b border-[#878578ff]"
             style={{ zIndex: 999 }}
         >
+            <div className='w-full h-fullbg-[#fdfff4ff] flex flex-col md:flex-row md:justify-around border-b border-[#878578ff] '>
             <div className="container flex items-center justify-between h-16 px-4 md:px-6">
                 <a className="flex items-center gap-2" href="#" rel="ugc">
                     <img className="h-12 w-full" src="/images/logo_1st.png" alt="Logo" />
@@ -58,6 +60,14 @@ const Header = () => {
                     >
                         {'header-contact-us'}
                     </a>
+                    <a
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            href="../staff"
+                            rel="ugc"
+                            i18-id="header-our-teams"
+                        >
+                             Notre equipes
+                        </a>
                 </nav>
                 {/* Bouton d'inscription */}
                 <div className="hidden md:block">
@@ -154,7 +164,15 @@ const Header = () => {
                             rel="ugc"
                             i18-id="header-contact-us"
                         >
-                           
+                        
+                        </a>
+                        <a
+                            className="block text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D]"
+                            href="../contact"
+                            rel="ugc"
+                            i18-id="header-our-teams"
+                        >
+                             Notre equipes
                         </a>
                         {/* Bouton d'inscription */}
                         <div className="mt-4">
@@ -163,6 +181,8 @@ const Header = () => {
                     </div>
                 </nav>
             )}
+            </div>
+            <CountryBar countries={countries} />
         </header>
     );
 };

@@ -1,29 +1,20 @@
-# Étape 1 : Construire l'application avec Node.js v20
-FROM node:20 AS build
+# Utiliser la dernière version de Node.js
+FROM node:latest
 
-# Définir le répertoire de travail dans le conteneur
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de dépendances
+# Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
+# Installer toutes les dépendances, y compris les devDependencies
 RUN npm install
 
-# Copier les fichiers du projet
+# Copier le reste des fichiers du projet
 COPY . .
 
-# Construire l'application React
-RUN npm run build
+# Exposer le port pour le serveur de développement (généralement 3000 pour React)
+EXPOSE 3000
 
-# Étape 2 : Exécuter l'application avec un serveur Nginx
-FROM nginx:alpine
-
-# Copier les fichiers construits depuis l'étape 1
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Exposer le port 80
-EXPOSE 8080
-
-# Lancer Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Lancer en mode développement
+CMD ["npm", "run", "dev"]

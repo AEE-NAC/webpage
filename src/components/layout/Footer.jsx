@@ -17,9 +17,9 @@ const Footer = () => {
                         <div>
                             <h3 className="font-bold mb-4 text-black" i18-id="footer-quick-links-title">{t('footer-quick-links-title')}</h3>
                             <ul className="space-y-2">
-                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-home">{t('footer-home')}</a></li>
-                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-about">{t('footer-about')}</a></li>
-                                <li><a className="hover:underline text-[#981a3c]" href="#" rel="ugc" i18-id="footer-ministry">{t('footer-ministry')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="../" rel="ugc" i18-id="footer-home">{t('footer-home')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="../apropos" rel="ugc" i18-id="footer-about">{t('footer-about')}</a></li>
+                                <li><a className="hover:underline text-[#981a3c]" href="../ministries#ministry" rel="ugc" i18-id="footer-ministry">{t('footer-ministry')}</a></li>
                             </ul>
                         </div>
 
