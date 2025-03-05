@@ -22,23 +22,19 @@ import Canada_page from './pages/country/canada.jsx';
 import ClubSave from './pages/backoffice/club_save.jsx';
 import Staff from './pages/staff.jsx';
 import HaitiForm from './pages/country/haiti/form.jsx';
-import './App.css';
-
-// Création du contexte
-export const AppContext = createContext();
+import Newsletter from './pages/Newsletter';
+// Remove SignUp and SignIn imports
 
 function App() {
   const [user, setUser] = useState(null);
-  //
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
       <LanguageProvider>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/newsletter" element={<Newsletter />} />
+          {/* Remove /signup and /signin routes */}
           <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
@@ -59,7 +55,6 @@ function App() {
         </Routes>
       </Router>
       </LanguageProvider>
-    </AppContext.Provider>
   );
 }
 

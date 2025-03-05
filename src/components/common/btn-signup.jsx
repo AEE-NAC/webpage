@@ -5,7 +5,6 @@ import { useTranslation } from '../../context/Languagecontext';
 const SignupButton = () => {
   const { translate, loading } = useTranslation();
 
-  // Afficher un indicateur de chargement si les traductions ne sont pas encore chargées
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -20,12 +19,11 @@ const SignupButton = () => {
             Donate
           </button>
         </a>
-        <a href='/signup'>
+        <a href='/newsletter'>
           <button 
             className="items-center text-white bg-[#2b2b3f] text-white justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground h-10 px-4 py-2 hidden md:inline-flex"
-            i18-id="signup-button-signup"
           >
-            Signup
+            Stay Connected
           </button>
         </a>
         <LanguageSwitcher />

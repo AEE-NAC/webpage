@@ -23,6 +23,7 @@ const LangButton = styled.button`
   }
 `;
 
+// Update the Dropdown styled component to use a prop function
 const Dropdown = styled.div`
   position: absolute;
   top: calc(100% + 4px);
@@ -34,7 +35,7 @@ const Dropdown = styled.div`
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: ${props => props.isOpen ? 'block' : 'none'};
+  display: ${({ $isOpen }) => $isOpen ? 'block' : 'none'};
 `;
 
 const DropdownItem = styled.div`
@@ -100,14 +101,17 @@ const LanguageSwitcher = () => {
 
   return (
     <Container>
-      <LangButton onClick={handleButtonClick}>
+      <LangButton onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(!isOpen);
+      }}>
         <Flag 
           src={`https://flagcdn.com/w20/${currentLanguage.country}.png`} 
           alt={currentLanguage.name}
         />
         <span>{currentLanguage.name}</span>
       </LangButton>
-      <Dropdown isOpen={isOpen}>
+      <Dropdown $isOpen={isOpen}> {/* Use $isOpen instead of isOpen */}
         {languages.map(lang => (
           <DropdownItem 
             key={lang.code}
