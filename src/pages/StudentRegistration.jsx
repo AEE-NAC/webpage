@@ -1,30 +1,85 @@
-import React, { useState } from 'react';
-import supabase from '../services/supabase';
+import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const StudentRegistration = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    prenom: '',
+    nom: '',
     dateOfBirth: '',
     gender: '',
     email: '',
-    phone: '',
+    telephone: '',
     address: '',
     churchName: '',
   });
+  const [formations, setFormations] = useState([]);
+  const [selectedFormation, setSelectedFormation] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Fetch available formations when component mounts
+  useEffect(() => {
+    const fetchFormations = async () => {
+      try {
+        const { data, error } = await api.from('formations').get();
+        if (error) throw error;
+        if (data) setFormations(data);
+      } catch (error) {
+        console.error('Error fetching formations:', error);
+        // Set some dummy data if API fails
+        setFormations([
+          { _id: '1', title: 'Fondements bibliques' },
+          { _id: '2', title: 'Techniques d\'enseignement' },
+          { _id: '3', title: 'Leadership dans le ministère des enfants' }
+        ]);
+      }
+    };
+    
+    fetchFormations();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    
     try {
-      localStorage.setItem('student_info', JSON.stringify(formData));
-      navigate('/student-dashboard');
+      // Prepare data for the API
+      const inscriptionData = {
+        action: 'new',
+        nom: formData.nom,
+        prenom: formData.prenom,
+        email: formData.email,
+        telephone: formData.telephone,
+        formation_id: selectedFormation
+      };
+      
+      // Call the API endpoint
+      const { data, error } = await api.request('/inscriptions', {
+        method: 'POST',
+        body: JSON.stringify(inscriptionData)
+      });
+      
+      if (error) throw error;
+      
+      // Store student info in localStorage
+      const studentInfo = {
+        ...formData,
+        id: data?.etudiant_id || data?.id,
+        formation_id: selectedFormation
+      };
+      
+      localStorage.setItem('student_info', JSON.stringify(studentInfo));
+      setMessage('Inscription réussie!');
+      
+      // Navigate to dashboard after successful registration
+      setTimeout(() => {
+        navigate('/student-dashboard');
+      }, 1500);
+      
     } catch (error) {
-      console.log('Une erreur est survenue. Veuillez réessayer.', error);
+      console.error('Une erreur est survenue:', error);
       setMessage('Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setLoading(false);
@@ -57,8 +112,8 @@ const StudentRegistration = () => {
                   type="text"
                   required
                   className="w-full p-2 border rounded focus:ring-2 focus:ring-[#981a3c]"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  value={formData.prenom}
+                  onChange={(e) => setFormData({...formData, prenom: e.target.value})}
                 />
               </div>
 
@@ -68,8 +123,8 @@ const StudentRegistration = () => {
                   type="text"
                   required
                   className="w-full p-2 border rounded focus:ring-2 focus:ring-[#981a3c]"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  value={formData.nom}
+                  onChange={(e) => setFormData({...formData, nom: e.target.value})}
                 />
               </div>
             </div>
@@ -116,11 +171,10 @@ const StudentRegistration = () => {
                 type="tel"
                 required
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-[#981a3c]"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                value={formData.telephone}
+                onChange={(e) => setFormData({...formData, telephone: e.target.value})}
               />
             </div>
-
             <div>
               <label className="text-sm font-medium mb-1">Adresse</label>
               <input

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../services/supabase';
+import api from '../services/api';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { Book, Calendar, User, Award, Bell, LogOut, Menu, X, Home, Settings, HelpCircle } from 'react-feather';
@@ -32,11 +32,11 @@ const StudentDashboard = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      // Fetch available courses from Supabase
-      const { data, error } = await supabase
-        .from('courses')
+      // Fetch available courses from API
+      const { data, error } = await api.from('courses')
         .select('*')
-        .eq('active', true);
+        .eq('active', true)
+        .get();
 
       if (error) throw error;
       setCourses(data || availableCourses);
@@ -86,11 +86,11 @@ const StudentDashboard = () => {
       alert(`Inscription réussie au cours #${courseId}`);
       
       // In a real app, you would do something like:
-      // await supabase.from('enrollments').insert({
+      // await api.from('enrollments').insert([{
       //   student_id: studentInfo.id,
       //   course_id: courseId,
       //   enrolled_at: new Date()
-      // });
+      // }]);
       
       // Then refresh the enrolled courses
       fetchEnrolledCourses();
