@@ -23,13 +23,11 @@ import ClubSave from './pages/backoffice/club_save.jsx';
 import Staff from './pages/staff.jsx';
 import HaitiForm from './pages/country/haiti/form.jsx';
 import Newsletter from './pages/Newsletter';
-// Remove SignUp and SignIn imports
+import StudentRegistration from './pages/StudentRegistration';
 
 function App() {
-  const [user, setUser] = useState(null);
-
   return (
-      <LanguageProvider>
+    <LanguageProvider>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -52,9 +50,10 @@ function App() {
           <Route path="/club-save" element={<ClubSave />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="haiti/form" element={<HaitiForm />} />
+          <Route path="/student-registration" element={<StudentRegistration />} />
         </Routes>
       </Router>
-      </LanguageProvider>
+    </LanguageProvider>
   );
 }
 
