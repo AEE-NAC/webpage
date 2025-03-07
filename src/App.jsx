@@ -24,7 +24,7 @@ import Staff from './pages/staff.jsx';
 import HaitiForm from './pages/country/haiti/form.jsx';
 import Newsletter from './pages/Newsletter';
 import StudentRegistration from './pages/StudentRegistration';
-
+import Dashboard from './pages/StudentDashboard.jsx';
 function App() {
   return (
     <LanguageProvider>
@@ -51,6 +51,7 @@ function App() {
           <Route path="/staff" element={<Staff />} />
           <Route path="haiti/form" element={<HaitiForm />} />
           <Route path="/student-registration" element={<StudentRegistration />} />
+          <Route path="/student-dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </LanguageProvider>
