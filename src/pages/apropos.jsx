@@ -22,12 +22,14 @@ const Section = ({ title, children, dark = false }) => (
 
 const Card = ({ icon, title, content }) => (
   <motion.div 
-    whileHover={{ scale: 1.05 }}
-    className="bg-white rounded-3xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl"
+    whileHover={{ scale: 1.03 }}
+    className="bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl h-full flex flex-col"
   >
-    <div className="text-[#981a3c] mb-4">{icon}</div>
-    <h3 className="text-2xl font-semibold mb-4 text-gray-800">{title}</h3>
-    <p className="text-gray-600">{content}</p>
+    <div className="text-[#981a3c] mb-6 flex justify-center">
+      {icon}
+    </div>
+    <h3 className="text-2xl font-bold mb-4 text-gray-800">{title}</h3>
+    <p className="text-gray-600 flex-grow">{content}</p>
   </motion.div>
 );
 
@@ -35,7 +37,7 @@ const Button = ({ children }) => (
   <motion.button 
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    className="bg-[#981a3c] text-white px-8 py-4 rounded-full font-medium text-lg transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    className="bg-[#981a3c] text-white px-8 py-4 rounded-full font-medium text-lg transition-all duration-300 hover:bg-[#7a1530] focus:outline-none focus:ring-2 focus:ring-[#981a3c] focus:ring-offset-2 shadow-lg hover:shadow-xl"
   >
     {children}
   </motion.button>
@@ -44,40 +46,61 @@ const Button = ({ children }) => (
 export default function MinistersPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
-        <Header></Header>
-      <header className=" p-6 bg-gradient-to-r from-[#981a3c] to-[#981a3c] text-white">
-               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 mx-auto max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[35%]"
-          >
-            "Every <TextRoll words={['child', 'nation', 'day']} />."
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl font-light max-w-[95%] sm:max-w-2xl md:max-w-3xl mx-auto px-4"
-            i18-id="apropos-sub1"
-          >
-          </motion.p>
+      <Header />
+      <header className="relative w-full min-h-screen">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <img 
+            src="/images/font_3.jpg" 
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(to bottom, rgba(152, 26, 60, 0.3) 0%, rgba(152, 26, 60, 0.95) 70%)',
+            }}
+          />
+        </div>
+
+        {/* Content Container */}
+        <div className="relative z-10 flex items-center justify-center w-full min-h-screen py-12 px-4">
+          <div className="container max-w-7xl text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white"
+            >
+              <span className="block mb-4">Chaque</span>
+              <TextRoll 
+                words={['enfant', 'nation', 'jour']} 
+                className="text-5xl md:text-7xl lg:text-8xl text-yellow-400"
+              />
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl md:text-2xl font-light max-w-3xl mx-auto text-white"
+            >
+              Une mission divine pour atteindre et transformer des vies.
+            </motion.p>
+          </div>
         </div>
       </header>
 
       <Section title="Notre Mission">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center px-4">
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-gray-600 mb-12 text-lg"
-            content="L'Association pour l'Évangélisation des Enfants est une organisation mondiale centrée sur la Bible, composée de croyants nés de nouveau dont le but est d'évangéliser les garçons et les filles avec l'évangile du Seigneur Jésus-Christ et de les établir (disciples) dans la parole de Dieu et dans une église locale pour vivre leur vie chrétienne."
-            i18-id="apropos-sub2"
+            transition={{ duration: 0.7 }}
+            className="text-gray-700 text-lg md:text-xl leading-relaxed mb-12"
           >
+            L'Association pour l'Évangélisation des Enfants est une organisation mondiale centrée sur la Bible, composée de croyants nés de nouveau dont le but est d'évangéliser les garçons et les filles avec l'évangile du Seigneur Jésus-Christ et de les établir dans la parole de Dieu et dans une église locale pour vivre leur vie chrétienne.
           </motion.p>
-          <Button i18-id="apropos-btn1" ></Button>
+          <Button>En savoir plus</Button>
         </div>
       </Section>
 
@@ -206,7 +229,7 @@ Pour permettre au ministère de continuer à s'épanouir, nous devons soutenir l
           </motion.div>
         </div>
       </Section>
-           <Footer></Footer>
+      <Footer />
     </div>
   );
 }

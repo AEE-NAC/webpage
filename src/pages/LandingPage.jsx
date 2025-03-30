@@ -7,7 +7,36 @@ import Carousel from '../components/layout/carousel';
 import WeeklyWord from '../components/layout/weekly';
 import Blog from '../components/layout/Blog';
 import Popsurvey from "../components/common/popsurvey";
+import VoiceTestimonial from '../components/ui/VoiceTestimonial'
 
+const testimonials = [
+
+  {
+    image: 'https://via.placeholder.com/150',
+    text: 'Using this component library has significantly speed up our development process. The quality and ease of integration are remarkable!',
+    name: 'David Smith',
+    jobtitle: 'UI Designer',
+    audio: 'David.mp3',
+    social: 'https://x.com'
+    
+  },
+  {
+    image: 'https://via.placeholder.com/150',
+    text: 'I love  how intuitive and well-documented this component library is. It has significantly improved our UI consistency across projects.',
+    name: 'James Wilson',
+    jobtitle: 'Product Manager',
+    audio: 'James.mp3',
+    social: 'https://x.com'
+  },
+  {
+    image: 'https://via.placeholder.com/150',
+    text: 'Using this library has been a game-changer for our product development.',
+    name: 'Michael Davis',
+    jobtitle: 'Full Stack Developer',
+    audio: 'Michael.mp3',
+    social: 'https://x.com'
+  },
+];
 const LandingPage = () => {
     return (
       <>
@@ -17,7 +46,7 @@ const LandingPage = () => {
           <div 
             className="absolute bottom-0 left-0 right-0 min-h-[300px] flex flex-col items-center justify-center p-8 rounded-[12px]"
             style={{
-              background: 'linear-gradient(to bottom, rgba(152, 26, 60, 0.2) 0%, rgba(152, 26, 60, 0.95) 40%)',
+              background: 'linear-gradient(to bottom, rgb(152 26 60 / 0%) 0%, rgba(152, 26, 60, 0.95) 40%)',
               backdropFilter: 'blur(1px)'
             }}
           >
@@ -42,6 +71,7 @@ const LandingPage = () => {
           <WeeklyWord />
           <Blog />
           <Popsurvey />
+          <VoiceTestimonial mode='light' testimonials={testimonials} />
         </div>
         <Footer />
       </>
