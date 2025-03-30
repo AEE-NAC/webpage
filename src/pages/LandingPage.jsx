@@ -6,9 +6,8 @@ import About from '../components/layout/About';
 import Carousel from '../components/layout/carousel';
 import WeeklyWord from '../components/layout/weekly';
 import Blog from '../components/layout/Blog';
-import Popsurvey from "../components/common/popsurvey";
 import VoiceTestimonial from '../components/ui/VoiceTestimonial'
-
+import { FloatingEventCard } from '../components/ads';
 const testimonials = [
   {
     image: 'https://i.pravatar.cc/400',
@@ -35,7 +34,16 @@ const testimonials = [
     social: 'https://x.com'
   },
 ];
-
+const events = [
+  {
+    title: "Ministère d'Été",
+    date: "Mardi 8 Avril 2025",
+    time: "17H - 19H",
+    description: "Présentation de ministères d'été pour les enfants.",
+    image: "/bootcamp.svg",
+  },
+  // Ajoute d'autres événements ici
+];
 const LandingPage = () => {
     return (
       <>
@@ -69,7 +77,7 @@ const LandingPage = () => {
           <Ministries />
           <WeeklyWord />
           <Blog />
-          <Popsurvey />
+          <FloatingEventCard event={events[0]}></FloatingEventCard>
           <VoiceTestimonial mode='light' testimonials={testimonials} />
         </div>
         <Footer />
