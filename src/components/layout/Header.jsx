@@ -7,7 +7,7 @@ const Header = () => {
 
     const { translate } = useTranslation();
     const [menuOpen, setMenuOpen] = useState(false);
-    const countries=['Haiti','Canada','Guyanne Francaise','Martinique','Guadeloupe','St Martin','Sint Maarten'];
+    const countries=['Haiti','Guyanne Francaise','Martinique','Guadeloupe','St Martin','Sint Maarten'];
     return (
         <header
             className="fixed w-full top-0 bg-[#fdfff4ff] flex flex-col md:justify-around border-b border-[#878578ff]"

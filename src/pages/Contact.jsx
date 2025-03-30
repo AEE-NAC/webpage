@@ -1,117 +1,125 @@
 import React, { useState } from 'react';
-import supabase from '../services/supabase'; // Ensure supabase.js configures your instance correctly
+import supabase from '../services/supabase';
 
 const Contact = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
-  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Replace this with your actual submission logic
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('contacts')
         .insert([{ name, email, message }]);
 
       if (error) {
-        console.error("Error submitting form:", error.message);
-        alert('Form submission failed. Please try again.');
+        setStatusMessage('Désolé, une erreur est survenue. Veuillez réessayer.');
       } else {
-        alert('Thank you for your message. We will get back to you soon!');
+        setStatusMessage('Merci pour votre message. Nous vous répondrons bientôt !');
         setName('');
         setEmail('');
         setMessage('');
       }
     } catch (error) {
-      console.error("Error during form submission:", error);
-      alert('An error occurred. Please try again later.');
+      setStatusMessage('Une erreur est survenue. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row overflow-hidden">
-      {/* Left side - Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4 bg-white">
-        <div className="fixed top-0 left-0 p-4">
-          <a href="../" className='flex items-center gap-4'>
-            <img
-              src="/images/logo_1st.png"
-              alt="CEF Logo"
-              className="w-52 h-24"
+    <div className="h-screen flex justify-center p-4">
+      <div className="w-full h-full bg-white rounded-3xl overflow-hidden flex flex-col md:flex-row">
+        <div className="w-full md:w-1/2 bg-gray-100 flex items-center justify-center rounded-3xl overflow-hidden">
+          <div className="relative w-full h-full">
+            <img 
+              src="/CP_pichon.jpeg"
+              alt="Contact illustration" 
+              className="w-full h-full object-cover"
             />
-          </a> 
+          </div>
         </div>
-        <div className="max-w-md w-full mx-auto mt-20 md:mt-0">
-          <h1 className="text-4xl font-bold mb-6 text-center">Contact Us</h1>
-          <form onSubmit={handleSubmit} className="w-full px-4 md:px-0 space-y-4">
-            <div>
-              <label className="text-sm font-medium leading-none" htmlFor="name">
-                Name
-              </label>
-              <input
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                id="name"
-                placeholder="Your Name"
-                type="text"
-                required
-              />
+
+        <div className="w-full h-full md:w-1/2 p-6 md:p-10 flex flex-col">
+          <div className="flex justify-between items-center mb-8">
+            <div className="flex items-center gap-2">
+              <a href='../'><img 
+                src="images/aee.jpg"
+                alt="Logo"
+                width={100}
+                height={60}
+              /></a>
             </div>
-            <div>
-              <label className="text-sm font-medium leading-none" htmlFor="email">
-                Email
-              </label>
-              <input
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                id="email"
-                placeholder="you@example.com"
-                type="email"
-                required
-              />
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                Contactez-nous
+              </h1>
+              <p className="text-gray-600">
+                Nous sommes là pour vous aider. N'hésitez pas à nous envoyer un message.
+              </p>
             </div>
-            <div>
-              <label className="text-sm font-medium leading-none" htmlFor="message">
-                Message
-              </label>
-              <textarea
-                name="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="flex h-32 w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                id="message"
-                placeholder="Your message here..."
-                required
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
+
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto w-full">
+              {statusMessage && (
+                <div className="text-red-500 text-sm mb-4 text-center">
+                  {statusMessage}
+                </div>
+              )}
+
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  id="name"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Votre nom"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="relative mb-4">
+                <input
+                  type="email"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Votre email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="relative mb-4">
+                <textarea
+                  id="message"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Votre message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full bg-[#981a3c] text-white py-3 rounded-lg font-medium hover:bg-[#981a3c] transition-colors"
                 disabled={loading}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-[#981a3c] text-white hover:bg-primary-dark h-10 px-4 py-2 w-full"
               >
-                {loading ? 'Sending...' : 'Send Message'}
+                {loading ? 'Envoi en cours...' : 'Envoyer le message'}
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-
-      {/* Right side - Background Image for larger screens */}
-      <div
-        className="hidden md:block h-screen md:w-1/2 bg-cover bg-center"
-        style={{ backgroundImage: 'url(/images/signup.jpg)' }}
-      ></div>
     </div>
   );
 };

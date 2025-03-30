@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="UTF-8">
+  <title>AEE NAC</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <link href="./static/flowbite.min.css" rel="stylesheet" />
+   <link href="./static/form.css" rel="stylesheet" />
+   <link href="./static/corp.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+  <script src="tailwind.js"></script>
+  <script src="./ui-avatar-svg.umd.js"></script>
+<script src="https://unpkg.com/ui-avatar-svg@latest/dist/ui-avatar-svg.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="./static/flowbite.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.4/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.4/build/js/intlTelInput.min.js"></script>
+</head>
+<body class="bg-secondary" style="background:#fcfcfc">
+<script>
+let formationCount = 1;
+let formationsdata=[];
+function addFormation() {
+  // Get the form element
+  let formy=document.querySelector("#niveaul");
+  let htmlpt=document.querySelector("#bobo").innerHTML;
+  // Create a new formation section
+  const newFormation = document.createElement('div');
+  newFormation.className = 'p-6 space-y-8';
+  newFormation.id = `formation-${formationCount}`;
+  newFormation.innerHTML =htmlpt;
+  //add delete button
+  const deleteButton = document.createElement('button');
+  deleteButton.className = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
+  deleteButton.textContent = 'Supprimer';
+  deleteButton.onclick = function() {
+    deletethisformation(formationCount);
+  };
+  newFormation.appendChild(deleteButton);
+  // Append the new formation section to the form
+  formy.appendChild(newFormation);
+
+  // Update the IDs and names of the inputs to avoid duplicates
+  const inputs = newFormation.querySelectorAll('input, select');
+  inputs.forEach(input => {
+    input.id = input.id + '-' + formationCount;
+    input.name = input.name + '[]';
+  });
+
+  // Increment the formation count
+  formationCount++;
+}
+function deletethisformation(id){
+  let formy=document.querySelector("#niveaul");
+  let formation = document.querySelector(`#formation-${id}`);
+  formy.removeChild(formation);
+  //delete them in the formationdata
+  formationsdata.splice(id,1);
+  //update the formation count
+  formationCount--;
+}
+function stores(event) {
+  formationsdata=[];
+  for (let i = 0; i < formationCount; i++) {
+    const formationElement = document.querySelector(`#formation-${i}`);
+    const formation = {};
+    console.log('iterate'+i);
+    // Get the values of the inputs in the formation element and add them to the formation object
+    // Make sure to update the selectors to match the IDs of your inputs
+    formation.level = formationElement.querySelector('.formation-level').value;
+    formation.date = formationElement.querySelector('.formation-date').value;
+    formation.location = formationElement.querySelector('.formation-location').value;
+    formation.mention = formationElement.querySelector('.formation-mention').value;
+    formation.completionDate = formationElement.querySelector('.formation-completion-date').value;
+    formation.certificate = formationElement.querySelector('.formation-certificate').value;
+    formation.trainer = formationElement.querySelector('.formation-trainer').value;
+    console.log(formation);
+    formationsdata.push(formation);
+    //enabled the next button
+    document.getElementById('dis_btn').disabled = false;
+  }
+  console.log(formationsdata);
+}
+
+</script>
+  <!--nav section-->
+  <header class="py-4 px-8 bg-primary" style="
+    background: #f9fafb; position: fixed;
+    z-index: 999;
+    width: 100%;">
+    <div class="flex justify-between items-center">
+      <img style="width:50px;" src="./static/cef_logo.svg">
+      <nav class="">
+        <ul class="flex space-x-6">
+          <li>
+            <a class="text-white hover:text-light-green uny" style="color:#2b2b3f;" href="../" rel="ugc">
+              Acceuil
+            </a>
+          </li>
+          <li>
+            <a class="text-white hover:text-light-green uny" style="color:#2b2b3f;" href="../#apropos" rel="ugc">
+              A propos
+            </a>
+          </li>
+          <li>
+            <a  style="color:#2b2b3f;" class="text-white hover:text-light-green uny" href="../#minist" rel="ugc">
+              Ministere
+            </a>
+          </li>
+          <li>
+            <a  style="color:#2b2b3f;" class="text-white hover:text-light-green uny" href="../implication" rel="ugc">
+              Impliquez vous
+            </a>
+          </li>
+          <li>
+            <a  style="color:#2b2b3f;"  class="text-white hover:text-light-green uny" href="../contact" rel="ugc">
+              Contact
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div>
+      <a id="signbtn" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-purple text-white" style="background:#2b2b3f" href="/auth">
+        Sign Up
+      </a>
+      <!--after sign-->
+
+<button style="display:none;background:#f9fafb;"  id="dropdownInformationButton" data-dropdown-toggle="dropdownInformation" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button"><div id="signAvatar"></div><svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="#2b2b3f" viewBox="0 0 10 6">
+<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+</svg>
+</button>
+
+<!-- Dropdown menu -->
+<div id="dropdownInformation" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ring-offset-background dark:divide-gray-600">
+    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+      <div id="signName"></div>
+      <div id="signEmail" class="font-medium truncate">name@flowbite.com</div>
+    </div>
+    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+      </li>
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+      </li>
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+      </li>
+    </ul>
+    <div id="signOut" class="py-2">
+      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+    </div>
+</div>
+
+      </div>
+           <!-- script for authentication detection-->
+
+    </div>
+  </header>
+<div class="nav_mask" style="width: 100%;
+    height: 90px;"></div>
+<!-- End -->
+<!--Page content-->
+<div class="nav_mask" style="width: 100%;
+    height: 90px;"></div>
+<!-- End -->
+<div class="container mx-auto my-10">
+  <div class="bg-white  rounded px-8 pt-6 pb-8 mb-4 w-full">
+    <div class="mb-4">
+      <h2 class="text-2xl font-bold mb-2">Inscription</h2>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-2 nby">1</div>
+          <span class="text-gray-500" style="margin-left:15px;" id="stepper_title">Informations personnelles</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div class="bg-blue-500 h-2.5 rounded-full prge" style="width: 25%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stepper-form">
+      <div class="step">
+        <div class="mb-4">
+          <form class="p-6 space-y-8">
+            <!--nom prenom  email-->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                <input id="first_name" type="text" name="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" required>
+              </div>
+              <div class="space-y-2">
+                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                <input value="" id="last_name" type="text" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+              <input value="" id="email" type="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+            </div>
+            <div class="space-y-2">
+              <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
+              <input id="phone" type="tel" name="phone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+            </di>
+            </div>
+            <!--end-->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+        <label for="country" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pays</label>
+        <select id="country" name="country" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+          <option selected>Choisissez un pays</option>
+          <option value="US">🇺🇸 États-Unis</option>
+          <option value="CA">🇨🇦 Canada</option>
+          <option value="MX">🇲🇽 Mexique</option>
+          <option value="BR">🇧🇷 Brésil</option>
+          <option value="AR">🇦🇷 Argentine</option>
+          <option value="FR">🇫🇷 France</option>
+          <option value="DE">🇩🇪 Allemagne</option>
+          <option value="IT">🇮🇹 Italie</option>
+          <option value="GB">🇬🇧 Royaume-Uni</option>
+          <option value="ES">🇪🇸 Espagne</option>
+          <option value="RU">🇷🇺 Russie</option>
+          <option value="CN">🇨🇳 Chine</option>
+          <option value="JP">🇯🇵 Japon</option>
+          <option value="IN">🇮🇳 Inde</option>
+          <option value="SA">🇸🇦 Arabie Saoudite</option>
+          <option value="IR">🇮🇷 Iran</option>
+          <option value="EG">🇪🇬 Égypte</option>
+          <option value="ZA">🇿🇦 Afrique du Sud</option>
+          <option value="NG">🇳🇬 Nigeria</option>
+          <option value="AU">🇦🇺 Australie</option>
+          <option value="NZ">🇳🇿 Nouvelle-Zélande</option>
+          <option value="CU">🇨🇺 Cuba</option>
+          <option value="JM">🇯🇲 Jamaïque</option>
+          <option  value="HT">🇭🇹 Haïti</option>
+          <option value="DO">🇩🇴 République dominicaine</option>
+          <option value="CR">🇨🇷 Costa Rica</option>
+          <option value="CO">🇨🇴 Colombie</option>
+          <option value="VE">🇻🇪 Venezuela</option>
+          <option value="PE">🇵🇪 Pérou</option>
+          <option value="CL">🇨🇱 Chili</option>
+          <option value="UY">🇺🇾 Uruguay</option>
+          <option value="PY">🇵🇾 Paraguay</option>
+          <option value="BO">🇧🇴 Bolivie</option>
+          <option value="EC">🇪🇨 Équateur</option>
+          <option value="GT">🇬🇹 Guatemala</option>
+          <option value="HN">🇭🇳 Honduras</option>
+          <option value="SV">🇸🇻 Salvador</option>
+          <option value="NI">🇳🇮 Nicaragua</option>
+          <!--martinique avec d'autres pays de la caraibe et des antilles-->
+          <option value="MQ">🇲🇶 Martinique</option>
+          <option value="GP">🇬🇵 Guadeloupe</option>
+          <option value="GF">🇬🇫 Guyane française</option>
+        </select>
+  
+        <div class="space-y-2">
+          <label for="Gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+    <select id="Gender" name="gender" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+      <option selected>Gender</option>
+       <option value="Male">Male</option>
+            <option value="Female">Female</option>
+    </select>
+          </div>
+          </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="nationality"
+                >
+                  Nationality
+                </label>
+                <select id="nationality" name="nationality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                  <option selected>Choisissez un pays</option>
+                  <option value="US">🇺🇸 États-Unis</option>
+                  <option value="CA">🇨🇦 Canada</option>
+                  <option value="MX">🇲🇽 Mexique</option>
+                  <option value="BR">🇧🇷 Brésil</option>
+                  <option value="AR">🇦🇷 Argentine</option>
+                  <option value="FR">🇫🇷 France</option>
+                  <option value="DE">🇩🇪 Allemagne</option>
+                  <option value="IT">🇮🇹 Italie</option>
+                  <option value="GB">🇬🇧 Royaume-Uni</option>
+                  <option value="ES">🇪🇸 Espagne</option>
+                  <option value="RU">🇷🇺 Russie</option>
+                  <option value="CN">🇨🇳 Chine</option>
+                  <option value="JP">🇯🇵 Japon</option>
+                  <option value="IN">🇮🇳 Inde</option>
+                  <option value="SA">🇸🇦 Arabie Saoudite</option>
+                  <option value="IR">🇮🇷 Iran</option>
+                  <option value="EG">🇪🇬 Égypte</option>
+                  <option value="ZA">🇿🇦 Afrique du Sud</option>
+                  <option value="NG">🇳🇬 Nigeria</option>
+                  <option value="AU">🇦🇺 Australie</option>
+                  <option value="NZ">🇳🇿 Nouvelle-Zélande</option>
+                  <option value="CU">🇨🇺 Cuba</option>
+                  <option value="JM">🇯🇲 Jamaïque</option>
+                  <option  value="HT">🇭🇹 Haïti</option>
+                  <option value="DO">🇩🇴 République dominicaine</option>
+                  <option value="CR">🇨🇷 Costa Rica</option>
+                  <option value="CO">🇨🇴 Colombie</option>
+                  <option value="VE">🇻🇪 Venezuela</option>
+                  <option value="PE">🇵🇪 Pérou</option>
+                  <option value="CL">🇨🇱 Chili</option>
+                  <option value="UY">🇺🇾 Uruguay</option>
+                  <option value="PY">🇵🇾 Paraguay</option>
+                  <option value="BO">🇧🇴 Bolivie</option>
+                  <option value="EC">🇪🇨 Équateur</option>
+                  <option value="GT">🇬🇹 Guatemala</option>
+                  <option value="HN">🇭🇳 Honduras</option>
+                  <option value="SV">🇸🇻 Salvador</option>
+                  <option value="NI">🇳🇮 Nicaragua</option>
+                  <!--martinique avec d'autres pays de la caraibe et des antilles-->
+                  <option value="MQ">🇲🇶 Martinique</option>
+                  <option value="GP">🇬🇵 Guadeloupe</option>
+                  <option value="GF">🇬🇫 Guyane française</option>
+                </select>
+              </div>
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="dob"
+                >
+                  Date of Birth
+                </label>
+                <input
+                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id="dob"
+                  type="date" name="birth_date"
+                required/>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="children"
+                >
+                  Number of Children
+                </label>
+                <input
+                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id="children"
+                  placeholder="0"
+                  type="number" name="children_number"
+                />
+              </div>
+              <div class="space-y-2">
+                <label for="education" class="block mb-2 text-sm font-medium text-gray-900">Niveau d'éducation</label>
+                <select id="education" onchange="console.log(this.value)"  name="education_level" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                  <option value="Maternelle">Maternelle</option>
+                  <option value="Primaire">Primaire</option>
+                  <option value="Secondaire">Secondaire</option>
+                  <option value="Baccalauréat">Baccalauréat</option>
+                  <option value="Licence" selected>Licence</option>
+                  <option value="Master">Master</option>
+                  <option value="Doctorat">Doctorat</option>
+                  <option value="Post-doctorat">Post-doctorat</option>
+                  <option value="Autodidacte">Autodidacte</option>
+                  <option value="Aucun">Aucun</option>
+                </select>
+              </div>
+          <div class="space-y-2">
+              <label
+                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="studies"
+              >
+                Completed Studies
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="studies"
+                placeholder="Completed Studies" name="studies"
+              required/>
+            </div>
+           <div class="space-y-2">
+              <label
+                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="skills"
+              >
+                Other Skills
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="skills"
+                placeholder="Other Skills" name="skills"
+              required/>
+            </div>
+          </div>
+        <div class="flex justify-end">
+          <button type="button" class="next-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Suivant
+          </button>
+        </div>
+          </form>
+        </div>
+        </div>
+      <div class="step hidden" >
+        <div class="mb-4" id="niveaul">
+          <div id="formation-0">
+          <form class="p-6 space-y-8" id="bobo">
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-level">
+                Niveau de formation dans l'organisation
+              </label>
+              <div class="flex flex-col space-y-2">
+                <label for="formation-level" class="block text-sm font-medium text-gray-700">Formation Level</label>
+                <select id="formation-level" name="formation_levels[]" class="formation-level mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option value="eee1_katak1">EEE1 (KATAK1)</option>
+                  <option value="eee2_katak2">EEE2 (KATAK2)</option>
+                  <option value="iot1">IOT 1</option>
+                  <option value="iot2">IOT 2</option>
+                  <option value="tce1">TCE 1</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-date">
+                  Date
+                </label>
+                <input name="formation_dates[]" class=" formation-date flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="formation-date" type="date" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-location">
+                  Location
+                </label>
+                <input class=" formation-location flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="formation-location" placeholder="Location" name="formation_locations[]" />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label for="formation-mention" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mention</label>
+              <select id="formation-mention" name="formation_mentions[]" class=" formation-mention  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected>Mention</option>
+                <option value="Very Good">Very Good</option>
+                <option value="Good">Good</option>
+                <option value="Excellent">Excellent</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="  text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-completion-date">
+                Completion Date
+              </label>
+              <input class="formation-completion-date flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="formation-completion-date" type="date" name="formation_completion_dates[]" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-certificate">
+                Obtained Certificate
+              </label>
+              <select id="formation-certificate" name="formation_certificates[]" class="formation-certificate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected>Yes/No</option>
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="formation-trainer">
+                Trainer's Name/Code
+              </label>
+              <input class="formation-trainer flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="formation-trainer" type="number" placeholder="Trainer's Name/Code" name="formation_trainers[]" />
+            </div>
+          </form>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <div class="space-y-2">
+            <button onclick="stores(this)" id="nest" class="flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5.586a1 1 0 01-.707-.293l-1.414-1.414A2 2 0 009 5H5a2 2 0 00-2 2z"></path>
+              </svg>
+              Enregistrer
+            </button>
+          </div>
+          <div class="space-y-2">
+            <button onclick="addFormation()" id="nest" class="flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              Ajouter une autre formation
+            </button>
+          </div>
+          <button type="button" class="prev-btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Précédent
+          </button>
+          <button type="button" id="dis_btn" class="next-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" disabled>
+            Suivant
+          </button>
+        </div>
+      </div>
+
+      <div class="step hidden">
+        <div class="mb-4">
+          <form class="p-6 space-y-8">
+            <div class="space-y-2">
+       <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+        <select id="status" name="user_statut" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ring-offset-background dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+          <option selected>Status</option>
+           <option value="0">Volontaire</option>
+                <option value="1">Membre de conseil</option>
+                <option value="2">Moniteur</option>
+                <option value="3">Supporteur</option>
+                <option value="5">Formateur</option>
+                <option value="6">Ouvrier a temps plein</option>
+                <option value="7">Ouvrier a temps partiel</option>
+                <option value="4">autres</option>
+        </select>
+            </div>
+            <div class="space-y-2">
+              <label
+                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="church"
+              >
+                Church Attended
+              </label>
+              <input
+                name="church_name"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="church"
+                placeholder="Church Attended"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="address"
+              >
+                Address
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="address"
+                name="church_address"
+                placeholder="Address"
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+            </div>
+            <div class="space-y-2">
+              <label
+                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="website"
+              >
+                Website
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="website"
+                placeholder="Website"
+                name="church_website"
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="pastor"
+                >
+                  Pastor's Name
+                </label>
+                <input
+                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id="pastor"
+                  placeholder="Pastor's Name"
+                  name="pastor_name"
+                />
+              </div>
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for="pastor-email"
+                >
+                  Pastor's Email
+                </label>
+                <input
+                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id="pastor-email"
+                  placeholder="Email"
+                  type="email"
+                  name="pastor_email"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="flex justify-between">
+          <button type="button" class="prev-btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Précédent
+          </button>
+          <button type="button" class="next-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Suivant
+          </button>
+        </div>
+      </div>
+
+      <div class="step hidden">
+        <div class="container mx-auto my-10">
+          <div class="bg-white rounded px-8 pt-6 pb-8 mb-4 w-full">
+            <div class="mb-4">
+              <!-- Start of loading indicator -->
+              <div class="flex flex-col items-center justify-center space-y-4 jgg">
+                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+                <p class="text-lg font-semibold text-gray-700">Your data is being transferred. Please wait...</p>
+              </div>
+              <!-- End of loading indicator -->
+
+              <!-- Start of confirmation div (hidden by default) -->
+              <div class="flex flex-col items-center justify-center space-y-4 hidden jgh">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-12 w-12 text-green-500">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <p class="text-lg font-semibold text-gray-700">Your data has been saved.</p>
+                <div class="flex space-x-4">
+                  <button class="px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-700">Continue on the site</button>
+                  <button class="px-4 py-2 rounded text-white bg-green-500 hover:bg-green-700">Return to home</button>
+                </div>
+              </div>
+              <!-- End of confirmation div -->
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Terminer
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  const form = document.getElementById('stepper-form');
+const steps = form.getElementsByClassName('step');
+const nextButtons = form.getElementsByClassName('next-btn');
+const prevButtons = form.getElementsByClassName('prev-btn');
+let currentStep = 0;
+
+//list of title 
+const titles = ['Informations personnelles', 'Niveau de formation', 'Statut AEE','Profile Enregistrement'];
+function showStep(n) {
+  console.log('current step', currentStep);
+  console.log('n', n);
+  if (n === 1 && !validateStep()) {
+    return;
+  }
+  //detect if the current step is the last one
+  if (currentStep==2) {
+    console.log('last step');
+   //get the data of Information and statut step form except Niveau de formation and the last step 
+   //information data
+   var informations={};
+   //form data
+    var step1_form= new FormData(steps[0].querySelector('form'));
+    for (var pair of step1_form.entries()) {
+      informations[pair[0]]=pair[1];
+    }
+    //statut data
+    var statut={};
+    var step3_form= new FormData(steps[2].querySelector('form'));
+    for (var pair of step3_form.entries()) {
+      statut[pair[0]]=pair[1];
+    }
+    //merge all this data key and value to a global object with a formation with formationdata in json
+    var global_data = { ...informations, ...statut };
+    global_data.formation=JSON.stringify(formationsdata);
+    console.log(global_data);
+    //send the data to the server with ajax 
+    /*$.ajax({
+      type: "POST",
+      url: "url",
+      data: global_data,
+      success: function (response) {
+        console.log(response);
+      }
+    }); */
+    //mais un timeout pour simuler le temps de transfert de données et switcher vers le message de confirmation
+    setTimeout(() => {
+      document.querySelector('.jgh').classList.remove('hidden');
+      document.querySelector('.jgg').classList.add('hidden');
+    }, 300);
+  }
+  document.querySelector('.nby').innerHTML=parseInt(document.querySelector('.nby').innerHTML)+1;
+  steps[currentStep].classList.add('hidden');
+  currentStep = (currentStep + n) % steps.length;
+  steps[currentStep].classList.remove('hidden');
+  document.getElementById('stepper_title').textContent = titles[currentStep];
+  updateProgressBar();
+}
+
+//validation logic goes here
+function validateStep() {
+  const currentStepFields = steps[currentStep].querySelectorAll('input, select, textarea');
+  let isValid = true;
+
+  currentStepFields.forEach(field => {
+    field.classList.remove('border-red-500'); // Remove previous error highlight
+
+    // Check field validity
+    if (!field.checkValidity()) {
+      field.classList.add('border-red-500'); // Highlight invalid field
+      field.reportValidity(); // Show HTML5 validation message
+      isValid = false;
+    }
+  });
+
+  //return isValid;
+  return true;
+}
+function updateProgressBar() {
+  const progressBar = document.querySelector('.prge');
+  progressBar.style.width = `${((currentStep + 1) / steps.length * 100)}%`;
+}
+
+for (let i = 0; i < nextButtons.length; i++) {
+  nextButtons[i].addEventListener('click', () => showStep(1));
+}
+
+for (let i = 0; i < prevButtons.length; i++) {
+  prevButtons[i].addEventListener('click', () => showStep(-1));
+}
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  // Ici, vous pouvez ajouter la logique pour enregistrer les données du formulaire
+  alert('Formulaire soumis avec succès !');
+});
+
+// Initialisation du tableau qui va contenir les données
+
+</script>
+<style>
+  .bg-blue-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+}
+#stepper-form button {
+  --tw-bg-opacity: 1;
+  background-color: transparent !important;
+  border: 2px solid rgb(43, 43, 63);
+  color: rgb(43, 43, 63) !important;
+  transition: all 0.3s ease;
+}
+
+#stepper-form button:hover {
+  background-color: rgb(43, 43, 63) !important;
+  color: #fff !important;
+}
+/*disable button*/
+#dis_btn:disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
+  .bg-blue-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .bg-blue-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .bg-green-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .bg-green-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .bg-gray-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .bg-gray-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(43 43 63) !important;
+  }
+  .text-white {
+    --tw-text-opacity: 1;
+    color: rgba(255, 255, 255, var(--tw-text-opacity)) !important;
+  }
+  .text-gray-700 {
+    --tw-text-opacity: 1;
+    color: rgba(55, 65, 81, var(--tw-text-opacity)) !important;
+  }
+  .text-gray-900 {
+    --tw-text-opacity: 1;
+    color: rgba(17, 24, 39, var(--tw-text-opacity)) !important;
+  }
+  .text-muted-foreground {
+    --tw-text-opacity: 1;
+    color: rgba(156, 163, 175, var(--tw-text-opacity)) !important;
+  }
+  .border-input {
+    --tw-border-opacity: 1;
+    border-color: rgba(209, 213, 219, var(--tw-border-opacity)) !important;
+  }
+  .ring-offset-background {
+    --tw-ring-offset-shadow: 0 0 #0000;
+  }
+  .ring-ring {
+    --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
+    --tw-ring-offset-shadow: var(--tw-ring-offset-inset,/*!*/) 0 0 0 var(--tw-ring-offset-width,/*!*/0px) var(--tw-ring-offset-color,/*!*/
+}
+  step{
+    display:block;
+  }
+  .hidden{
+    display: none;
+  
+  }
+</style>
+<!--End of content-->
+  <footer class="py-8 px-8 bg-secondary text-white" style="
+  color: #2a2c41;background:#fcfcfc;
+">
+  <div class="grid grid-cols-4 gap-8" style="
+  color: #2a2c41;
+">
+    <div >
+<img src="./static/logo_Colour_CEF_Logo_v2-0.png"/>
+    </div>
+    <div>
+      <h3 class="font-bold mb-4 text-white" style="
+  color: #2a2c41;
+">Quick links</h3>
+      <ul>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            Acceuil
+          </a>
+        </li>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            A propos
+          </a>
+        </li>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            Ministere
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="font-bold mb-4 text-white" style="
+  color: #2a2c41;
+">Support</h3>
+      <ul>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            FAQs
+          </a>
+        </li>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            Support Center
+          </a>
+        </li>
+        <li>
+          <a class="hover:underline" href="#" rel="ugc">
+            Contact Us
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div style="
+  color: #2a2c41;
+">
+          <h3 class="font-bold mb-4 text-white" style="
+  color: #2a2c41;
+"> Child Evangelism Fellowship</h3>
+      <p>"Chaque enfant, chaque nation, chaque jour"</p>
+    </div>
+  </div>
+  <!-- social media links-->
+  <div class="flex justify-between items-center mt-8">
+    <div>
+      <p>&copy; 2024 Child Evangelism Fellowship</p>
+    </div>
+    <div class="flex space-x-4">
+      <a href="#!" role="button">
+        <!-- Facebook -->
+        <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#1877f2]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. -->
+            <path
+              d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z" />
+          </svg>
+        </span>
+      </a>
+
+      <a href="#!" role="button">
+        <!-- Instagram -->
+        <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. -->
+            <path
+              d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+          </svg>
+        </span>
+      </a>
+
+      <a href="#!" role="button">
+        <!-- Google -->
+        <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ea4335]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. -->
+            <path
+              d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+          </svg>
+        </span>
+      </a>
+
+      <a href="#!" role="button">
+        <!-- X -->
+        <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 512 512">
+            <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. -->
+            <path
+              d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+          </svg>
+        </span>
+      </a>
+    </div>
+</footer>
+<style>
+  .ring-offset-background {
+    background-color: #fff !important;
+    color: #2a2c41 !important;
+}
+.img_carousel
+{
+height: 100%;width: 100%;background-position-x: center;background-position-y: center;background-size: 100%;
+}
+label{
+  color:#2b2b3f !important;
+}
+
+</style>
+<style>
+ .uny:hover{
+     border-bottom:2px #e84f61 solid;
+ }
+ .ring-offset-background {
+    background-color: #fff !important;
+}
+</style>
+</body> </html>

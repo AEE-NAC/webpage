@@ -10,33 +10,32 @@ import Popsurvey from "../components/common/popsurvey";
 import VoiceTestimonial from '../components/ui/VoiceTestimonial'
 
 const testimonials = [
-
   {
-    image: 'https://via.placeholder.com/150',
-    text: 'Using this component library has significantly speed up our development process. The quality and ease of integration are remarkable!',
-    name: 'David Smith',
-    jobtitle: 'UI Designer',
-    audio: 'David.mp3',
-    social: 'https://x.com'
-    
-  },
-  {
-    image: 'https://via.placeholder.com/150',
-    text: 'I love  how intuitive and well-documented this component library is. It has significantly improved our UI consistency across projects.',
-    name: 'James Wilson',
-    jobtitle: 'Product Manager',
-    audio: 'James.mp3',
+    image: 'https://i.pravatar.cc/400',
+    text: "L'AEE m'a permis de découvrir ma vocation dans l'enseignement biblique aux enfants. Les formations et le matériel pédagogique sont vraiment excellents !",
+    name: 'Marie Dupont',
+    jobtitle: 'Monitrice Club d\'enfants',
+    audio: 'Marie.mp3',
     social: 'https://x.com'
   },
   {
-    image: 'https://via.placeholder.com/150',
-    text: 'Using this library has been a game-changer for our product development.',
-    name: 'Michael Davis',
-    jobtitle: 'Full Stack Developer',
-    audio: 'Michael.mp3',
+    image: 'https://i.pravatar.cc/300',
+    text: "Grâce aux ressources de l'AEE, nous avons pu mettre en place un programme d'évangélisation efficace dans notre église. Les enfants adorent les leçons bibliques interactives.",
+    name: 'Jean-Pierre Laurent',
+    jobtitle: 'Responsable École du Dimanche',
+    audio: 'Jean.mp3',
+    social: 'https://x.com'
+  },
+  {
+    image: 'https://i.pravatar.cc/100',
+    text: "Je suis reconnaissante pour le soutien et la formation reçus de l'AEE. Cela fait maintenant 5 ans que j'anime des clubs bibliques et je vois l'impact positif sur les enfants.",
+    name: 'Sophie Martin',
+    jobtitle: 'Coordinatrice Régionale',
+    audio: 'Sophie.mp3',
     social: 'https://x.com'
   },
 ];
+
 const LandingPage = () => {
     return (
       <>
