@@ -78,7 +78,7 @@ export const CMSService = {
     // @ts-ignore - Supabase type inference can be tricky with partial inserts on upsert
     const { data, error } = await supabase
       .from('cms_content')
-      .upsert(content, { onConflict: 'key, language, country_code' })
+      .upsert(content as any, { onConflict: 'key, language, country_code' })
       .select()
       .single();
     
