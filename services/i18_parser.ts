@@ -1,79 +1,40 @@
-export type Dictionary = {
-  [key: string]: string | Dictionary;
-};
+import { CMSDictionary } from "./types";
 
 /**
- * Parses a string and replaces patterns like {{section.subsection.key.lang}}
- * with the corresponding value from the dictionary.
- * The last segment of the path is treated as the language code.
- * Example: {{home.hero.title.en}} looks for home -> hero -> title in the 'en' dictionary provided (or handles structure differently depending on your preferred root).
+ * Basic Translator for Atomic CMS
+ * Since the generic CMS Service already resolves the correct language/region value,
+ * we just need to look up the key.
  * 
- * Assuming the structure: Dictionary -> Section -> Key -> Language Value
- * OR
- * Structure: Dictionary -> Language -> Section -> Key (Standard practice)
- * 
- * Based on your request: "keys and language this way: {{pages.keys.language}}"
- * This implies the structure is object -> keys -> value_by_language
+ * Usage: t('home.hero.title') -> returns the value appropriate for the current user
  */
-export const i18nParser = (template: string, dictionary: Dictionary): string => {
-  const regex = /\{\{([\w\d_.]+)\}\}/g; // Matches {{any.thing.here}}
-
-  return template.replace(regex, (match, pathString) => {
-    const parts = pathString.split('.');
+export const translator = (dictionary: CMSDictionary) => {
+  return {
+    t: (key: string, defaultVal: string = ''): string => {
+      if (dictionary[key]) return dictionary[key];
+      
+      // Optional: Supports nested object lookup if you decide to keep JSON structure
+      // But purely atomic 'key' -> 'value' is faster.
+      return defaultVal || key;
+    },
     
-    // We need at least a key and a language
-    if (parts.length < 2) {
-      return match;
+    // Renders HTML content safely (use with dangerouslySetInnerHTML)
+    html: (key: string, defaultVal: string = ''): string => {
+      return dictionary[key] || defaultVal;
+    },
+
+    // Gets an image URL
+    src: (key: string, fallbackUrl: string): string => {
+      return dictionary[key] || fallbackUrl;
     }
-
-    const language = parts.pop(); // The last part is the language
-    const path = parts; // The rest is the path to the key
-
-    // Traverse the dictionary
-    let current: string | Dictionary | undefined = dictionary;
-
-    // 1. Traverse to the node
-    for (const key of path) {
-      if (typeof current === 'object' && current !== null && key in current) {
-        current = current[key];
-      } else {
-        return match; // Key path not found
-      }
-    }
-
-    // 2. At the specific node, look for the language
-    if (typeof current === 'object' && current !== null && language && language in current) {
-       const translation = current[language];
-       if (typeof translation === 'string') {
-         return translation;
-       }
-    }
-
-    // Return original if not found or if the end value isn't a string
-    return match;
-  });
+  };
 };
 
-/**
- * Helper to get a specific value without string replacement
- */
-export const getTranslation = (pathString: string, dictionary: Dictionary): string | null => {
-   const parts = pathString.split('.');
-   const language = parts.pop(); 
-   
-   let current: any = dictionary;
-   
-   for (const key of parts) {
-      if (current && current[key]) {
-          current = current[key];
-      } else {
-          return null;
-      }
-   }
-
-   if (current && language && current[language]) {
-       return current[language];
-   }
-   
-   return null;
+// Legacy support if you still use nested objects locally
+export const i18nParser = (template: string, dictionary: any): string => {
+  const regex = /\{\{([\w\d_.]+)\}\}/g; // Matches {{any.thing.here}}
+  return template.replace(regex, (match, pathString) => {
+      // Direct lookup in flat dictionary first
+      if (dictionary[pathString]) return dictionary[pathString];
+      return match;
+  });
 };
