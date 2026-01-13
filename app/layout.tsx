@@ -1,8 +1,8 @@
 import "./globals.css";
 
-// Note: Ensure app/[lang]/layout.tsx serves as the root layout for your localized pages.
-// If you see errors about multiple root layouts, you can safely delete this file 
-// after verifying app/[lang]/layout.tsx defines <html> and <body>.
+// Note: This file should ideally be DELETED because app/[lang]/layout.tsx is your actual Root Layout.
+// Having two files defining <html> and <body> causes hydration mismatches.
+// I have removed the tags below to prevent the crash, but please delete this file.
 
 export const metadata = {
   title: 'Website AEE',
@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <>
+      {children}
+    </>
   )
 }
