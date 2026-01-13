@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Database } from './types_db'; 
 import { CMSContentItem, CMSPopover } from './types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = 'https://pfijkpxlsbyepxhwjsep.supabase.co';
+const supabaseKey = 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
@@ -72,6 +72,17 @@ export const CMSService = {
     });
 
     return dictionary;
+  },
+
+  async upsertContent(content: Partial<CMSContentItem>) {
+    // @ts-ignore - Supabase type inference can be tricky with partial inserts on upsert
+    const { data, error } = await supabase
+      .from('cms_content')
+      .upsert(content, { onConflict: 'key, language, country_code' })
+      .select()
+      .single();
+    
+    return { data, error };
   },
 
   /**
