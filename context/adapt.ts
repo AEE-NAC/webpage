@@ -5,6 +5,16 @@ export type SupportedLanguage = 'en' | 'fr' | 'es' | 'ht';
 export const locales: SupportedLanguage[] = ['en', 'fr', 'es', 'ht'];
 export const defaultLocale: SupportedLanguage = 'en';
 
+export const SUPPORTED_COUNTRIES = [
+    { code: 'CA', name: 'Canada' },
+    { code: 'HT', name: 'Haïti' },
+    { code: 'SX', name: 'Sint Maarten' },
+    { code: 'MF', name: 'Saint Martin' },
+    { code: 'MQ', name: 'Martinique' },
+    { code: 'GP', name: 'Guadeloupe' },
+    { code: 'GF', name: 'Guyane Française' },
+];
+
 // Listes de codes pays ISO Alpha-2
 const FRANCOPHONE_COUNTRIES = [
     'FR', 'BE', 'CH', 'CA', 'LU', 'MC', // Europe / Amerique du nord

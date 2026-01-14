@@ -78,3 +78,11 @@ CREATE TABLE IF NOT EXISTS public.cms_newsletters (
 ALTER TABLE public.cms_newsletters ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read Newsletters" ON public.cms_newsletters FOR SELECT USING (true);
 CREATE POLICY "Public Write Newsletters" ON public.cms_newsletters FOR ALL USING (true);
+
+-- UPDATE: Add country_code to cms_newsletters if it doesn't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='cms_newsletters' AND column_name='country_code') THEN
+        ALTER TABLE public.cms_newsletters ADD COLUMN country_code text DEFAULT NULL;
+    END IF;
+END $$;

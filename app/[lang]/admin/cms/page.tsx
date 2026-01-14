@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CMSService, supabase } from "@/services/supabase.conf";
 import { CMSPopover, CMSWeeklyWord, CMSNewsletter } from "@/services/types"; // Import types
-import { SupportedLanguage, locales } from "@/context/adapt";
+import { SupportedLanguage, locales, SUPPORTED_COUNTRIES } from "@/context/adapt";
 import { useRouter } from "next/navigation";
 
 export default function CMSAdminPage() {
@@ -587,7 +587,8 @@ export default function CMSAdminPage() {
                              <div className="grid grid-cols-2 gap-8">
                                  <div className="space-y-4">
                                      <div>
-                                         <label className="text-xs font-bold text-zinc-500 uppercase">Language</label>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Targeting</label>
+                                         {/* Removed Region Selector for Weekly Words */}
                                          <select className="w-full border p-2 rounded mt-1" value={editingWord.language || 'en'} onChange={e => setEditingWord({...editingWord, language: e.target.value as any})}>{locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}</select>
                                      </div>
                                      <div>
@@ -637,8 +638,9 @@ export default function CMSAdminPage() {
                             {wordsList.map(w => (
                                 <div key={w.id} onClick={() => setEditingWord(w)} className="group bg-white rounded-lg border border-zinc-200 p-4 flex items-center justify-between hover:border-blue-300 hover:shadow-md cursor-pointer transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-zinc-100 rounded overflow-hidden flex-shrink-0">
+                                        <div className="w-12 h-12 bg-zinc-100 rounded overflow-hidden flex-shrink-0 relative">
                                             {w.image_url ? <img src={w.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-zinc-300"><IconBook /></div>}
+                                            {w.country_code && <img src={`https://flagcdn.com/w20/${w.country_code.toLowerCase()}.png`} className="absolute bottom-0 right-0 w-4 h-3 shadow-sm" alt={w.country_code} />}
                                         </div>
                                         <div>
                                             <div className="font-semibold text-zinc-900">{w.title}</div>
@@ -679,8 +681,14 @@ export default function CMSAdminPage() {
                              </div>
                              <div className="max-w-lg mx-auto space-y-6">
                                  <div>
-                                     <label className="text-xs font-bold text-zinc-500 uppercase">Language</label>
-                                     <select className="w-full border p-2 rounded mt-1" value={editingNewsletter.language || 'en'} onChange={e => setEditingNewsletter({...editingNewsletter, language: e.target.value as any})}>{locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}</select>
+                                     <label className="text-xs font-bold text-zinc-500 uppercase">Targeting</label>
+                                      <div className="grid grid-cols-2 gap-2 mt-1">
+                                         <select className="w-full border p-2 rounded mt-1" value={editingNewsletter.language || 'en'} onChange={e => setEditingNewsletter({...editingNewsletter, language: e.target.value as any})}>{locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}</select>
+                                         <select className="w-full border p-2 rounded mt-1" value={editingNewsletter.country_code || ''} onChange={e => setEditingNewsletter({...editingNewsletter, country_code: e.target.value || null})}>
+                                            <option value="">Regional (Global)</option>
+                                            {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+                                         </select>
+                                      </div>
                                  </div>
                                  <div>
                                      <label className="text-xs font-bold text-zinc-500 uppercase">Title</label>
@@ -713,11 +721,15 @@ export default function CMSAdminPage() {
                             {newslettersList.map(n => (
                                 <div key={n.id} onClick={() => setEditingNewsletter(n)} className="group bg-white rounded-lg border border-zinc-200 p-4 flex items-center justify-between hover:border-green-300 hover:shadow-md cursor-pointer transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-green-50 text-green-600 rounded flex items-center justify-center font-bold">PDF</div>
+                                        <div className="w-10 h-10 bg-green-50 text-green-600 rounded flex items-center justify-center font-bold relative">
+                                            PDF
+                                            {n.country_code && <img src={`https://flagcdn.com/w20/${n.country_code.toLowerCase()}.png`} className="absolute -bottom-1 -right-1 w-4 h-3 shadow-sm rounded-sm" alt={n.country_code} />}
+                                        </div>
                                         <div>
                                             <div className="font-semibold text-zinc-900">{n.title}</div>
                                             <div className="text-xs text-zinc-500 flex gap-2">
                                                 <span className="uppercase font-bold">{n.language}</span>
+                                                {n.country_code ? <span className="text-blue-600 font-bold">[{n.country_code}]</span> : <span>• REGIONAL</span>}
                                                 <span>•</span>
                                                 <span>{new Date(n.publication_date).toLocaleDateString()}</span>
                                             </div>

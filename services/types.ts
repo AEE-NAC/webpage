@@ -38,6 +38,7 @@ export interface CMSPopover {
 export interface CMSWeeklyWord {
   id: string;
   language: SupportedLanguage;
+  country_code?: string | null;
   title: string;
   content?: string;
   image_url?: string;
@@ -50,6 +51,7 @@ export interface CMSWeeklyWord {
 export interface CMSNewsletter {
   id: string;
   language: SupportedLanguage;
+  country_code?: string | null;
   title: string;
   publication_date: string; // ISO
   pdf_url: string;

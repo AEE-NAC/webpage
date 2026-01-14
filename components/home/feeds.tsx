@@ -9,6 +9,7 @@ const formatDate = (dateConfig: string, lang: string) => {
 }
 
 export async function WeeklyWordFeed({ lang }: { lang: SupportedLanguage }) {
+   // Weekly Words are now global per language, ignore countryCode
    const words = await CMSService.getWeeklyWords(lang);
    if (!words.length) return null;
 
@@ -51,14 +52,15 @@ export async function WeeklyWordFeed({ lang }: { lang: SupportedLanguage }) {
    )
 }
 
-export async function NewsletterFeed({ lang }: { lang: SupportedLanguage }) {
-    const newsletters = await CMSService.getNewsletters(lang);
+export async function NewsletterFeed({ lang, countryCode }: { lang: SupportedLanguage, countryCode?: string }) {
+    const newsletters = await CMSService.getNewsletters(lang, countryCode);
     if (!newsletters.length) return null;
 
     return (
         <section className="w-full max-w-5xl mx-auto py-12 px-4 bg-zinc-50 dark:bg-zinc-900/30 rounded-3xl my-8">
-            <h2 className="text-2xl font-bold mb-6 text-zinc-800 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">
+            <h2 className="text-2xl font-bold mb-6 text-zinc-800 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2 flex items-center gap-2">
                 <CMSText k="home.newsletters.title" defaultVal="Newsletter Archive" />
+                {countryCode && <img src={`https://flagcdn.com/w20/${countryCode.toLowerCase()}.png`} alt={countryCode} className="h-4 w-auto rounded-sm opacity-80" />}
             </h2>
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                  {newsletters.slice(0, 4).map(n => (
