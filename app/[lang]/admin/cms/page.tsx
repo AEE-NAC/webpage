@@ -36,7 +36,7 @@ export default function CMSAdminPage() {
   const fetchTree = () => {
     fetch('/api/cms?type=tree')
       .then(res => res.json())
-      .then(data => {
+      .then((data: any) => { // Fixed: Added parentheses and type annotation
         setStructure(data.structure || {});
         setLoading(false);
       });
@@ -142,16 +142,24 @@ export default function CMSAdminPage() {
           const fileExt = file.name.split('.').pop();
           const fileName = `cms/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
           
-          // 3a. Upload
+          // 3a. Upload using 'static' bucket
           const { error: uploadError } = await supabase.storage
-            .from('static') // CHANGED: 'public' -> 'static'
-            .upload(fileName, file);
+            .from('static') 
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+              if (uploadError.message.includes('row-level security')) {
+                  throw new Error("RLS Error: You need to enable Public Insert policies on your 'static' storage bucket in Supabase.");
+              }
+              throw uploadError;
+          }
 
           // 3b. Get Public URL
           const { data: { publicUrl } } = supabase.storage
-            .from('static') // CHANGED: 'public' -> 'static'
+            .from('static') 
             .getPublicUrl(fileName);
 
           // 3c. Update Editor
@@ -159,6 +167,7 @@ export default function CMSAdminPage() {
           
       } catch (e: any) {
           alert("Upload failed: " + e.message);
+          console.error(e);
       } finally {
           setSavingKey(null);
       }

@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
 
 // --- Configuration ---
 // Note: We extract these from your codebase or ENV. 
@@ -32,7 +34,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // --- SQL for Table Creation (Helper) ---
 const CREATE_TABLE_SQL = `
--- COPY AND PASTE THIS INTO SUPABASE SQL EDITOR --
+-- COPY AND PASTE THIS INTO SUPABASE SQL EDITOR IF TABLES ARE MISSING --
 
 CREATE TABLE IF NOT EXISTS public.cms_content (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -46,34 +48,10 @@ CREATE TABLE IF NOT EXISTS public.cms_content (
     CONSTRAINT cms_content_unique_key UNIQUE (key, language, country_code)
 );
 
--- Policy to allow public read (Adjust as needed)
 ALTER TABLE public.cms_content ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read" ON public.cms_content FOR SELECT USING (true);
--- Policy for inserting (in real app, restrict this!)
 CREATE POLICY "Public Insert" ON public.cms_content FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public Update" ON public.cms_content FOR UPDATE USING (true);
-
-CREATE TABLE IF NOT EXISTS public.cms_popovers (
-    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    name text NOT NULL,
-    is_active boolean DEFAULT false,
-    start_at timestamptz,
-    end_at timestamptz,
-    frequency_hours int DEFAULT 24,
-    language text NOT NULL,
-    country_code text,
-    type text DEFAULT 'template',
-    title text,
-    body text,
-    image_url text,
-    cta_text text,
-    cta_url text,
-    raw_html text,
-    created_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE public.cms_popovers ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public Read Popovers" ON public.cms_popovers FOR SELECT USING (true);
 `;
 
 // --- Logic ---
@@ -83,21 +61,32 @@ async function indexCMS() {
     
     // 1. Scan Files
     const files = getAllFiles(path.join(process.cwd(), 'app'), ['.tsx', '.ts']);
-    const keysFound = new Map<string, { key: string, defaultVal: string }>();
+    const keysFound = new Map<string, { key: string, value: string, type: 'text' | 'image' }>();
 
     let count = 0;
     
     files.forEach(file => {
         const content = fs.readFileSync(file, 'utf-8');
-        const regex = /<CMSText\s+[^>]*?k=(['"])(.*?)\1[^>]*?defaultVal=(['"])(.*?)\3/gs;
         
+        // Match <CMSText ... />
+        const textRegex = /<CMSText\s+[^>]*?k=(['"])(.*?)\1[^>]*?defaultVal=(['"])(.*?)\3/gs;
         let match;
-        while ((match = regex.exec(content)) !== null) {
+        while ((match = textRegex.exec(content)) !== null) {
             const key = match[2];
             const defaultVal = match[4];
-            
             if (key && !keysFound.has(key)) {
-                keysFound.set(key, { key, defaultVal });
+                keysFound.set(key, { key, value: defaultVal, type: 'text' });
+                count++;
+            }
+        }
+
+        // Match <CMSImage ... />
+        const imgRegex = /<CMSImage\s+[^>]*?k=(['"])(.*?)\1[^>]*?defaultSrc=(['"])(.*?)\3/gs;
+        while ((match = imgRegex.exec(content)) !== null) {
+            const key = match[2];
+            const defaultSrc = match[4];
+            if (key && !keysFound.has(key)) {
+                keysFound.set(key, { key, value: defaultSrc, type: 'image' });
                 count++;
             }
         }
@@ -110,21 +99,16 @@ async function indexCMS() {
         return;
     }
 
-    console.log("🚀 Syncing with Supabase...");
+    console.log("📥 Fetching existing content from Supabase...");
 
-    const upsertPayload = Array.from(keysFound.values()).map(item => ({
-        key: item.key,
-        value: item.defaultVal,
-        language: 'en', // Default base language for indexing
-        content_type: 'text',
-        updated_at: new Date().toISOString()
-    }));
-
-    // Check connection/table existence
-    const { error: checkError } = await supabase.from('cms_content').select('id').limit(1);
+    // 2. Fetch Existing (English Global Only)
+    const { data: existingRows, error: checkError } = await supabase
+        .from('cms_content')
+        .select('key, value, content_type')
+        .eq('language', 'en')
+        .is('country_code', null);
 
     if (checkError) {
-        // Fix for specific error message matching
         const isMissingTable = 
             checkError.code === '42P01' || 
             checkError.message.includes('Could not find the table') || 
@@ -132,7 +116,6 @@ async function indexCMS() {
 
         if (isMissingTable) {
             console.error("\n❌ ERROR: Database table 'cms_content' does not exist.");
-            console.log("   Automatic table creation is not possible via the public client API.");
             console.log("\n⚠️  PLEASE RUN THIS SQL IN THE SUPABASE DASHBOARD -> SQL EDITOR:");
             console.log("\n" + "=".repeat(50));
             console.log(CREATE_TABLE_SQL);
@@ -143,17 +126,98 @@ async function indexCMS() {
         return;
     }
 
-    // Perform Upsert
-    const { data, error } = await supabase
-        .from('cms_content')
-        .upsert(upsertPayload, { onConflict: 'key, language, country_code' })
-        .select();
+    // 3. Compare Code vs Database
+    const existingMap = new Map(existingRows?.map((r: any) => [r.key, r]));
+    const newKeys: any[] = [];
+    const changedKeys: any[] = [];
 
-    if (error) {
-        console.error("❌ Indexing Failed:", error.message);
+    for (const [key, item] of keysFound) {
+        const existing = existingMap.get(key);
+        
+        const payload = {
+            key: item.key,
+            value: item.value,
+            language: 'en',
+            content_type: item.type,
+            country_code: null,
+            updated_at: new Date().toISOString()
+        };
+
+        if (!existing) {
+            newKeys.push(payload);
+        } else if (existing.value !== item.value) {
+            changedKeys.push({
+                ...payload,
+                old_value: existing.value
+            });
+        }
+    }
+
+    // 4. Insert New Keys
+    if (newKeys.length > 0) {
+        console.log(`🆕 Inserting ${newKeys.length} new keys...`);
+        const { error: insertError } = await supabase.from('cms_content').insert(newKeys);
+        if (insertError) console.error("   ❌ Error inserting new keys:", insertError.message);
+        else console.log("   ✅ New keys inserted.");
     } else {
-        console.log(`✨ Successfully indexed/updated ${data?.length || 0} keys in 'cms_content'.`);
-        console.log(`   Language: 'en' (Base)`);
+        console.log("✅ No new keys to insert.");
+    }
+
+    // 5. Interact for Changed Keys
+    if (changedKeys.length > 0) {
+        console.log(`\n⚠️  Found ${changedKeys.length} keys where code default differs from database.`);
+        console.log("   (Usually happens when you update text in code, but the DB has an old version)");
+
+        const rl = readline.createInterface({ input, output });
+        let mode: 'ask' | 'overwrite_all' | 'skip_all' = 'ask';
+
+        for (const item of changedKeys) {
+            if (mode === 'skip_all') break;
+
+            let shouldUpdate = false;
+
+            if (mode === 'overwrite_all') {
+                shouldUpdate = true;
+            } else {
+                console.log(`\n🔑 Key: ${item.key}`);
+                console.log(`   🔴 DB Value:   "${item.old_value.substring(0, 100).replace(/\n/g, ' ')}${item.old_value.length > 100 ? '...' : ''}"`);
+                console.log(`   🟢 Code Value: "${item.value.substring(0, 100).replace(/\n/g, ' ')}${item.value.length > 100 ? '...' : ''}"`);
+                
+                const answer = await rl.question('   Update DB with Code value? (y/n/a=yes-to-all/s=skip-all): ');
+                const ans = answer.trim().toLowerCase();
+
+                if (ans === 'a') {
+                    mode = 'overwrite_all';
+                    shouldUpdate = true;
+                } else if (ans === 's') {
+                    mode = 'skip_all';
+                    shouldUpdate = false;
+                } else if (ans === 'y' || ans === 'yes') {
+                    shouldUpdate = true;
+                }
+            }
+
+            if (shouldUpdate) {
+                const { error: updateError } = await supabase
+                    .from('cms_content')
+                    .update({ 
+                        value: item.value, 
+                        content_type: item.content_type,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('key', item.key)
+                    .eq('language', 'en')
+                    .is('country_code', null);
+
+                if (updateError) console.error(`   ❌ Failed to update ${item.key}:`, updateError.message);
+                else if (mode === 'ask') console.log(`   ✅ Updated.`);
+            }
+        }
+        
+        if (mode === 'overwrite_all') console.log("   ✅ All items updated.");
+        rl.close();
+    } else {
+        console.log("✅ No conflicts found (DB matches Code).");
     }
 }
 

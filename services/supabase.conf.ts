@@ -41,12 +41,6 @@ export const CMSService = {
     const items = data as CMSContentItem[];
     const dictionary: Record<string, string> = {};
 
-    // We process items to ensure the most specific version wins.
-    // Order of specificity:
-    // 1. Lang matches AND Country matches
-    // 2. Lang matches AND Country is null
-    // 3. Lang is 'en' (Fallback)
-
     // Helper to calculate score
     const getScore = (item: CMSContentItem) => {
       if (item.language === lang && item.country_code === countryCode) return 3;
@@ -74,15 +68,58 @@ export const CMSService = {
     return dictionary;
   },
 
+  /**
+   * Smart Upsert: Manual check to avoid duplicate rows on NULL constraint issues.
+   */
   async upsertContent(content: Partial<CMSContentItem>) {
-    // @ts-ignore - Supabase type inference can be tricky with partial inserts on upsert
-    const { data, error } = await supabase
-      .from('cms_content')
-      .upsert(content as any, { onConflict: 'key, language, country_code' })
-      .select()
-      .single();
+    if (!content.key || !content.language) {
+        return { data: null, error: { message: 'Missing key or language' } };
+    }
+
+    // 1. Check if row exists specifically for this targeting
+    // We cast query to 'any' to avoid rigid type narrowing issues with conditional chaining
+    let query: any = supabase
+        .from('cms_content')
+        .select('id')
+        .eq('key', content.key)
+        .eq('language', content.language);
+
+    if (content.country_code) {
+        query = query.eq('country_code', content.country_code);
+    } else {
+        query = query.is('country_code', null);
+    }
+
+    const { data: existing } = await query.maybeSingle();
+
+    let result;
+    if (existing) {
+        // 2. Update existing
+        // Fix: Cast the query builder to 'any' to bypass 'never' type inference error on update
+        result = await (supabase.from('cms_content') as any)
+            .update({ 
+                value: content.value, 
+                content_type: content.content_type || 'text',
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', existing.id)
+            .select()
+            .single();
+    } else {
+        // 3. Insert new
+        result = await (supabase.from('cms_content') as any)
+            .insert({
+                key: content.key,
+                language: content.language,
+                country_code: content.country_code || null,
+                content_type: content.content_type || 'text',
+                value: content.value
+            })
+            .select()
+            .single();
+    }
     
-    return { data, error };
+    return { data: result.data, error: result.error };
   },
 
   /**

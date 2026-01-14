@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Suspense } from "react"; // Added Suspense
+import { Suspense } from "react"; 
 import { CMSText } from "@/components/cms/cms-text";
+import { CMSImage } from "@/components/cms/cms-image"; // Import CMSImage
 import { VisualEditorListener } from "@/components/admin/visual-editor-listener";
 
 export default function Home() {
@@ -12,14 +13,17 @@ export default function Home() {
       </Suspense>
       
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
+        {/* Replaced static Image with editable CMSImage */}
+        <CMSImage
+          k="home.hero.logo_image" // Suffix '_image' triggers file uploader in Admin
+          defaultSrc="/next.svg"
           className="dark:invert"
-          src="/next.svg"
           alt="Next.js logo"
           width={100}
           height={20}
           priority
         />
+        
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <CMSText 
             as="h1" 
