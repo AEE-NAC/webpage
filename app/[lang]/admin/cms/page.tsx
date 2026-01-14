@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { CMSService } from "@/services/supabase.conf";
+import { CMSService, supabase } from "@/services/supabase.conf";
 import { SupportedLanguage, locales } from "@/context/adapt";
 import { useRouter } from "next/navigation";
 
@@ -15,19 +15,24 @@ export default function CMSAdminPage() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   // Editor State
-  const [isEditorOpen, setIsEditorOpen] = useState(true); // New State
+  const [isEditorOpen, setIsEditorOpen] = useState(true);
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>('en');
-  const [selectedRegion, setSelectedRegion] = useState<string>(''); // empty = global
+  const [selectedRegion, setSelectedRegion] = useState<string>(''); 
+  
+  // State for Values
   const [editValues, setEditValues] = useState<Record<string, string>>({});
-  const [saving, setSaving] = useState(false);
+  const [originalValues, setOriginalValues] = useState<Record<string, string>>({});
+  
+  const [savingKey, setSavingKey] = useState<string | null>(null);
 
   // Preview State
   const [previewRoute, setPreviewRoute] = useState<string>('');
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   
   const sitemapRoutes = ['', '/about', '/staff', '/ministry', '/implicate', '/donate', '/contact'];
 
-  // Load Tree
+  // Load Tree Function (Defined here to be accessible by other functions)
   const fetchTree = () => {
     fetch('/api/cms?type=tree')
       .then(res => res.json())
@@ -45,29 +50,28 @@ export default function CMSAdminPage() {
   useEffect(() => {
     if (!activePage) return;
     
-    // Auto-open editor if it was closed when selecting a new item via nav
     if (!activeSection) setIsEditorOpen(true);
 
-    // Construct prefix based on selection
     const prefix = activeSection ? `${activePage}.${activeSection}` : activePage;
     
     setLoading(true);
     CMSService.getPageContent(prefix, selectedLang, selectedRegion || undefined)
       .then(data => {
         setEditValues(data);
+        setOriginalValues(data); // Sync 'Clean' state
         setLoading(false);
-        // Scroll to highlighted key if requested via visual editor
+        
         if (highlightKey) {
              setTimeout(() => {
                  const el = document.getElementById(`edit-field-${highlightKey}`);
                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                 setHighlightKey(null); // Clear after scroll
+                 setHighlightKey(null);
              }, 500); 
         }
       });
   }, [activePage, activeSection, selectedLang, selectedRegion]); 
 
-  // Listen for Visual Editor Messages
+  // Listen for Visual Editor Requests
   useEffect(() => {
       const handleMessage = (event: MessageEvent) => {
           if (event.data?.type === 'CMS_EDIT_REQUEST' && event.data.key) {
@@ -84,18 +88,36 @@ export default function CMSAdminPage() {
                           setActiveSection(null);
                       }
                       setHighlightKey(fullKey);
-                      setIsEditorOpen(true); // Force open when clicked in visual editor
+                      setIsEditorOpen(true);
                   }
               }
           }
       };
-      
       window.addEventListener('message', handleMessage);
       return () => window.removeEventListener('message', handleMessage);
   }, [structure]);
 
-  const handleSave = async (key: string, value: string) => {
-    setSaving(true);
+  // --- Actions ---
+
+  // 1. Handle Input Change (Real-time Preview)
+  const handleChange = (key: string, value: string) => {
+    setEditValues(prev => ({ ...prev, [key]: value }));
+    
+    // Send update to iframe
+    if (iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage({ 
+            type: 'CMS_PREVIEW_UPDATE', 
+            key, 
+            value 
+        }, '*');
+    }
+  };
+
+  // 2. Publish (Save to DB)
+  const handlePublish = async (key: string) => {
+    setSavingKey(key);
+    const value = editValues[key];
+    
     const { error } = await CMSService.upsertContent({
       key,
       value,
@@ -103,15 +125,43 @@ export default function CMSAdminPage() {
       country_code: selectedRegion || null,
       content_type: key.includes('image') ? 'image' : key.includes('html') ? 'html' : 'text'
     });
-    setSaving(false);
-    if (error) alert('Error saving: ' + error.message);
     
-    // Refresh iframe
-    const iframe = document.getElementById('preview-frame') as HTMLIFrameElement;
-    if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({ type: 'CMS_UPDATE', key, value }, '*');
-        iframe.src = iframe.src; // Force reload to see changes
+    if (error) {
+        alert('Error saving: ' + error.message);
+    } else {
+        // Update original value to match current saved state (removes dirty state)
+        setOriginalValues(prev => ({ ...prev, [key]: value }));
     }
+    setSavingKey(null);
+  };
+
+  // 3. Image Upload
+  const handleImageUpload = async (key: string, file: File) => {
+      setSavingKey(key);
+      try {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `cms/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+          
+          // 3a. Upload
+          const { error: uploadError } = await supabase.storage
+            .from('static') // CHANGED: 'public' -> 'static'
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          // 3b. Get Public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('static') // CHANGED: 'public' -> 'static'
+            .getPublicUrl(fileName);
+
+          // 3c. Update Editor
+          handleChange(key, publicUrl);
+          
+      } catch (e: any) {
+          alert("Upload failed: " + e.message);
+      } finally {
+          setSavingKey(null);
+      }
   };
 
   const createNewItem = async (type: 'word' | 'newsletter') => {
@@ -121,24 +171,22 @@ export default function CMSAdminPage() {
       const titleKey = `${prefix}.${id}.title`;
       const contentKey = `${prefix}.${id}.content`;
 
-      setSaving(true);
-      await handleSave(dateKey, new Date().toISOString().split('T')[0]);
-      await handleSave(titleKey, "New Title");
-      await handleSave(contentKey, "Content goes here...");
-      setSaving(false);
+      setSavingKey(dateKey);
+      await CMSService.upsertContent({ key: dateKey, value: new Date().toISOString().split('T')[0], language: selectedLang, content_type: 'text' });
+      await CMSService.upsertContent({ key: titleKey, value: "New Title", language: selectedLang, content_type: 'text' });
+      setSavingKey(null);
       
-      fetchTree();
+      fetchTree(); // Now this function exists
       setActivePage(prefix);
       setActiveSection(id.toString());
   };
 
-  // Icon Components
-  const IconFile = () => <svg className="w-4 h-4 mr-2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
-  const IconFolder = () => <svg className="w-4 h-4 mr-2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>;
-  const IconPlus = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>;
+  // Icons
   const IconLeft = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>;
   const IconRight = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>;
-
+  const IconFolder = () => <svg className="w-4 h-4 mr-2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>;
+  const IconPlus = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>;
+  const IconUpload = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>;
 
   if (loading && !structure && !activePage) return <div className="flex items-center justify-center h-screen text-zinc-400">Loading Workspace...</div>;
 
@@ -285,6 +333,10 @@ export default function CMSAdminPage() {
 
                             return keys.map((key) => {
                                 const val = editValues[key];
+                                const originalVal = originalValues[key];
+                                const isDirty = val !== originalVal;
+                                const isSaving = savingKey === key;
+                                
                                 const isLong = val.length > 50 || key.includes('content') || key.includes('description');
                                 const isImage = key.includes('image') || key.includes('src') || key.includes('url');
                                 const isHighlighted = highlightKey === key;
@@ -293,32 +345,57 @@ export default function CMSAdminPage() {
                                     <div 
                                         key={key} 
                                         id={`edit-field-${key}`}
-                                        className={`group relative pl-4 border-l-2 transition-all duration-500 ${isHighlighted ? 'border-blue-500 bg-blue-50 p-2 rounded-r' : 'border-transparent hover:border-zinc-300'}`}
+                                        className={`group relative pl-4 border-l-2 transition-all duration-300 ${isHighlighted ? 'border-blue-500 bg-blue-50 p-2 rounded-r' : 'border-transparent hover:border-zinc-300'}`}
                                     >
-                                        <label className={`block text-xs font-semibold mb-1 font-mono ${isHighlighted ? 'text-blue-600' : 'text-zinc-400'}`}>{key}</label>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <label className={`block text-xs font-semibold font-mono ${isHighlighted ? 'text-blue-600' : 'text-zinc-400'}`}>{key}</label>
+                                            {isDirty && (
+                                                <button 
+                                                    onClick={() => handlePublish(key)}
+                                                    disabled={isSaving}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] px-2 py-0.5 rounded shadow-sm flex items-center scale-100 animate-in fade-in"
+                                                >
+                                                    {isSaving ? 'Saving...' : 'Publish'}
+                                                </button>
+                                            )}
+                                        </div>
                                         
                                         {isImage ? (
-                                            <div className="flex gap-4 items-start">
-                                                {val && <img src={val} alt="Preview" className="w-20 h-20 object-cover rounded bg-zinc-100 border border-zinc-200" />}
-                                                <input 
-                                                    type="text" 
-                                                    defaultValue={val}
-                                                    onBlur={(e) => handleSave(key, e.target.value)}
-                                                    className="flex-1 bg-transparent border-b border-zinc-200 pb-1 focus:border-black focus:outline-none transition-colors text-sm"
-                                                />
+                                            <div className="flex flex-col gap-2">
+                                                <div className="flex gap-4 items-start">
+                                                    {val && <img src={val} alt="Preview" className="w-20 h-20 object-cover rounded bg-zinc-100 border border-zinc-200" />}
+                                                    <div className="flex-1 space-y-2">
+                                                        <input 
+                                                            type="text" 
+                                                            value={val}
+                                                            onChange={(e) => handleChange(key, e.target.value)}
+                                                            className="w-full bg-transparent border-b border-zinc-200 pb-1 focus:border-black focus:outline-none text-sm"
+                                                            placeholder="https://..."
+                                                        />
+                                                        <label className="flex items-center gap-2 text-xs text-zinc-500 cursor-pointer hover:text-blue-600">
+                                                            {isSaving ? <span>Uploading...</span> : <><IconUpload /> Upload Image</>}
+                                                            <input 
+                                                                type="file" 
+                                                                className="hidden" 
+                                                                accept="image/*"
+                                                                onChange={(e) => e.target.files?.[0] && handleImageUpload(key, e.target.files[0])}
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         ) : isLong ? (
                                             <textarea 
-                                                defaultValue={val}
-                                                onBlur={(e) => handleSave(key, e.target.value)}
-                                                rows={Math.min(val.split('\n').length + 2, 10)}
-                                                className="w-full bg-zinc-50/50 p-3 rounded-md resize-none border-none focus:ring-1 focus:ring-zinc-200 text-zinc-800 leading-relaxed"
+                                                value={val}
+                                                onChange={(e) => handleChange(key, e.target.value)}
+                                                rows={Math.min(val.split('\n').length + 2, 8)}
+                                                className="w-full bg-zinc-50/50 p-3 rounded-md resize-none border-none focus:ring-1 focus:ring-zinc-200 text-zinc-800 leading-relaxed text-sm"
                                             />
                                         ) : (
                                             <input 
                                                 type="text" 
-                                                defaultValue={val}
-                                                onBlur={(e) => handleSave(key, e.target.value)}
+                                                value={val}
+                                                onChange={(e) => handleChange(key, e.target.value)}
                                                 className="w-full bg-transparent text-xl font-medium text-zinc-800 placeholder-zinc-300 border-none focus:ring-0 p-0"
                                             />
                                         )}
@@ -334,10 +411,11 @@ export default function CMSAdminPage() {
             <div className="flex-1 bg-zinc-100 p-4 flex flex-col min-w-0">
                 <div className="flex items-center justify-between mb-2 px-1">
                     <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Visual Editor</span>
-                    <span className="text-xs text-zinc-400">Right-click to edit</span>
+                    <span className="text-xs text-zinc-400">Right-click elements to edit</span>
                 </div>
                 <div className="flex-1 bg-white rounded-lg shadow-sm overflow-hidden border border-zinc-200 relative">
                      <iframe 
+                        ref={iframeRef}
                         id="preview-frame"
                         src={`/${selectedLang}${previewRoute}?edit_mode=true`}
                         className="w-full h-full border-none"

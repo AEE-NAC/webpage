@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { SupportedLanguage } from "@/context/adapt";
+import { CMSService } from "@/services/supabase.conf";
+import { CMSProvider } from "@/components/cms/cms-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,10 +47,16 @@ export default async function RootLayout({
 }) {
   const { lang } = await params;
   
+  // Fetch content for the current language server-side
+  // We fetch with empty prefix '' to get all global content needed for initial render
+  const dictionary = await CMSService.getPageContent('', lang);
+
   return (
     <html lang={lang}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <CMSProvider dictionary={dictionary}>
+          {children}
+        </CMSProvider>
       </body>
     </html>
   );
