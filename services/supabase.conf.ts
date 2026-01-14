@@ -163,6 +163,12 @@ export const CMSService = {
       return (data || []) as CMSWeeklyWord[];
   },
 
+  async getWeeklyWordById(id: string) {
+      const { data, error } = await supabase.from('cms_weekly_words').select('*').eq('id', id).single();
+      if(error) return null;
+      return data as CMSWeeklyWord;
+  },
+
   async upsertWeeklyWord(item: Partial<CMSWeeklyWord>) {
       if (item.id) {
           return await (supabase.from('cms_weekly_words') as any).update(item).eq('id', item.id);
