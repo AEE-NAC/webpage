@@ -52,6 +52,8 @@ export interface Database {
           language: string
           country_code: string | null
           type: 'template' | 'custom_html'
+          component_type: 'modal' | 'banner'
+          target_pages: string[]
           title: string | null
           body: string | null
           image_url: string | null
@@ -59,6 +61,46 @@ export interface Database {
           cta_url: string | null
           raw_html: string | null
           created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          is_active?: boolean
+          start_at?: string | null
+          end_at?: string | null
+          frequency_hours?: number
+          language: string
+          country_code?: string | null
+          type?: 'template' | 'custom_html'
+          component_type?: 'modal' | 'banner'
+          target_pages?: string[]
+          title?: string | null
+          body?: string | null
+          image_url?: string | null
+          cta_text?: string | null
+          cta_url?: string | null
+          raw_html?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          is_active?: boolean
+          start_at?: string | null
+          end_at?: string | null
+          frequency_hours?: number
+          language?: string
+          country_code?: string | null
+          type?: 'template' | 'custom_html'
+          component_type?: 'modal' | 'banner'
+          target_pages?: string[]
+          title?: string | null
+          body?: string | null
+          image_url?: string | null
+          cta_text?: string | null
+          cta_url?: string | null
+          raw_html?: string | null
+          created_at?: string
         }
       }
     }

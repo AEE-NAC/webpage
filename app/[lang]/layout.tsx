@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { SupportedLanguage } from "@/context/adapt";
 import { CMSService } from "@/services/supabase.conf";
 import { CMSProvider } from "@/components/cms/cms-provider";
+import { CMSPopupManager } from "@/components/cms/cms-popup-manager"; // Import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,7 @@ export default async function RootLayout({
     <html lang={lang}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CMSProvider dictionary={dictionary}>
+          <CMSPopupManager /> {/* Add Manager here */}
           {children}
         </CMSProvider>
       </body>

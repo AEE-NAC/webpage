@@ -14,8 +14,19 @@ export interface CMSContentItem {
 export interface CMSPopover {
   id: string;
   name: string;
-  frequency_hours: number;
-  type: 'template' | 'custom_html';
+  is_active: boolean; // Status
+  start_at: string | null; // ISO Date
+  end_at: string | null; // ISO Date
+  frequency_hours: number; // 0 = always, 24 = once a day
+  
+  language: SupportedLanguage;
+  country_code?: string | null;
+  
+  type: 'template' | 'custom_html'; // Content Source
+  component_type: 'modal' | 'banner'; // Display Style
+  
+  target_pages: string[]; // ['/', '/contact'] or ['*']
+  
   title?: string;
   body?: string;
   image_url?: string;

@@ -34,8 +34,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // --- SQL for Table Creation (Helper) ---
 const CREATE_TABLE_SQL = `
--- COPY AND PASTE THIS INTO SUPABASE SQL EDITOR IF TABLES ARE MISSING --
+-- COPY AND PASTE THIS INTO SUPABASE SQL EDITOR --
 
+-- 1. CMS CONTENT
 CREATE TABLE IF NOT EXISTS public.cms_content (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     key text NOT NULL,
@@ -52,6 +53,49 @@ ALTER TABLE public.cms_content ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read" ON public.cms_content FOR SELECT USING (true);
 CREATE POLICY "Public Insert" ON public.cms_content FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public Update" ON public.cms_content FOR UPDATE USING (true);
+
+-- 2. CMS POPOVERS & BANNERS (Updated)
+CREATE TABLE IF NOT EXISTS public.cms_popovers (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    name text NOT NULL,
+    is_active boolean DEFAULT false,
+    start_at timestamptz,
+    end_at timestamptz,
+    frequency_hours int DEFAULT 24,
+    language text NOT NULL,
+    country_code text,
+    type text DEFAULT 'template',
+    component_type text DEFAULT 'modal',
+    target_pages text[] DEFAULT ARRAY['*'],
+    title text,
+    body text,
+    image_url text,
+    cta_text text,
+    cta_url text,
+    raw_html text,
+    created_at timestamptz DEFAULT now()
+);
+
+-- UPDATE EXISTING TABLE IF EXISTS (Migration)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='cms_popovers' AND column_name='component_type') THEN
+        ALTER TABLE public.cms_popovers ADD COLUMN component_type text DEFAULT 'modal';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='cms_popovers' AND column_name='target_pages') THEN
+        ALTER TABLE public.cms_popovers ADD COLUMN target_pages text[] DEFAULT ARRAY['*'];
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='cms_popovers' AND column_name='end_at') THEN
+        ALTER TABLE public.cms_popovers ADD COLUMN end_at timestamptz;
+        ALTER TABLE public.cms_popovers ALTER COLUMN start_at DROP NOT NULL;
+    END IF;
+END $$;
+
+ALTER TABLE public.cms_popovers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public Read Popovers" ON public.cms_popovers;
+CREATE POLICY "Public Read Popovers" ON public.cms_popovers FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Write Popovers" ON public.cms_popovers;
+CREATE POLICY "Public Write Popovers" ON public.cms_popovers FOR ALL USING (true);
 `;
 
 // --- Logic ---
@@ -210,34 +254,49 @@ async function indexCMS() {
                     .is('country_code', null);
 
                 if (updateError) console.error(`   ❌ Failed to update ${item.key}:`, updateError.message);
-                else if (mode === 'ask') console.log(`   ✅ Updated.`);
-            }
-        }
-        
-        if (mode === 'overwrite_all') console.log("   ✅ All items updated.");
-        rl.close();
-    } else {
-        console.log("✅ No conflicts found (DB matches Code).");
-    }
-}
+                else if
+                     (true) {
+                                        console.log(`   ✅ Updated ${item.key}`);
+                                    }
+                                }
+                            }
+                            rl.close();
+                        }
+                        
+                        console.log("\n✅ CMS Content Indexing Complete.");
+                        process.exit(0);
+                    }
 
-// Recursive file scanner
-function getAllFiles(dirPath: string, extensions: string[], arrayOfFiles: string[] = []) {
-    if (!fs.existsSync(dirPath)) return arrayOfFiles;
-    
-    const files = fs.readdirSync(dirPath);
+                    // Run the script
+                    indexCMS().catch((err) => {
+                        console.error("Fatal Error:", err);
+                        process.exit(1);
+                    });
 
-    files.forEach(function(file) {
-        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-            arrayOfFiles = getAllFiles(dirPath + "/" + file, extensions, arrayOfFiles);
-        } else {
-            if (extensions.some(ext => file.endsWith(ext))) {
-                arrayOfFiles.push(path.join(dirPath, "/", file));
-            }
-        }
-    });
+                    // Helper: Recursively get files with specific extensions
+                    function getAllFiles(dirPath: string, extensions: string[]): string[] {
+                        let files: string[] = [];
+                        
+                        if (!fs.existsSync(dirPath)) {
+                            return files;
+                        }
 
-    return arrayOfFiles;
-}
+                        const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
-indexCMS();
+                        for (const entry of entries) {
+                            const fullPath = path.join(dirPath, entry.name);
+                            
+                            if (entry.isDirectory()) {
+                                // Recurse into subdirectories
+                                files = files.concat(getAllFiles(fullPath, extensions));
+                            } else if (entry.isFile()) {
+                                // Check if file matches extensions
+                                if (extensions.some(ext => entry.name.endsWith(ext))) {
+                                    files.push(fullPath);
+                                }
+                            }
+                        }
+                        
+                        return files;
+                    }
+

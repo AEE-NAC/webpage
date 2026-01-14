@@ -7,13 +7,6 @@ const supabaseKey = 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
-/**
- * Advanced CMS Service
- * Handles fetching content with cascading fallbacks:
- * 1. Specific Region + Language (e.g., 'fr' + 'BE')
- * 2. General Language (e.g., 'fr')
- * 3. Default Language (fallback)
- */
 export const CMSService = {
   
   /**
@@ -101,7 +94,7 @@ export const CMSService = {
                 value: content.value, 
                 content_type: content.content_type || 'text',
                 updated_at: new Date().toISOString()
-            })
+            } as any)
             .eq('id', existing.id)
             .select()
             .single();
@@ -114,7 +107,7 @@ export const CMSService = {
                 country_code: content.country_code || null,
                 content_type: content.content_type || 'text',
                 value: content.value
-            })
+            } as any)
             .select()
             .single();
     }
@@ -123,28 +116,67 @@ export const CMSService = {
   },
 
   /**
-   * Checks for active popovers for the current context
+   * --- POPOVERS & BANNERS ---
    */
-  async getActivePopover(lang: string, countryCode?: string): Promise<CMSPopover | null> {
+
+  async getPopoversList(): Promise<CMSPopover[]> {
+      const { data, error } = await supabase
+        .from('cms_popovers')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if(error) { 
+        // Improved logging to catch table-does-not-exist errors
+        console.error("Supabase Error (getPopoversList):", JSON.stringify(error, null, 2)); 
+        return []; 
+      }
+      return (data || []) as CMSPopover[];
+  },
+
+  async upsertPopover(popover: Partial<CMSPopover>) {
+      // Clean undefined to null for SQL
+      const dataToSave = {
+          ...popover,
+          country_code: popover.country_code || null,
+      };
+
+      if (popover.id) {
+          return await (supabase.from('cms_popovers') as any).update(dataToSave).eq('id', popover.id);
+      } else {
+          return await (supabase.from('cms_popovers') as any).insert(dataToSave);
+      }
+  },
+
+  async deletePopover(id: string) {
+      return await supabase.from('cms_popovers').delete().eq('id', id);
+  },
+
+  /**
+   * Fetches ACTIVE popovers/banners for the current context.
+   * Filtering by 'target_pages' is better done on the client to avoid cache fragmentation via URL parameters.
+   */
+  async getActivePopovers(lang: string, countryCode?: string): Promise<CMSPopover[]> {
     const now = new Date().toISOString();
     
-    // We fetch candidates
+    // Fetch candidates active by time
     const { data } = await supabase
       .from('cms_popovers')
       .select('*')
       .eq('is_active', true)
       .lte('start_at', now)
       .or(`end_at.is.null,end_at.gte.${now}`)
-      .in('language', [lang, 'en']);
+      .in('language', [lang, 'en']); // Language match or global
 
-    if (!data || data.length === 0) return null;
+    if (!data || data.length === 0) return [];
 
-    // Filter using TS for precise country match logic similar to content
-    const match = (data as any[]).find(p => 
-      (p.language === lang && p.country_code === countryCode) || // Exact
-      (p.language === lang && !p.country_code) // Lang generic
-    );
-
-    return match || data[0] as CMSPopover; // Return specific or first found
+    // Filter by specific language priority
+    // For Popovers we might want multiple active (e.g. a Banner AND a Modal)
+    // But we probably don't want 2 banners.
+    
+    return (data as CMSPopover[]).filter(p => {
+        // Strict country check if popover has one
+        if (p.country_code && p.country_code !== countryCode) return false;
+        return true;
+    });
   }
 };
