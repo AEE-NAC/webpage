@@ -103,6 +103,70 @@ export interface Database {
           created_at?: string
         }
       }
+      cms_weekly_words: {
+        Row: {
+          id: string
+          language: string
+          title: string
+          content: string | null
+          image_url: string | null
+          author_name: string | null
+          author_role: string | null
+          start_date: string
+          end_date: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          language: string
+          title: string
+          content?: string | null
+          image_url?: string | null
+          author_name?: string | null
+          author_role?: string | null
+          start_date: string
+          end_date: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          language?: string
+          title?: string
+          content?: string | null
+          image_url?: string | null
+          author_name?: string | null
+          author_role?: string | null
+          start_date?: string
+          end_date?: string
+          created_at?: string
+        }
+      }
+      cms_newsletters: {
+        Row: {
+          id: string
+          language: string
+          title: string
+          publication_date: string
+          pdf_url: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          language: string
+          title: string
+          publication_date: string
+          pdf_url: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          language?: string
+          title?: string
+          publication_date?: string
+          pdf_url?: string
+          created_at?: string
+        }
+      }
     }
   }
 }

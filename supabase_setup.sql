@@ -46,3 +46,35 @@ CREATE POLICY "Public Upload Static" ON storage.objects FOR INSERT WITH CHECK ( 
 
 DROP POLICY IF EXISTS "Public Update Static" ON storage.objects;
 CREATE POLICY "Public Update Static" ON storage.objects FOR UPDATE USING ( bucket_id = 'static' );
+
+-- 5. CMS Weekly Words
+CREATE TABLE IF NOT EXISTS public.cms_weekly_words (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    language text NOT NULL,
+    title text NOT NULL,
+    content text,
+    image_url text,
+    author_name text,
+    author_role text,
+    start_date timestamptz NOT NULL,
+    end_date timestamptz NOT NULL,
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.cms_weekly_words ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read Words" ON public.cms_weekly_words FOR SELECT USING (true);
+CREATE POLICY "Public Write Words" ON public.cms_weekly_words FOR ALL USING (true);
+
+-- 6. CMS Newsletters
+CREATE TABLE IF NOT EXISTS public.cms_newsletters (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    language text NOT NULL,
+    title text NOT NULL,
+    publication_date timestamptz NOT NULL,
+    pdf_url text NOT NULL,
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.cms_newsletters ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read Newsletters" ON public.cms_newsletters FOR SELECT USING (true);
+CREATE POLICY "Public Write Newsletters" ON public.cms_newsletters FOR ALL USING (true);

@@ -35,6 +35,26 @@ export interface CMSPopover {
   raw_html?: string;
 }
 
+export interface CMSWeeklyWord {
+  id: string;
+  language: SupportedLanguage;
+  title: string;
+  content?: string;
+  image_url?: string;
+  author_name?: string;
+  author_role?: string;
+  start_date: string; // ISO
+  end_date: string; // ISO
+}
+
+export interface CMSNewsletter {
+  id: string;
+  language: SupportedLanguage;
+  title: string;
+  publication_date: string; // ISO
+  pdf_url: string;
+}
+
 // The Dictionary structure used by the frontend components
 export type CMSDictionary = {
   [key: string]: string; 

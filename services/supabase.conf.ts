@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './types_db'; 
-import { CMSContentItem, CMSPopover } from './types';
+import { CMSContentItem, CMSPopover, CMSWeeklyWord, CMSNewsletter } from './types';
 
 const supabaseUrl = 'https://pfijkpxlsbyepxhwjsep.supabase.co';
 const supabaseKey = 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
@@ -149,6 +149,54 @@ export const CMSService = {
 
   async deletePopover(id: string) {
       return await supabase.from('cms_popovers').delete().eq('id', id);
+  },
+
+  /**
+   * --- WEEKLY WORDS ---
+   */
+  async getWeeklyWords(lang?: string): Promise<CMSWeeklyWord[]> {
+      let query = supabase.from('cms_weekly_words').select('*').order('start_date', { ascending: false });
+      if (lang) query = query.eq('language', lang);
+      
+      const { data, error } = await query;
+      if(error) { console.error("Weekly Words Error:", error); return []; }
+      return (data || []) as CMSWeeklyWord[];
+  },
+
+  async upsertWeeklyWord(item: Partial<CMSWeeklyWord>) {
+      if (item.id) {
+          return await (supabase.from('cms_weekly_words') as any).update(item).eq('id', item.id);
+      } else {
+          return await (supabase.from('cms_weekly_words') as any).insert(item);
+      }
+  },
+
+  async deleteWeeklyWord(id: string) {
+      return await supabase.from('cms_weekly_words').delete().eq('id', id);
+  },
+
+  /**
+   * --- NEWSLETTERS ---
+   */
+  async getNewsletters(lang?: string): Promise<CMSNewsletter[]> {
+      let query = supabase.from('cms_newsletters').select('*').order('publication_date', { ascending: false });
+      if (lang) query = query.eq('language', lang);
+
+      const { data, error } = await query;
+      if(error) { console.error("Newsletter Error:", error); return []; }
+      return (data || []) as CMSNewsletter[];
+  },
+
+  async upsertNewsletter(item: Partial<CMSNewsletter>) {
+      if (item.id) {
+          return await (supabase.from('cms_newsletters') as any).update(item).eq('id', item.id);
+      } else {
+          return await (supabase.from('cms_newsletters') as any).insert(item);
+      }
+  },
+
+  async deleteNewsletter(id: string) {
+      return await supabase.from('cms_newsletters').delete().eq('id', id);
   },
 
   /**
