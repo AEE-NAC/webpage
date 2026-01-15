@@ -86,3 +86,19 @@ BEGIN
         ALTER TABLE public.cms_newsletters ADD COLUMN country_code text DEFAULT NULL;
     END IF;
 END $$;
+
+-- 7. CMS Testimonials
+CREATE TABLE IF NOT EXISTS public.cms_testimonials (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    language text NOT NULL,
+    country_code text,
+    author_name text NOT NULL,
+    author_role text,
+    content text NOT NULL,
+    image_url text,
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.cms_testimonials ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read Testimonials" ON public.cms_testimonials FOR SELECT USING (true);
+CREATE POLICY "Public Write Testimonials" ON public.cms_testimonials FOR ALL USING (true);

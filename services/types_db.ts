@@ -149,6 +149,7 @@ export interface Database {
           publication_date: string
           pdf_url: string
           created_at: string
+          country_code?: string | null
         }
         Insert: {
           id?: string
@@ -157,6 +158,7 @@ export interface Database {
           publication_date: string
           pdf_url: string
           created_at?: string
+          country_code?: string | null
         }
         Update: {
           id?: string
@@ -165,6 +167,39 @@ export interface Database {
           publication_date?: string
           pdf_url?: string
           created_at?: string
+          country_code?: string | null
+        }
+      }
+      cms_testimonials: {
+        Row: {
+          id: string
+          language: string
+          country_code: string | null
+          author_name: string
+          author_role: string | null
+          content: string
+          image_url: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          language: string
+          country_code?: string | null
+          author_name: string
+          author_role?: string | null
+          content: string
+          image_url?: string | null
+          created_at?: string
+        }
+        Update: {
+           id?: string
+           language?: string
+           country_code?: string | null
+           author_name?: string
+           author_role?: string | null
+           content?: string
+           image_url?: string | null
+           created_at?: string
         }
       }
     }

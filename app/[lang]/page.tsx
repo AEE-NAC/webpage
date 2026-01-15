@@ -8,6 +8,11 @@ import { CMSText } from '@/components/cms/cms-text';
 import { VisualEditorListener } from '@/components/admin/visual-editor-listener';
 import { SupportedLanguage } from '@/context/adapt';
 
+// New Imports
+import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/home/feeds';
+import ImpactSection from '@/components/home/impact-section';
+import TestimonialsSection from '@/components/home/testimonials-section';
+
 export default async function Home({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
   // We await params to support Next.js 15+ async params
   const { lang } = await params;
@@ -48,15 +53,25 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
         </div>
 
         {/* CONTENT SECTIONS */}
-        <div className="flex flex-col items-center w-full justify-center">
+        <div className="flex flex-col w-full">
           <About />
-          <Ministries />
           
-          {/* 
-            WeeklyWord removed as requested.
-            Blog, FloatingEventCard, and VoiceTestimonial are pending migration.
-            You can import and add them here once converted.
-          */}
+          {/* Director's Greeting */}
+          <DirectorGreeting />
+          
+          <Ministries />
+
+          {/* New Impact Section: Every Child, Every Nation... */}
+          <ImpactSection />
+          
+          {/* Dynamic Feeds */}
+          <WeeklyWordFeed lang={lang} />
+
+          {/* Testimonials */}
+          <TestimonialsSection />
+
+          <NewsletterFeed lang={lang} />
+          
         </div>
       </main>
 

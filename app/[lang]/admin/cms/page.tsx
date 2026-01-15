@@ -6,6 +6,17 @@ import { CMSPopover, CMSWeeklyWord, CMSNewsletter } from "@/services/types"; // 
 import { SupportedLanguage, locales, SUPPORTED_COUNTRIES } from "@/context/adapt";
 import { useRouter } from "next/navigation";
 
+// Define local type for Testimonial since it might not be in shared types yet
+interface CMSTestimonial {
+  id: string;
+  language: SupportedLanguage;
+  country_code?: string | null;
+  author_name: string;
+  author_role?: string | null;
+  content: string;
+  image_url?: string | null;
+}
+
 export default function CMSAdminPage() {
   const router = useRouter();
   const [structure, setStructure] = useState<Record<string, any>>({});
@@ -44,6 +55,10 @@ export default function CMSAdminPage() {
   // Newsletter State
   const [newslettersList, setNewslettersList] = useState<CMSNewsletter[]>([]);
   const [editingNewsletter, setEditingNewsletter] = useState<Partial<CMSNewsletter> | null>(null);
+
+  // Testimonial State
+  const [testimonialsList, setTestimonialsList] = useState<CMSTestimonial[]>([]);
+  const [editingTestimonial, setEditingTestimonial] = useState<Partial<CMSTestimonial> | null>(null);
 
   // Load Tree Function (Defined here to be accessible by other functions)
   const fetchTree = () => {
@@ -92,8 +107,19 @@ export default function CMSAdminPage() {
         }).catch(e => { console.error(e); setLoading(false); });
         return;
     }
+
+    // 4. Testimonials View
+    if (activePage === '__testimonials') {
+        setLoading(true);
+        supabase.from('cms_testimonials').select('*').order('created_at', { ascending: false })
+            .then(({ data, error }) => {
+                if(!error && data) setTestimonialsList(data as any);
+                setLoading(false);
+            });
+        return;
+    }
     
-    // 4. Standard Page Content Editor
+    // 5. Standard Page Content Editor
     if (!activeSection) setIsEditorOpen(true);
     const prefix = activeSection ? `${activePage}.${activeSection}` : activePage;
     setLoading(true);
@@ -257,6 +283,37 @@ export default function CMSAdminPage() {
       setNewslettersList(await CMSService.getNewsletters());
   };
 
+  // --- Testimonial Actions ---
+  const handleTestimonialImageUpload = async (file: File) => {
+      if (!editingTestimonial) return;
+      try {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `testimonials/${Date.now()}.${fileExt}`;
+          const { error } = await supabase.storage.from('static').upload(fileName, file);
+          if (error) throw error;
+          const { data: { publicUrl } } = supabase.storage.from('static').getPublicUrl(fileName);
+          setEditingTestimonial(prev => ({ ...prev!, image_url: publicUrl }));
+      } catch (e: any) { alert("Upload error: " + e.message); }
+  };
+
+  const saveTestimonial = async (item: Partial<CMSTestimonial>) => {
+      if (!item.author_name || !item.content) return alert("Author Name and Content are required");
+      const { error } = await supabase.from('cms_testimonials').upsert(item as any);
+      if(error) alert(error.message);
+      else { 
+          setEditingTestimonial(null); 
+          const { data } = await supabase.from('cms_testimonials').select('*').order('created_at', { ascending: false });
+          if(data) setTestimonialsList(data as any);
+      }
+  };
+
+  const deleteTestimonial = async (id: string) => {
+      if(!confirm("Delete this testimonial?")) return;
+      await supabase.from('cms_testimonials').delete().eq('id', id);
+      const { data } = await supabase.from('cms_testimonials').select('*').order('created_at', { ascending: false });
+      if(data) setTestimonialsList(data as any);
+  };
+
   // Icons
   const IconBell = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>;
   const IconFolder = () => <svg className="w-4 h-4 mr-2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>;
@@ -266,6 +323,7 @@ export default function CMSAdminPage() {
   const IconUpload = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>;
   const IconBook = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>;
   const IconMail = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>;
+  const IconStar = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>;
 
   if (loading && !structure && !activePage) return <div className="flex items-center justify-center h-screen text-zinc-400">Loading Workspace...</div>;
 
@@ -306,6 +364,13 @@ export default function CMSAdminPage() {
                  Newsletters
              </button>
 
+             <button 
+                 onClick={() => { setActivePage('__testimonials'); setActiveSection(null); }}
+                 className={`w-full flex items-center px-3 py-1.5 text-sm rounded-md transition-colors ${activePage === '__testimonials' ? 'bg-yellow-100 text-yellow-900 font-medium' : 'text-zinc-600 hover:bg-zinc-100'}`}
+             >
+                 <span className={activePage==='__testimonials' ? 'text-yellow-600' : 'text-zinc-400'}><IconStar /></span>
+                 Testimonials
+             </button>
 
              {/* GENERIC PAGES SECTIONS */}
              <div className="text-xs font-semibold text-zinc-400 px-3 py-2 mt-4 uppercase tracking-wider">Pages</div>
@@ -346,6 +411,7 @@ export default function CMSAdminPage() {
                 {activePage === '__marketing' ? <span className="font-semibold text-purple-900">Marketing & Campaigns</span> :
                  activePage === '__weekly_words' ? <span className="font-semibold text-blue-900">Weekly Words Manager</span> :
                  activePage === '__newsletters' ? <span className="font-semibold text-green-900">Newsletters Manager</span> :
+                 activePage === '__testimonials' ? <span className="font-semibold text-yellow-900">Testimonials Manager</span> :
                  activePage ? (
                     <>
                         <span className="hover:text-zinc-800 cursor-pointer capitalize">{activePage.replace('_', ' ')}</span>
@@ -619,7 +685,7 @@ export default function CMSAdminPage() {
                                          <textarea className="w-full border p-2 rounded mt-1 h-32" value={editingWord.content || ''} onChange={e => setEditingWord({...editingWord, content: e.target.value})} placeholder="Write content here..." />
                                      </div>
                                      <div>
-                                          <label className="text-xs font-bold text-zinc-500 uppercase">Cover Image</label>
+                                          <label className="text-xs font-bold text-zinc-500 uppercase mb-1">Cover Image</label>
                                           <div className="flex gap-2 mt-1">
                                               <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingWord.image_url || ''} onChange={e => setEditingWord({...editingWord, image_url: e.target.value})} placeholder="https://..." />
                                               <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleWordImageUpload(e.target.files[0])} /></label>
@@ -743,6 +809,91 @@ export default function CMSAdminPage() {
                     )}
                 </div>
              </div>
+        ) : activePage === '__testimonials' ? (
+             /* TESTIMONIALS MANAGER */
+             <div className="flex-1 overflow-y-auto p-8 bg-zinc-50/50">
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex justify-between items-end mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-zinc-900">Testimonials</h1>
+                            <p className="text-zinc-500 text-sm mt-1">Manage what people say about AEE.</p>
+                        </div>
+                        <button onClick={() => setEditingTestimonial({ language: 'en' } as any)} className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors">+ New Testimonial</button>
+                    </div>
+
+                    {editingTestimonial ? (
+                        <div className="bg-white rounded-xl shadow-lg border border-zinc-200 p-6 animate-in zoom-in-95 duration-200">
+                             <div className="flex justify-between items-start mb-6 border-b border-zinc-100 pb-4">
+                                 <h2 className="text-lg font-semibold">{editingTestimonial.id ? 'Edit Testimonial' : 'New Testimonial'}</h2>
+                                 <button onClick={() => setEditingTestimonial(null)} className="text-zinc-400 hover:text-zinc-600">Close</button>
+                             </div>
+                             <div className="grid grid-cols-2 gap-8">
+                                 <div className="space-y-4">
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Targeting</label>
+                                          <div className="grid grid-cols-2 gap-2 mt-1">
+                                             <select className="w-full border p-2 rounded mt-1" value={editingTestimonial.language || 'en'} onChange={e => setEditingTestimonial({...editingTestimonial, language: e.target.value as any})}>{locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}</select>
+                                             <select className="w-full border p-2 rounded mt-1" value={editingTestimonial.country_code || ''} onChange={e => setEditingTestimonial({...editingTestimonial, country_code: e.target.value || null})}>
+                                                <option value="">Global</option>
+                                                {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+                                             </select>
+                                          </div>
+                                     </div>
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Author Info</label>
+                                         <div className="space-y-2 mt-1">
+                                            <input type="text" className="w-full border p-2 rounded" placeholder="Name" value={editingTestimonial.author_name || ''} onChange={e => setEditingTestimonial({...editingTestimonial, author_name: e.target.value})} />
+                                            <input type="text" className="w-full border p-2 rounded" placeholder="Role / Job Title" value={editingTestimonial.author_role || ''} onChange={e => setEditingTestimonial({...editingTestimonial, author_role: e.target.value})} />
+                                         </div>
+                                     </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-zinc-500 uppercase">Profile Picture</label>
+                                          <div className="flex gap-2 mt-1">
+                                              <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingTestimonial.image_url || ''} onChange={e => setEditingTestimonial({...editingTestimonial, image_url: e.target.value})} placeholder="https://..." />
+                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleTestimonialImageUpload(e.target.files[0])} /></label>
+                                          </div>
+                                          {editingTestimonial.image_url && <img src={editingTestimonial.image_url} alt="Preview" className="mt-2 h-16 w-16 object-cover rounded-full bg-zinc-100" />}
+                                     </div>
+                                 </div>
+                                 <div className="space-y-4">
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Quote Content</label>
+                                         <textarea className="w-full border p-2 rounded mt-1 h-32" value={editingTestimonial.content || ''} onChange={e => setEditingTestimonial({...editingTestimonial, content: e.target.value})} placeholder="The testimony goes here..." />
+                                     </div>
+                                     <div className="pt-4 flex justify-end gap-2 border-t border-zinc-100 mt-4">
+                                          {editingTestimonial.id && <button onClick={() => deleteTestimonial(editingTestimonial.id!)} className="text-red-500 px-4 py-2 hover:bg-red-50 rounded">Delete</button>}
+                                          <button onClick={() => saveTestimonial(editingTestimonial)} className="bg-yellow-600 text-white px-6 py-2 rounded font-medium hover:bg-yellow-700">Save</button>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {testimonialsList.length === 0 && <div className="text-center text-zinc-400 py-10">No testimonials found.</div>}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {testimonialsList.map(t => (
+                                    <div key={t.id} onClick={() => setEditingTestimonial(t)} className="group bg-white rounded-lg border border-zinc-200 p-4 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all">
+                                        <div className="flex gap-4">
+                                            <div className="w-12 h-12 rounded-full overflow-hidden bg-zinc-100 shrink-0">
+                                                {t.image_url ? <img src={t.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-zinc-300 font-bold">{t.author_name[0]}</div>}
+                                            </div>
+                                            <div>
+                                                <div className="font-semibold text-zinc-900">{t.author_name}</div>
+                                                <div className="text-xs text-zinc-500 mb-2">{t.author_role}</div>
+                                                <p className="text-sm text-zinc-600 line-clamp-2 italic">"{t.content}"</p>
+                                                <div className="text-xs text-zinc-400 mt-2 flex gap-2">
+                                                    <span className="uppercase font-bold">{t.language}</span>
+                                                    {t.country_code && <span>{t.country_code}</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
         ) : (
             /* EXISTING PREVIEW & EDITOR LAYOUT */
             <div className="flex-1 flex overflow-hidden">
