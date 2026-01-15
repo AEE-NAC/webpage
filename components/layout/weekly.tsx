@@ -10,20 +10,20 @@ const WeeklyWord = () => {
       <div className="container p-6 rounded-[12px] bg-[#423c5eff] grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className="space-y-4">
           <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff] font-medium">
-             <CMSText k="home.weekly_highlight.badge" defaultVal="Mot de la Semaine" />
+             <CMSText k="home.weekly_highlight.badge" defaultVal="Weekly Word" />
           </div>
           <h2 className="text-3xl font-bold text-[#fdfff4ff]">
-             <CMSText k="home.weekly_highlight.title" defaultVal="Qu'est-ce que le FRET ? Comment le définiriez-vous ?" />
+             <CMSText k="home.weekly_highlight.title" defaultVal="What is FRET? How would you define it?" />
           </h2>
           <div className="text-[#bdbdbcff]">
              <CMSText 
                 as="p"
                 k="home.weekly_highlight.desc" 
-                defaultVal="Le FRET est plus courant que vous ne le pensez..." 
+                defaultVal="FRET is more common than you think..." 
              />
           </div>
           <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-[#981a3c] text-white hover:bg-[#7a1530] h-10 px-4 py-2">
-             <CMSText k="home.weekly_highlight.cta" defaultVal="Lire Plus" />
+             <CMSText k="home.weekly_highlight.cta" defaultVal="Read More" />
           </button>
         </div>
         <div>

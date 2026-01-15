@@ -21,7 +21,7 @@ const About = () => (
                 </div>
                 <div className="space-y-4">
                     <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff] font-medium">
-                        <CMSText k="home.about.badge" defaultVal="Qui sommes-nous" />
+                        <CMSText k="home.about.badge" defaultVal="Who We Are" />
                     </div>
                     <h2 className="text-3xl font-bold text-[#0f0f0fff] dark:text-white">
                         <CMSText k="home.about.title" defaultVal="Empowering Children, Transforming Lives" />
@@ -34,7 +34,7 @@ const About = () => (
                         />
                     </div>
                     <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-[#981a3c] text-white hover:bg-[#7a1530] h-10 px-4 py-2">
-                         <CMSText k="home.about.cta" defaultVal="En savoir plus" />
+                         <CMSText k="home.about.cta" defaultVal="Learn More" />
                     </button>
                 </div>
             </div>

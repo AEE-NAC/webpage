@@ -10,13 +10,13 @@ const Ministries = () => {
             <div className="container">
                 <div className="space-y-4 text-center">
                     <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff] font-medium">
-                        <CMSText k="home.ministries.badge" defaultVal="Nos Ministères" />
+                        <CMSText k="home.ministries.badge" defaultVal="Our Ministries" />
                     </div>
                     <h2 className="text-3xl font-bold text-[#0f0f0fff]">
-                        <CMSText k="home.ministries.title" defaultVal="Transformer des vies" />
+                        <CMSText k="home.ministries.title" defaultVal="Transforming Lives" />
                     </h2>
                     <p className="text-[#878578ff] max-w-2xl mx-auto">
-                        <CMSText k="home.ministries.desc" defaultVal="Découvrez comment nous impactons la communauté." />
+                        <CMSText k="home.ministries.desc" defaultVal="Discover how we impact the community." />
                     </p>
                 </div>
                 
@@ -34,10 +34,10 @@ const Ministries = () => {
                                 style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
                             />
                             <h3 className="text-xl font-semibold text-[#0f0f0fff]">
-                                <CMSText k="home.ministries.card1.title" defaultVal="Club Bonne Nouvelle" />
+                                <CMSText k="home.ministries.card1.title" defaultVal="Good News Club" />
                             </h3>
                             <p className="text-[#878578ff]">
-                                <CMSText k="home.ministries.card1.desc" defaultVal="Description du club bonne nouvelle..." />
+                                <CMSText k="home.ministries.card1.desc" defaultVal="Good News Club description..." />
                             </p>
                         </div>
                     </div>
@@ -55,10 +55,10 @@ const Ministries = () => {
                                 style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
                             />
                             <h3 className="text-xl font-semibold text-[#0f0f0fff]">
-                                <CMSText k="home.ministries.card2.title" defaultVal="Club 5 Jours" />
+                                <CMSText k="home.ministries.card2.title" defaultVal="5-Day Club" />
                             </h3>
                             <p className="text-[#878578ff]">
-                                <CMSText k="home.ministries.card2.desc" defaultVal="Description du club 5 jours..." />
+                                <CMSText k="home.ministries.card2.desc" defaultVal="5-Day Club description..." />
                             </p>
                         </div>
                     </div>

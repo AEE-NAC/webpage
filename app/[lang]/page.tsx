@@ -34,14 +34,14 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
           >
             <div className="max-w-4xl mx-auto text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
               <h1 className="text-white text-2xl md:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-md">
-                <CMSText k="home.hero.welcome_prefix" defaultVal="Bienvenue sur le site de" />
+                <CMSText k="home.hero.welcome_prefix" defaultVal="Welcome to the site of" />
                 <span className="block mt-2 bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent">
-                   <CMSText k="home.hero.welcome_org" defaultVal="l'Association pour l'Évangélisation des Enfants" />
+                   <CMSText k="home.hero.welcome_org" defaultVal="Child Evangelism Fellowship" />
                 </span>
               </h1>
               <div className="w-20 h-1 mx-auto bg-white/30 rounded-full" />
               <p className="text-white/90 text-lg md:text-2xl font-medium leading-relaxed drop-shadow-sm">
-                 <CMSText k="home.hero.region_subtitle" defaultVal="De la Région Nord/Sud Amérique et Caraïbes Créolophone et Francophone" />
+                 <CMSText k="home.hero.region_subtitle" defaultVal="North/South America & Caribbean Region (Creole & Francophone)" />
               </p>
             </div>
           </div>

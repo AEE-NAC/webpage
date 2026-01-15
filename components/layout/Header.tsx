@@ -31,12 +31,12 @@ const Header = () => {
                     
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-6 text-[1em]">
-                        <NavLink href="/" k="header.nav.home" defaultVal="Accueil" />
-                        <NavLink href="/about" k="header.nav.about" defaultVal="À Propos" />
-                        <NavLink href="/#ministries" k="header.nav.ministries" defaultVal="Ministères" />
-                        <NavLink href="/implicate" k="header.nav.get_involved" defaultVal="S'impliquer" />
+                        <NavLink href="/" k="header.nav.home" defaultVal="Home" />
+                        <NavLink href="/about" k="header.nav.about" defaultVal="About" />
+                        <NavLink href="/#ministries" k="header.nav.ministries" defaultVal="Ministries" />
+                        <NavLink href="/implicate" k="header.nav.get_involved" defaultVal="Get Involved" />
                         <NavLink href="/contact" k="header.nav.contact" defaultVal="Contact" />
-                        <NavLink href="/staff" k="header.nav.staff" defaultVal="Notre Équipe" />
+                        <NavLink href="/staff" k="header.nav.staff" defaultVal="Our Team" />
                     </nav>
 
                     {/* Desktop Buttons */}
@@ -67,22 +67,22 @@ const Header = () => {
                     <nav className="flex flex-col md:hidden bg-[#fdfff4ff] border-t border-[#878578ff] animate-in slide-in-from-top-2">
                         <div className="flex flex-col px-4 py-4 gap-4">
                             <Link href="/" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
-                                <CMSText k="header.nav.home" defaultVal="Accueil" />
+                                <CMSText k="header.nav.home" defaultVal="Home" />
                             </Link>
                             <Link href="/about" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
-                                <CMSText k="header.nav.about" defaultVal="À Propos" />
+                                <CMSText k="header.nav.about" defaultVal="About" />
                             </Link>
                             <Link href="/#ministries" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
-                                <CMSText k="header.nav.ministries" defaultVal="Ministères" />
+                                <CMSText k="header.nav.ministries" defaultVal="Ministries" />
                             </Link>
                             <Link href="/implicate" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
-                                <CMSText k="header.nav.get_involved" defaultVal="S'impliquer" />
+                                <CMSText k="header.nav.get_involved" defaultVal="Get Involved" />
                             </Link>
                             <Link href="/contact" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.contact" defaultVal="Contact" />
                             </Link>
                             <Link href="/staff" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
-                                <CMSText k="header.nav.staff" defaultVal="Notre Équipe" />
+                                <CMSText k="header.nav.staff" defaultVal="Our Team" />
                             </Link>
                             
                             <div className="mt-2 pt-4 border-t border-zinc-200">
