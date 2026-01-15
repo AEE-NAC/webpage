@@ -1,58 +1,66 @@
-import Image from "next/image";
-import { Suspense } from "react"; 
-import { CMSText } from "@/components/cms/cms-text";
-import { CMSImage } from "@/components/cms/cms-image"; // Import CMSImage
-import { VisualEditorListener } from "@/components/admin/visual-editor-listener";
-import { SupportedLanguage } from "@/context/adapt";
-import { NewsletterFeed, WeeklyWordFeed } from "@/components/home/feeds";
+import React, { Suspense } from 'react';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import Ministries from '@/components/layout/ministries';
+import About from '@/components/layout/About';
+import Carousel from '@/components/layout/carousel';
+import { CMSText } from '@/components/cms/cms-text';
+import { VisualEditorListener } from '@/components/admin/visual-editor-listener';
+import { SupportedLanguage } from '@/context/adapt';
 
 export default async function Home({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
+  // We await params to support Next.js 15+ async params
   const { lang } = await params;
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans dark:bg-black">
-      {/* Wrapped in Suspense to fix hydration error related to useSearchParams */}
+    <div className="flex min-h-screen flex-col bg-white dark:bg-black font-sans">
       <Suspense fallback={null}>
         <VisualEditorListener />
       </Suspense>
+
+      <Header />
       
-      <main className="flex w-full flex-col">
-        {/* HERO SECTION */}
-        <div className="flex w-full max-w-3xl flex-col items-center justify-between py-32 px-16 mx-auto sm:items-start text-center sm:text-left">
-            <CMSImage
-              k="home.hero.logo_image" // Suffix '_image' triggers file uploader in Admin
-              defaultSrc="/next.svg"
-              className="dark:invert mb-8 sm:mb-0"
-              alt="Next.js logo"
-              width={100}
-              height={20}
-              priority
-            />
-            
-            <div className="flex flex-col items-center gap-6 sm:items-start">
-              <CMSText 
-                as="h1" 
-                k="home.hero.title"
-                defaultVal="Welcome to AEE Global"
-                className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
-              />
-              <div className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-                <CMSText 
-                   as="span"
-                   k="home.hero.description"
-                   defaultVal="This site is successfully internationalized."
-                />
-              </div>
+      <main className="flex-1 w-full flex flex-col">
+        {/* HERO SECTION WITH CAROUSEL */}
+        <div className="flex flex-col md:flex-row h-full relative w-full overflow-hidden">
+          <Carousel />
+          
+          <div 
+            className="absolute bottom-0 left-0 right-0 min-h-[300px] flex flex-col items-center justify-center p-8 z-10"
+            style={{
+              background: 'linear-gradient(to bottom, rgb(152 26 60 / 0%) 0%, rgba(152, 26, 60, 0.95) 40%)',
+              backdropFilter: 'blur(1px)'
+            }}
+          >
+            <div className="max-w-4xl mx-auto text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+              <h1 className="text-white text-2xl md:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-md">
+                <CMSText k="home.hero.welcome_prefix" defaultVal="Bienvenue sur le site de" />
+                <span className="block mt-2 bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent">
+                   <CMSText k="home.hero.welcome_org" defaultVal="l'Association pour l'Évangélisation des Enfants" />
+                </span>
+              </h1>
+              <div className="w-20 h-1 mx-auto bg-white/30 rounded-full" />
+              <p className="text-white/90 text-lg md:text-2xl font-medium leading-relaxed drop-shadow-sm">
+                 <CMSText k="home.hero.region_subtitle" defaultVal="De la Région Nord/Sud Amérique et Caraïbes Créolophone et Francophone" />
+              </p>
             </div>
+          </div>
         </div>
 
-        {/* DYNAMIC FEEDS */}
-        <div className="w-full bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800">
-             <WeeklyWordFeed lang={lang} />
-             <NewsletterFeed lang={lang} />
+        {/* CONTENT SECTIONS */}
+        <div className="flex flex-col items-center w-full justify-center">
+          <About />
+          <Ministries />
+          
+          {/* 
+            WeeklyWord removed as requested.
+            Blog, FloatingEventCard, and VoiceTestimonial are pending migration.
+            You can import and add them here once converted.
+          */}
         </div>
-
       </main>
+
+      <Footer />
     </div>
   );
 }

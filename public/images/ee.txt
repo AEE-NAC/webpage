@@ -1,0 +1,15 @@
+    pays = forms.ModelMultipleChoiceField(
+        queryset=Pays.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    villes = forms.ModelMultipleChoiceField(
+        queryset=Ville.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    clubs = forms.ModelMultipleChoiceField(
+        queryset=Club.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )

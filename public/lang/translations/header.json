@@ -1,0 +1,44 @@
+{
+    "header-home": {
+      "en": "Home",
+      "es": "Inicio",
+      "fr": "Accueil",
+      "kr": "Akprann"
+    },
+    "header-about": {
+      "en": "About",
+      "es": "Acerca de",
+      "fr": "À propos",
+      "kr": "Pwofil Nosòt"
+    },
+    "header-ministries": {
+      "en": "Ministries",
+      "es": "Ministerios",
+      "fr": "Ministères",
+      "kr": "Ministè"
+    },
+    "header-get-involved": {
+      "en": "Get Involved",
+      "es": "Únete",
+      "fr": "Impliquez-vous",
+      "kr": "Pèt Anvoye"
+    },
+    "header-contact-us": {
+      "en": "Contact Us",
+      "es": "Contáctanos",
+      "fr": "Contactez-nous",
+      "kr": "Kontakte Nosòt"
+    },
+    "header-toggle-navigation": {
+      "en": "Toggle navigation menu",
+      "es": "Alternar menú de navegación",
+      "fr": "Toggle menu de navigation",
+      "kr": "Toggle meni navigasyon"
+    },
+    "our-teams": {
+      "en": "Our Teams",
+      "es": "Nuestros Equipos",
+      "fr": "Nos équipes",
+      "kr": "Ekip Nou yo"
+    }
+  }

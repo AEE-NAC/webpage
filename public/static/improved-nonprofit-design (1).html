@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensemble, Changeons des Vies</title>
+    <script src="tailwind.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <main class="container mx-auto px-4 py-8">
+        <!-- Ministères Section -->
+        <section id="ministeres" class="mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Découvrez Nos Missions Transformatrices</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Club de la bonne nouvelle -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="./static/CBN_guadeloupe.jpeg" alt="Club de la bonne nouvelle" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">Guadeloupe</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Club de la bonne nouvelle</h3>
+                        <p class="text-gray-600 mb-4">Rencontre les enfants là où ils sont, dans les écoles, les centres communautaires, les églises et les foyers de quartier...</p>
+                        <a href="#" class="inline-block bg-blue-500 text-white font-semibold px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300">Rejoignez l'aventure !</a>
+                    </div>
+                </div>
+
+                <!-- Club de 5 jours -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="./static/CP_pichon.jpeg" alt="Club de 5 jours" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">Pichon</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Club de 5 jours</h3>
+                        <p class="text-gray-600 mb-4">Rencontre les enfants là où ils sont, placé dans leur quartier, un club de 5 jours est facile pour un enfant d'avoir accès lors de sa pause estivale...</p>
+                        <a href="#" class="inline-block bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600 transition-colors duration-300">Participez maintenant !</a>
+                    </div>
+                </div>
+
+                <!-- CYA - Christian Youth In Action -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="./static/website1.avif" alt="CYA" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded">Formation</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">CYA - Christian Youth In Action</h3>
+                        <p class="text-gray-600 mb-4">Un programme conçu pour vous former à des manières efficaces et engageantes d'enseigner Dieu aux enfants...</p>
+                        <a href="#" class="inline-block bg-purple-500 text-white font-semibold px-4 py-2 rounded hover:bg-purple-600 transition-colors duration-300">Formez-vous dès aujourd'hui !</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Le mot de la semaine Section -->
+        <section id="mot-semaine" class="mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Inspirez-vous avec Notre Message Hebdomadaire</h2>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="flex flex-col md:flex-row">
+                    <div class="w-full md:w-1/2">
+                        <img src="./static/week_word.jpg" alt="Mot de la semaine" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-full md:w-1/2 p-6">
+                        <p class="text-gray-500 text-sm mb-2">Par Beltane Harrigan</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Décisions</h3>
+                        <p class="text-gray-600 mb-6 max-h-40 overflow-y-auto">Joël 3:13 fait une déclaration qui s'applique à chacun d'entre nous : "Des multitudes, des multitudes dans la vallée de la décision..."</p>
+                        <p class="text-gray-500 text-sm">Publié le 1er mai 2023</p>
+                        <a href="#" class="inline-block mt-4 bg-blue-500 text-white font-semibold px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300">Découvrez la sagesse hebdomadaire !</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nos Articles Section -->
+        <section id="articles" class="mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Plongez dans Nos Récits Inspirants</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Article Card (repeated for each article) -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="relative">
+                        <img src="{{article.cover}}" alt="Article cover" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-white rounded-full p-2">
+                            <i class='bx bx-heart text-red-500'></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{article.title}}</h3>
+                        <p class="text-gray-600 mb-4">{{article.excerpt}}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 text-sm">Par {{article.author}}</span>
+                            <span class="text-gray-500 text-sm flex items-center">
+                                <i class='bx bx-time-five mr-1'></i> 15 min
+                            </span>
+                        </div>
+                        <a href="../article/{{article.slug}}" class="inline-block mt-4 bg-blue-500 text-white font-semibold px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300">Laissez-vous inspirer !</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nos Livres Section -->
+        <section id="livres" class="mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Explorez Notre Bibliothèque de Sagesse</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Livre Card (repeated for each book) -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="relative h-64">
+                        <img src="{{ livre.image_couverture.url }}" alt="Couverture du livre" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ livre.titre }}</h3>
+                        <p class="text-gray-600 mb-2">Par {{ livre.auteur }}</p>
+                        <p class="text-gray-500 text-sm mb-4">{{ livre.description | truncatewords:20 }}</p>
+                        <p class="text-gray-700 mb-4">Disponibilité: {{ livre.get_disponibilite_display }}</p>
+                        <a href="#" class="inline-block bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600 transition-colors duration-300">Enrichissez votre esprit !</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Témoignages Section -->
+        <section id="temoignages">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Écoutez les Voix du Changement</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Témoignage Card (repeated for each testimony) -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="{{testimonie.profile}}" alt="{{testimonie.author}}" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">{{testimonie.author}}</h3>
+                                <p class="text-gray-600">{{testimonie.position}}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">{{testimonie.content}}</p>
+                        <div class="text-yellow-500">
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star-half'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
