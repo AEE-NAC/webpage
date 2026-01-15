@@ -202,6 +202,38 @@ export interface Database {
            created_at?: string
         }
       }
+      cms_clubs: {
+        Row: {
+          id: string
+          language: string
+          country_code: string | null
+          title: string
+          description: string | null
+          logo_url: string | null
+          image_url: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          language: string
+          country_code?: string | null
+          title: string
+          description?: string | null
+          logo_url?: string | null
+          image_url?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          language?: string
+          country_code?: string | null
+          title?: string
+          description?: string | null
+          logo_url?: string | null
+          image_url?: string | null
+          created_at?: string
+        }
+      }
     }
   }
 }

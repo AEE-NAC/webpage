@@ -102,3 +102,19 @@ CREATE TABLE IF NOT EXISTS public.cms_testimonials (
 ALTER TABLE public.cms_testimonials ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read Testimonials" ON public.cms_testimonials FOR SELECT USING (true);
 CREATE POLICY "Public Write Testimonials" ON public.cms_testimonials FOR ALL USING (true);
+
+-- 8. CMS Clubs
+CREATE TABLE IF NOT EXISTS public.cms_clubs (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    language text NOT NULL,
+    country_code text,
+    title text NOT NULL,
+    description text,
+    logo_url text,
+    image_url text, -- For the illustrative card image
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.cms_clubs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read Clubs" ON public.cms_clubs FOR SELECT USING (true);
+CREATE POLICY "Public Write Clubs" ON public.cms_clubs FOR ALL USING (true);

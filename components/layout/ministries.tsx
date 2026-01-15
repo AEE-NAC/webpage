@@ -1,10 +1,40 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CMSText } from '../cms/cms-text';
-import { CMSImage } from '../cms/cms-image';
+import { supabase } from '@/services/supabase.conf';
+import { useCMS } from '../cms/cms-provider';
+
+interface Club {
+    id: string;
+    title: string;
+    description: string;
+    image_url: string;
+    logo_url: string;
+}
 
 const Ministries = () => {
+    const { locale } = useCMS() as any;
+    const [clubs, setClubs] = useState<Club[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClubs = async () => {
+            const { data, error } = await supabase
+                .from('cms_clubs')
+                .select('*')
+                .eq('language', locale)
+                .order('created_at', { ascending: true });
+            
+            if (data && !error) {
+                setClubs(data as any);
+            }
+            setLoading(false);
+        };
+
+        fetchClubs();
+    }, [locale]);
+
     return (
         <section id="ministries" className="bg-[#fdfff4ff] w-full flex justify-center py-12 md:py-24 lg:py-32">
             <div className="container">
@@ -21,68 +51,47 @@ const Ministries = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 p-6">
-                    {/* Card 1 */}
-                    <div className="text-card-foreground shadow-sm bg-[#fdfff4ff] border border-[#878578ff] rounded-2xl overflow-hidden">
-                        <div className="p-6 space-y-4">
-                            <CMSImage
-                                k="home.ministries.card1.image"
-                                defaultSrc="/images/CBN_haiti.jpeg"
-                                width={400}
-                                height={250}
-                                alt="Ministry 1"
-                                className="w-full h-48 object-cover rounded-2xl"
-                                style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
-                            />
-                            <h3 className="text-xl font-semibold text-[#0f0f0fff]">
-                                <CMSText k="home.ministries.card1.title" defaultVal="Good News Club" />
-                            </h3>
-                            <p className="text-[#878578ff]">
-                                <CMSText k="home.ministries.card1.desc" defaultVal="Good News Club description..." />
-                            </p>
+                    {loading ? (
+                        <div className="col-span-full py-12 text-center text-zinc-400">Loading ministries...</div>
+                    ) : clubs.length > 0 ? (
+                        clubs.map((club) => (
+                            <div key={club.id} className="text-card-foreground shadow-sm bg-[#fdfff4ff] border border-[#878578ff] rounded-2xl overflow-hidden group hover:border-[#981a3c] transition-colors">
+                                <div className="p-6 space-y-4">
+                                    <div className="relative">
+                                        <div className="w-full h-48 bg-zinc-100 rounded-2xl overflow-hidden border border-zinc-200">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            {club.image_url ? (
+                                                <img 
+                                                    src={club.image_url} 
+                                                    alt={club.title} 
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-zinc-200">
+                                                    <span className="text-zinc-400">No Image</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {club.logo_url && (
+                                            <div className="absolute -bottom-6 right-4 w-12 h-12 bg-white rounded-full p-2 shadow-md border border-zinc-100">
+                                                <img src={club.logo_url} alt="Logo" className="w-full h-full object-contain" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <h3 className="text-xl font-semibold text-[#0f0f0fff] pt-2">
+                                        {club.title}
+                                    </h3>
+                                    <p className="text-[#878578ff]">
+                                        {club.description}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-12 text-center text-zinc-500 italic">
+                            No ministries found for this region/language.
                         </div>
-                    </div>
-
-                    {/* Card 2 */}
-                    <div className="text-card-foreground shadow-sm bg-[#fdfff4ff] border border-[#878578ff] rounded-2xl overflow-hidden">
-                        <div className="p-6 space-y-4">
-                            <CMSImage
-                                k="home.ministries.card2.image"
-                                defaultSrc="/images/font_1.jpg"
-                                width={400}
-                                height={250}
-                                alt="Ministry 2"
-                                className="w-full h-48 object-cover rounded-2xl"
-                                style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
-                            />
-                            <h3 className="text-xl font-semibold text-[#0f0f0fff]">
-                                <CMSText k="home.ministries.card2.title" defaultVal="5-Day Club" />
-                            </h3>
-                            <p className="text-[#878578ff]">
-                                <CMSText k="home.ministries.card2.desc" defaultVal="5-Day Club description..." />
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Card 3 */}
-                    <div className="text-card-foreground shadow-sm bg-[#fdfff4ff] border border-[#878578ff] rounded-2xl overflow-hidden">
-                        <div className="p-6 space-y-4">
-                            <CMSImage
-                                k="home.ministries.card3.image"
-                                defaultSrc="/images/CP_pichon.jpeg"
-                                width={400}
-                                height={250}
-                                alt="Ministry 3"
-                                className="w-full h-48 object-cover rounded-2xl"
-                                style={{ aspectRatio: '400 / 250', objectFit: 'cover' }}
-                            />
-                            <h3 className="text-xl font-semibold text-[#0f0f0fff]">
-                                <CMSText k="home.ministries.card3.title" defaultVal="CYIA" />
-                            </h3>
-                            <p className="text-[#878578ff]">
-                                <CMSText k="home.ministries.card3.desc" defaultVal="Christian Youth In Action description..." />
-                            </p>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </section>

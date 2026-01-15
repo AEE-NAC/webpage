@@ -31,7 +31,7 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
           <Carousel />
           
           <div 
-            className="absolute bottom-0 left-0 right-0 min-h-[300px] flex flex-col items-center justify-center p-8 z-10"
+            className="absolute bottom-0 left-0 right-0 min-h-75 flex flex-col items-center justify-center p-8 z-10"
             style={{
               background: 'linear-gradient(to bottom, rgb(152 26 60 / 0%) 0%, rgba(152, 26, 60, 0.95) 40%)',
               backdropFilter: 'blur(1px)'
@@ -40,7 +40,7 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
             <div className="max-w-4xl mx-auto text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
               <h1 className="text-white text-2xl md:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-md">
                 <CMSText k="home.hero.welcome_prefix" defaultVal="Welcome to the site of" />
-                <span className="block mt-2 bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent">
+                <span className="block mt-2 bg-linear-to-r from-white to-pink-100 bg-clip-text text-transparent">
                    <CMSText k="home.hero.welcome_org" defaultVal="Child Evangelism Fellowship" />
                 </span>
               </h1>

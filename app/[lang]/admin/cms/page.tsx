@@ -17,6 +17,17 @@ interface CMSTestimonial {
   image_url?: string | null;
 }
 
+// Add CMSClub interface
+interface CMSClub {
+  id: string;
+  language: SupportedLanguage;
+  country_code?: string | null;
+  title: string;
+  description?: string | null;
+  logo_url?: string | null;
+  image_url?: string | null;
+}
+
 export default function CMSAdminPage() {
   const router = useRouter();
   const [structure, setStructure] = useState<Record<string, any>>({});
@@ -59,6 +70,10 @@ export default function CMSAdminPage() {
   // Testimonial State
   const [testimonialsList, setTestimonialsList] = useState<CMSTestimonial[]>([]);
   const [editingTestimonial, setEditingTestimonial] = useState<Partial<CMSTestimonial> | null>(null);
+
+  // Clubs State
+  const [clubsList, setClubsList] = useState<CMSClub[]>([]);
+  const [editingClub, setEditingClub] = useState<Partial<CMSClub> | null>(null);
 
   // Load Tree Function (Defined here to be accessible by other functions)
   const fetchTree = () => {
@@ -118,8 +133,19 @@ export default function CMSAdminPage() {
             });
         return;
     }
+
+    // 5. Clubs View
+    if (activePage === '__clubs') {
+        setLoading(true);
+        supabase.from('cms_clubs').select('*').order('created_at', { ascending: true })
+            .then(({ data, error }) => {
+                if(!error && data) setClubsList(data as any);
+                setLoading(false);
+            });
+        return;
+    }
     
-    // 5. Standard Page Content Editor
+    // 6. Standard Page Content Editor
     if (!activeSection) setIsEditorOpen(true);
     const prefix = activeSection ? `${activePage}.${activeSection}` : activePage;
     setLoading(true);
@@ -314,6 +340,38 @@ export default function CMSAdminPage() {
       if(data) setTestimonialsList(data as any);
   };
 
+
+  // --- Clubs Actions ---
+  const handleClubUpload = async (file: File, field: 'image_url' | 'logo_url') => {
+      if (!editingClub) return;
+      try {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `clubs/${field}_${Date.now()}.${fileExt}`;
+          const { error } = await supabase.storage.from('static').upload(fileName, file);
+          if (error) throw error;
+          const { data: { publicUrl } } = supabase.storage.from('static').getPublicUrl(fileName);
+          setEditingClub(prev => ({ ...prev!, [field]: publicUrl }));
+      } catch (e: any) { alert("Upload error: " + e.message); }
+  };
+
+  const saveClub = async (item: Partial<CMSClub>) => {
+      if (!item.title) return alert("Title is required");
+      const { error } = await supabase.from('cms_clubs').upsert(item as any);
+      if(error) alert(error.message);
+      else { 
+          setEditingClub(null); 
+          const { data } = await supabase.from('cms_clubs').select('*').order('created_at', { ascending: true });
+          if(data) setClubsList(data as any);
+      }
+  };
+
+  const deleteClub = async (id: string) => {
+      if(!confirm("Delete this club?")) return;
+      await supabase.from('cms_clubs').delete().eq('id', id);
+      const { data } = await supabase.from('cms_clubs').select('*').order('created_at', { ascending: true });
+      if(data) setClubsList(data as any);
+  };
+
   // Icons
   const IconBell = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>;
   const IconFolder = () => <svg className="w-4 h-4 mr-2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>;
@@ -324,6 +382,7 @@ export default function CMSAdminPage() {
   const IconBook = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>;
   const IconMail = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>;
   const IconStar = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>;
+  const IconUsers = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
 
   if (loading && !structure && !activePage) return <div className="flex items-center justify-center h-screen text-zinc-400">Loading Workspace...</div>;
 
@@ -372,6 +431,14 @@ export default function CMSAdminPage() {
                  Testimonials
              </button>
 
+             <button 
+                 onClick={() => { setActivePage('__clubs'); setActiveSection(null); }}
+                 className={`w-full flex items-center px-3 py-1.5 text-sm rounded-md transition-colors ${activePage === '__clubs' ? 'bg-orange-100 text-orange-900 font-medium' : 'text-zinc-600 hover:bg-zinc-100'}`}
+             >
+                 <span className={activePage==='__clubs' ? 'text-orange-600' : 'text-zinc-400'}><IconUsers /></span>
+                 Clubs & Activities
+             </button>
+
              {/* GENERIC PAGES SECTIONS */}
              <div className="text-xs font-semibold text-zinc-400 px-3 py-2 mt-4 uppercase tracking-wider">Pages</div>
              {Object.keys(structure).filter(k => !k.includes('weekly_word') && !k.includes('newsletter')).map((page) => (
@@ -412,6 +479,7 @@ export default function CMSAdminPage() {
                  activePage === '__weekly_words' ? <span className="font-semibold text-blue-900">Weekly Words Manager</span> :
                  activePage === '__newsletters' ? <span className="font-semibold text-green-900">Newsletters Manager</span> :
                  activePage === '__testimonials' ? <span className="font-semibold text-yellow-900">Testimonials Manager</span> :
+                 activePage === '__clubs' ? <span className="font-semibold text-orange-900">Clubs Manager</span> :
                  activePage ? (
                     <>
                         <span className="hover:text-zinc-800 cursor-pointer capitalize">{activePage.replace('_', ' ')}</span>
@@ -894,6 +962,94 @@ export default function CMSAdminPage() {
                     )}
                 </div>
             </div>
+        ) : activePage === '__clubs' ? (
+             /* CLUBS MANAGER */
+             <div className="flex-1 overflow-y-auto p-8 bg-zinc-50/50">
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex justify-between items-end mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-zinc-900">Clubs & Ministries</h1>
+                            <p className="text-zinc-500 text-sm mt-1">Manage activities displayed on the ministries page.</p>
+                        </div>
+                        <button onClick={() => setEditingClub({ language: 'en' } as any)} className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors">+ New Club</button>
+                    </div>
+
+                    {editingClub ? (
+                        <div className="bg-white rounded-xl shadow-lg border border-zinc-200 p-6 animate-in zoom-in-95 duration-200">
+                             <div className="flex justify-between items-start mb-6 border-b border-zinc-100 pb-4">
+                                 <h2 className="text-lg font-semibold">{editingClub.id ? 'Edit Club' : 'New Club'}</h2>
+                                 <button onClick={() => setEditingClub(null)} className="text-zinc-400 hover:text-zinc-600">Close</button>
+                             </div>
+                             <div className="grid grid-cols-2 gap-8">
+                                 <div className="space-y-4">
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Targeting</label>
+                                          <div className="grid grid-cols-2 gap-2 mt-1">
+                                             <select className="w-full border p-2 rounded mt-1" value={editingClub.language || 'en'} onChange={e => setEditingClub({...editingClub, language: e.target.value as any})}>{locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}</select>
+                                             <select className="w-full border p-2 rounded mt-1" value={editingClub.country_code || ''} onChange={e => setEditingClub({...editingClub, country_code: e.target.value || null})}>
+                                                <option value="">Global</option>
+                                                {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+                                             </select>
+                                          </div>
+                                     </div>
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Title</label>
+                                         <input type="text" className="w-full border p-2 rounded mt-1" placeholder="e.g. Good News Club" value={editingClub.title || ''} onChange={e => setEditingClub({...editingClub, title: e.target.value})} />
+                                     </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-zinc-500 uppercase">Logo / Icon</label>
+                                          <div className="flex gap-2 mt-1">
+                                              <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingClub.logo_url || ''} onChange={e => setEditingClub({...editingClub, logo_url: e.target.value})} placeholder="URL..." />
+                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'logo_url')} /></label>
+                                          </div>
+                                          {editingClub.logo_url && <img src={editingClub.logo_url} alt="Logo" className="mt-2 h-12 w-12 object-contain bg-zinc-100 rounded p-1" />}
+                                     </div>
+                                 </div>
+                                 <div className="space-y-4">
+                                     <div>
+                                         <label className="text-xs font-bold text-zinc-500 uppercase">Description</label>
+                                         <textarea className="w-full border p-2 rounded mt-1 h-32" value={editingClub.description || ''} onChange={e => setEditingClub({...editingClub, description: e.target.value})} placeholder="Brief description..." />
+                                     </div>
+                                     <div>
+                                          <label className="text-xs font-bold text-zinc-500 uppercase">Cover Image</label>
+                                          <div className="flex gap-2 mt-1">
+                                              <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingClub.image_url || ''} onChange={e => setEditingClub({...editingClub, image_url: e.target.value})} placeholder="URL..." />
+                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'image_url')} /></label>
+                                          </div>
+                                          {editingClub.image_url && <img src={editingClub.image_url} alt="Cover" className="mt-2 h-24 w-full object-cover rounded bg-zinc-100" />}
+                                     </div>
+                                     <div className="pt-4 flex justify-end gap-2 border-t border-zinc-100 mt-4">
+                                          {editingClub.id && <button onClick={() => deleteClub(editingClub.id!)} className="text-red-500 px-4 py-2 hover:bg-red-50 rounded">Delete</button>}
+                                          <button onClick={() => saveClub(editingClub)} className="bg-orange-600 text-white px-6 py-2 rounded font-medium hover:bg-orange-700">Save Club</button>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {clubsList.map(c => (
+                                    <div key={c.id} onClick={() => setEditingClub(c)} className="group bg-white rounded-lg border border-zinc-200 overflow-hidden hover:border-orange-300 hover:shadow-md cursor-pointer transition-all">
+                                        <div className="h-32 bg-zinc-100 relative">
+                                            {c.image_url ? <img src={c.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-zinc-300">No Image</div>}
+                                            {c.logo_url && <img src={c.logo_url} className="absolute -bottom-4 right-4 w-12 h-12 bg-white rounded-full p-1 border border-zinc-100 shadow-sm object-contain" alt="" />}
+                                        </div>
+                                        <div className="p-4 pt-6">
+                                            <h3 className="font-semibold text-zinc-900">{c.title}</h3>
+                                            <p className="text-xs text-zinc-500 line-clamp-2 mt-1">{c.description}</p>
+                                            <div className="text-[10px] text-zinc-400 mt-3 flex gap-2 uppercase font-bold">
+                                                <span>{c.language}</span>
+                                                {c.country_code && <span>• {c.country_code}</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {clubsList.length === 0 && <div className="text-center text-zinc-400 py-10">No clubs or ministries found.</div>}
+                        </div>
+                    )}
+                </div>
+            </div>
         ) : (
             /* EXISTING PREVIEW & EDITOR LAYOUT */
             <div className="flex-1 flex overflow-hidden">
@@ -913,7 +1069,7 @@ export default function CMSAdminPage() {
                         <div className="space-y-12 pb-20">
                             <div>
                                 <h1 className="text-4xl font-bold tracking-tight text-zinc-900 mb-2 capitalize">
-                                    {activeSection || activePage.replace('_', ' ')}
+                                    {activeSection || activePage!.replace('_', ' ')}
                                 </h1>
                             </div>
 
