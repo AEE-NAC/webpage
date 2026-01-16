@@ -3,7 +3,7 @@ create extension if not exists "uuid-ossp";
 
 -- 1. CMS Content Table
 -- Stores all dynamic content (text, image URLs, html snippets)
-create table public.cms_content (
+create table if not exists public.cms_content (
   id uuid default uuid_generate_v4() primary key,
   key text not null, -- e.g., "home.hero.title" or "about.team.image_1"
   language text not null, -- ISO code: 'en', 'fr', 'es'
@@ -18,7 +18,7 @@ create table public.cms_content (
 );
 
 -- 2. Popovers / Marketing Campaigns
-create table public.cms_popovers (
+create table if not exists public.cms_popovers (
   id uuid default uuid_generate_v4() primary key,
   name text not null, -- Internal name for admin reference
   is_active boolean default true,
@@ -49,13 +49,22 @@ create table public.cms_popovers (
 alter table public.cms_content enable row level security;
 alter table public.cms_popovers enable row level security;
 
--- Allow public read access to active content
-create policy "Allow public read access" on public.cms_content
-  for select using (true);
+-- CLEANUP OLD POLICIES (Fixes RLS Errors)
+drop policy if exists "Allow public read access" on public.cms_content;
+drop policy if exists "Allow public insert content" on public.cms_content;
+drop policy if exists "Allow public update content" on public.cms_content;
+drop policy if exists "Public Read" on public.cms_content;
+drop policy if exists "Public Insert" on public.cms_content;
+drop policy if exists "Public Update" on public.cms_content;
+
+-- CREATE NEW PERMISSIVE POLICIES
+create policy "Public Read" on public.cms_content for select using (true);
+create policy "Public Insert" on public.cms_content for insert with check (true);
+create policy "Public Update" on public.cms_content for update using (true);
 
 create policy "Allow public read access active popovers" on public.cms_popovers
   for select using (is_active = true);
 
 -- Indexes for performance
-create index idx_cms_key_lang on public.cms_content(key, language);
-create index idx_cms_lookup on public.cms_content(key, language, country_code);
+create index if not exists idx_cms_key_lang on public.cms_content(key, language);
+create index if not exists idx_cms_lookup on public.cms_content(key, language, country_code);

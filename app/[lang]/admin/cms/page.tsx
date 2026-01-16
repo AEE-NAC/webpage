@@ -75,6 +75,10 @@ export default function CMSAdminPage() {
   const [clubsList, setClubsList] = useState<CMSClub[]>([]);
   const [editingClub, setEditingClub] = useState<Partial<CMSClub> | null>(null);
 
+  // Define component namespaces
+  const COMPONENT_PREFIXES = ['layout', 'components', 'shared', 'ui', 'footer', 'header', 'nav', 'card'];
+  const isComponent = (key: string) => COMPONENT_PREFIXES.some(prefix => key.startsWith(prefix));
+
   // Load Tree Function (Defined here to be accessible by other functions)
   const fetchTree = () => {
     fetch('/api/cms?type=tree')
@@ -154,15 +158,20 @@ export default function CMSAdminPage() {
         setEditValues(data);
         setOriginalValues(data); 
         setLoading(false);
-        
-        if (highlightKey) {
-             setTimeout(() => {
-                 const el = document.getElementById(`edit-field-${highlightKey}`);
-                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                 setHighlightKey(null);
-             }, 500); 
-        }
-      });
+      
+      if (highlightKey) {
+          setTimeout(() => {
+               const el = document.getElementById(`edit-field-${highlightKey}`);
+               if (el) {
+                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 // Highlight effect
+                 el.classList.add('bg-blue-50');
+                 setTimeout(() => el.classList.remove('bg-blue-50'), 2000);
+               }
+               setHighlightKey(null);
+          }, 600); 
+      }
+    });
   }, [activePage, activeSection, selectedLang, selectedRegion]); 
 
   // Listen for Visual Editor Requests
@@ -171,12 +180,23 @@ export default function CMSAdminPage() {
           if (event.data?.type === 'CMS_EDIT_REQUEST' && event.data.key) {
                const fullKey = event.data.key as string;
                const parts = fullKey.split('.');
+               
                if (parts.length >= 2) {
-                  const items = Object.keys(structure);
-                  if (items.includes(parts[0])) {
-                      setActivePage(parts[0]);
-                      if (structure[parts[0]][parts[1]]) setActiveSection(parts[1]);
-                      else setActiveSection(null);
+                  const rootNamespace = parts[0];
+                  // Check if the root exists in our structure
+                  if (structure[rootNamespace]) {
+                      setActivePage(rootNamespace);
+                      
+                      // Try to determine the section (2nd part)
+                      // If it's a known section in the tree, select it.
+                      // Matches logic in getPageContent (prefix based)
+                      if (structure[rootNamespace][parts[1]]) {
+                          setActiveSection(parts[1]);
+                      } else {
+                          // If no specific section matches property, we might be at root of component
+                          setActiveSection(null);
+                      }
+                      
                       setHighlightKey(fullKey);
                       setIsEditorOpen(true);
                   }
@@ -439,9 +459,35 @@ export default function CMSAdminPage() {
                  Clubs & Activities
              </button>
 
-             {/* GENERIC PAGES SECTIONS */}
+             {/* COMPONENTS SECTIONS */}
+             <div className="text-xs font-semibold text-zinc-400 px-3 py-2 mt-4 uppercase tracking-wider">Components</div>
+             {Object.keys(structure)
+                .filter(k => !k.startsWith('__') && isComponent(k))
+                .sort()
+                .map((comp) => (
+                <div key={comp}>
+                    <button 
+                         onClick={() => { setActivePage(comp); setActiveSection(null); }}
+                        className={`w-full flex items-center px-3 py-1.5 text-sm rounded-md transition-colors ${activePage === comp && !activeSection ? 'bg-zinc-200 text-zinc-900' : 'text-zinc-600 hover:bg-zinc-100'}`}
+                    >
+                        <IconFolder />
+                        <span className="capitalize">{comp}</span>
+                    </button>
+                    {activePage === comp && Object.keys(structure[comp]).map(section => (
+                         <button key={section} onClick={() => setActiveSection(section)} className={`w-full flex items-center pl-8 pr-3 py-1 text-sm rounded-md transition-colors ${activeSection === section ? 'bg-zinc-100 text-zinc-900 font-medium' : 'text-zinc-500 hover:bg-zinc-50'}`}>
+                             <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 mr-2"></span>
+                             <span className="capitalize">{section}</span>
+                         </button>
+                    ))}
+                </div>
+            ))}
+
+             {/* PAGES SECTIONS */}
              <div className="text-xs font-semibold text-zinc-400 px-3 py-2 mt-4 uppercase tracking-wider">Pages</div>
-             {Object.keys(structure).filter(k => !k.includes('weekly_word') && !k.includes('newsletter')).map((page) => (
+             {Object.keys(structure)
+                .filter(k => !k.startsWith('__') && !isComponent(k))
+                .sort()
+                .map((page) => (
                 <div key={page}>
                     <button 
                          onClick={() => { setActivePage(page); setActiveSection(null); }}
@@ -655,7 +701,7 @@ export default function CMSAdminPage() {
                                                 onChange={e => setEditingPopover({...editingPopover, image_url: e.target.value})} 
                                                 placeholder="https://..." 
                                               />
-                                              <label className="bg-zinc-100 hover:bg-zinc-200 text-zinc-600 px-3 py-2 rounded cursor-pointer border border-zinc-200 flex items-center justify-center min-w-[3rem]" title="Upload Image">
+                                              <label className="bg-zinc-100 hover:bg-zinc-200 text-zinc-600 px-3 py-2 rounded cursor-pointer border border-zinc-200 flex items-center justify-center min-w-12" title="Upload Image">
                                                   <IconUpload />
                                                   <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleCampaignImageUpload(e.target.files[0])} />
                                               </label>
@@ -772,7 +818,7 @@ export default function CMSAdminPage() {
                             {wordsList.map(w => (
                                 <div key={w.id} onClick={() => setEditingWord(w)} className="group bg-white rounded-lg border border-zinc-200 p-4 flex items-center justify-between hover:border-blue-300 hover:shadow-md cursor-pointer transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-zinc-100 rounded overflow-hidden flex-shrink-0 relative">
+                                        <div className="w-12 h-12 bg-zinc-100 rounded overflow-hidden shrink-0 relative">
                                             {w.image_url ? <img src={w.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-zinc-300"><IconBook /></div>}
                                             {w.country_code && <img src={`https://flagcdn.com/w20/${w.country_code.toLowerCase()}.png`} className="absolute bottom-0 right-0 w-4 h-3 shadow-sm" alt={w.country_code} />}
                                         </div>
@@ -1056,6 +1102,7 @@ export default function CMSAdminPage() {
                 {/* Editor Column - Collapsible */}
                 <div 
                     className={`
+
                         overflow-y-auto border-r border-zinc-200 transition-all duration-300 ease-in-out bg-white
                         ${isEditorOpen ? 'w-[450px] opacity-100 p-8' : 'w-0 opacity-0 p-0 overflow-hidden'}
                     `}

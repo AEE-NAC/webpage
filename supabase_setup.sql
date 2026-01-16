@@ -1,3 +1,28 @@
+-- 0. CMS Content Table (FIX RLS FOR SCRIPT)
+CREATE TABLE IF NOT EXISTS public.cms_content (
+  id uuid default uuid_generate_v4() primary key,
+  key text not null,
+  language text not null,
+  country_code text,
+  content_type text check (content_type in ('text', 'image', 'html')) default 'text',
+  value text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  CONSTRAINT cms_content_unique_key UNIQUE NULLS NOT DISTINCT (key, language, country_code)
+);
+
+ALTER TABLE public.cms_content ENABLE ROW LEVEL SECURITY;
+
+-- Drop potential conflicting policies
+DROP POLICY IF EXISTS "Public Read" ON public.cms_content;
+DROP POLICY IF EXISTS "Public Insert" ON public.cms_content;
+DROP POLICY IF EXISTS "Public Update" ON public.cms_content;
+
+-- Allow Global Key Insertion for the Indexing Script
+CREATE POLICY "Public Read" ON public.cms_content FOR SELECT USING (true);
+CREATE POLICY "Public Insert" ON public.cms_content FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public Update" ON public.cms_content FOR UPDATE USING (true);
+
 -- 1. Create the Popovers/Banners table
 CREATE TABLE IF NOT EXISTS public.cms_popovers (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -118,3 +143,31 @@ CREATE TABLE IF NOT EXISTS public.cms_clubs (
 ALTER TABLE public.cms_clubs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read Clubs" ON public.cms_clubs FOR SELECT USING (true);
 CREATE POLICY "Public Write Clubs" ON public.cms_clubs FOR ALL USING (true);
+
+-- 9. Contacts (Form Submissions)
+CREATE TABLE IF NOT EXISTS public.contacts (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    name text,
+    email text,
+    message text,
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
+-- For contacts, typically only allow INSERT for public, and SELECT for admins
+CREATE POLICY "Public Insert Contacts" ON public.contacts FOR INSERT WITH CHECK (true);
+-- Policy for viewing contacts should be restricted to authenticated users (admins)
+
+-- 10. Applications (Implicate Submissions)
+CREATE TABLE IF NOT EXISTS public.applications (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    role text,
+    name text,
+    email text,
+    phone text,
+    message text,
+    created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Insert Applications" ON public.applications FOR INSERT WITH CHECK (true);

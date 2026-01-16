@@ -5,10 +5,11 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
 // --- Configuration ---
-// Note: We extract these from your codebase or ENV. 
+// Note: We extract these from your codebase or ENV.
+// Prioritize SERVICE_ROLE_KEY for admin scripts to bypass RLS if configured in shell
 const CONF_PATH = path.join(process.cwd(), 'services', 'supabase.conf.ts');
 let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-let supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+let supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if(!supabaseUrl || !supabaseKey) {
   // Fallback: Try to read from file
@@ -18,7 +19,8 @@ if(!supabaseUrl || !supabaseKey) {
         const urlMatch = confContent.match(/supabaseUrl\s*=\s*['"]([^'"]+)['"]/);
         const keyMatch = confContent.match(/supabaseKey\s*=\s*['"]([^'"]+)['"]/);
         if(urlMatch) supabaseUrl = urlMatch[1];
-        if(keyMatch) supabaseKey = keyMatch[1];
+        // Only use the file key (usually Anon) if we didn't find one in env
+        if(!supabaseKey && keyMatch) supabaseKey = keyMatch[1];
     }
   } catch(e) { 
     console.warn("Could not read supabase.conf.ts", e); 
@@ -46,10 +48,17 @@ CREATE TABLE IF NOT EXISTS public.cms_content (
     value text,
     created_at timestamptz DEFAULT now(),
     updated_at timestamptz DEFAULT now(),
-    CONSTRAINT cms_content_unique_key UNIQUE (key, language, country_code)
+    CONSTRAINT cms_content_unique_key UNIQUE NULLS NOT DISTINCT (key, language, country_code)
 );
 
 ALTER TABLE public.cms_content ENABLE ROW LEVEL SECURITY;
+
+-- FIX RLS: Drop old policies first
+DROP POLICY IF EXISTS "Public Read" ON public.cms_content;
+DROP POLICY IF EXISTS "Public Insert" ON public.cms_content;
+DROP POLICY IF EXISTS "Public Update" ON public.cms_content;
+
+-- Re-create permissive policies
 CREATE POLICY "Public Read" ON public.cms_content FOR SELECT USING (true);
 CREATE POLICY "Public Insert" ON public.cms_content FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public Update" ON public.cms_content FOR UPDATE USING (true);
@@ -101,10 +110,13 @@ CREATE POLICY "Public Write Popovers" ON public.cms_popovers FOR ALL USING (true
 // --- Logic ---
 
 async function indexCMS() {
-    console.log("🔍 Scanning app/ directory for CMS Content...");
+    console.log("🔍 Scanning app/ and components/ directories for CMS Content...");
     
-    // 1. Scan Files
-    const files = getAllFiles(path.join(process.cwd(), 'app'), ['.tsx', '.ts']);
+    // 1. Scan Files (Include both 'app' and 'components')
+    const appFiles = getAllFiles(path.join(process.cwd(), 'app'), ['.tsx', '.ts']);
+    const componentFiles = getAllFiles(path.join(process.cwd(), 'components'), ['.tsx', '.ts']);
+    
+    const files = [...appFiles, ...componentFiles];
     const keysFound = new Map<string, { key: string, value: string, type: 'text' | 'image' }>();
 
     let count = 0;
@@ -253,50 +265,50 @@ async function indexCMS() {
                     .eq('language', 'en')
                     .is('country_code', null);
 
-                if (updateError) console.error(`   ❌ Failed to update ${item.key}:`, updateError.message);
-                else if
-                     (true) {
-                                        console.log(`   ✅ Updated ${item.key}`);
-                                    }
-                                }
-                            }
-                            rl.close();
-                        }
-                        
-                        console.log("\n✅ CMS Content Indexing Complete.");
-                        process.exit(0);
-                    }
+                if (updateError) {
+                    console.error(`   ❌ Failed to update ${item.key}:`, updateError.message);
+                } else {
+                    console.log(`   ✅ Updated ${item.key}`);
+                }
+            }
+        }
+        rl.close();
+    }
+    
+    console.log("\n✅ CMS Content Indexing Complete.");
+    process.exit(0);
+}
 
-                    // Run the script
-                    indexCMS().catch((err) => {
-                        console.error("Fatal Error:", err);
-                        process.exit(1);
-                    });
+// Run the script
+indexCMS().catch((err) => {
+    console.error("Fatal Error:", err);
+    process.exit(1);
+});
 
-                    // Helper: Recursively get files with specific extensions
-                    function getAllFiles(dirPath: string, extensions: string[]): string[] {
-                        let files: string[] = [];
-                        
-                        if (!fs.existsSync(dirPath)) {
-                            return files;
-                        }
+// Helper: Recursively get files with specific extensions
+function getAllFiles(dirPath: string, extensions: string[]): string[] {
+    let files: string[] = [];
+    
+    if (!fs.existsSync(dirPath)) {
+        return files;
+    }
 
-                        const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
-                        for (const entry of entries) {
-                            const fullPath = path.join(dirPath, entry.name);
-                            
-                            if (entry.isDirectory()) {
-                                // Recurse into subdirectories
-                                files = files.concat(getAllFiles(fullPath, extensions));
-                            } else if (entry.isFile()) {
-                                // Check if file matches extensions
-                                if (extensions.some(ext => entry.name.endsWith(ext))) {
-                                    files.push(fullPath);
-                                }
-                            }
-                        }
-                        
-                        return files;
-                    }
+    for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        
+        if (entry.isDirectory()) {
+            // Recurse into subdirectories
+            files = files.concat(getAllFiles(fullPath, extensions));
+        } else if (entry.isFile()) {
+            // Check if file matches extensions
+            if (extensions.some(ext => entry.name.endsWith(ext))) {
+                files.push(fullPath);
+            }
+        }
+    }
+    
+    return files;
+}
 
