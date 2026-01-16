@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import Ministries from '@/components/layout/ministries';
 import About from '@/components/layout/About';
 import Carousel from '@/components/layout/carousel';
 import { CMSText } from '@/components/cms/cms-text';
@@ -59,9 +58,7 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
           {/* Director's Greeting */}
           <DirectorGreeting />
           
-          <Ministries />
-
-          {/* New Impact Section: Every Child, Every Nation... */}
+          {/* Ministries / Impact Section (Renamed & Moved) */}
           <ImpactSection />
           
           {/* Dynamic Feeds */}
