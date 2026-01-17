@@ -16,7 +16,7 @@ const SignupButton = () => {
             <CMSText k="header.btn.donate" defaultVal="Donate" />
           </button>
         </Link>
-        <Link href='/newsletter'>
+        <Link href='/join'>
           <button 
             className="items-center bg-[#2b2b3f] text-white justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 hidden md:inline-flex hover:bg-[#1f1f2e]"
           >

@@ -18,6 +18,7 @@ export const CMSService = {
     lang: string, 
     countryCode?: string
   ): Promise<Record<string, string>> {
+    console.info(`[CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}")`);
     
     // Fetch all potentially relevant rows for this namespace
     const { data, error } = await supabase
@@ -26,10 +27,17 @@ export const CMSService = {
       .ilike('key', `${prefix}%`)
       .in('language', [lang, 'en']); // Fetch current lang AND english fallback
 
-    if (error || !data) {
-      console.error('CMS Fetch Error:', error);
+    if (error) {
+      console.error(`[CMS Service] getPageContent ERROR:`, error.message);
       return {};
     }
+
+    if (!data) {
+      console.warn(`[CMS Service] getPageContent: Aucune donnée trouvée pour "${prefix}"`);
+      return {};
+    }
+
+    console.info(`[CMS Service] getPageContent: ${data.length} entrées brutes récupérées.`);
 
     const items = data as CMSContentItem[];
     const dictionary: Record<string, string> = {};
@@ -155,14 +163,12 @@ export const CMSService = {
    * --- WEEKLY WORDS ---
    */
   async getWeeklyWords(lang?: string): Promise<CMSWeeklyWord[]> {
-      let query = supabase.from('cms_weekly_words').select('*').order('start_date', { ascending: false });
-      if (lang) query = query.eq('language', lang);
-      
-      // Removed country_code filtering as Weekly Words are global/regional by language only.
-
-      const { data, error } = await query;
-      if(error) { console.error("Weekly Words Error:", error); return []; }
-      return (data || []) as CMSWeeklyWord[];
+    console.log(`[Supabase Query] getWeeklyWords(lang: ${lang || 'all'})`);
+    let query = supabase.from('cms_weekly_words').select('*').order('start_date', { ascending: false });
+    if (lang) query = query.eq('language', lang);
+    const { data, error } = await query;
+    if (error) console.error(`[Supabase Error] getWeeklyWords:`, error.message);
+    return (data as CMSWeeklyWord[]) || [];
   },
 
   async getWeeklyWordById(id: string) {
@@ -186,27 +192,14 @@ export const CMSService = {
   /**
    * --- NEWSLETTERS ---
    */
-  async getNewsletters(lang?: string, countryCode?: string): Promise<CMSNewsletter[]> {
-      let query = supabase.from('cms_newsletters').select('*').order('publication_date', { ascending: false });
-      if (lang) query = query.eq('language', lang);
-
-      if (countryCode) {
-          query = query.eq('country_code', countryCode);
-      } else {
-          query = query.is('country_code', null);
-      }
-
-      const { data, error } = await query;
-      if(error) { 
-          // Friendly error if column is missing
-          if (error.code === '42703') { // Undefined column
-             console.warn("Newsletter country_code column missing. Returning all for lang.");
-             return await this.getNewsletters(lang); // Fallback to just lang
-          }
-          console.error("Newsletter Error:", error); 
-          return []; 
-      }
-      return (data || []) as CMSNewsletter[];
+  async getNewsletters(lang?: string, country?: string): Promise<CMSNewsletter[]> {
+    console.log(`[Supabase Query] getNewsletters(lang: ${lang || 'all'}, country: ${country || 'all'})`);
+    let query = supabase.from('cms_newsletters').select('*').order('publication_date', { ascending: false });
+    if (lang) query = query.eq('language', lang);
+    if (country) query = query.eq('country_code', country);
+    const { data, error } = await query;
+    if (error) console.error(`[Supabase Error] getNewsletters:`, error.message);
+    return (data as CMSNewsletter[]) || [];
   },
 
   async upsertNewsletter(item: Partial<CMSNewsletter>) {

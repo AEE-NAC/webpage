@@ -11,10 +11,27 @@ import { SupportedLanguage } from '@/context/adapt';
 import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/home/feeds';
 import ImpactSection from '@/components/home/impact-section';
 import TestimonialsSection from '@/components/home/testimonials-section';
+import { CMSService } from "@/services/supabase.conf";
 
 export default async function Home({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
-  // We await params to support Next.js 15+ async params
   const { lang } = await params;
+  
+  console.info(`[Server] Rendering Home Page for lang: ${lang}`);
+
+  // Pre-fetch feeds data
+  let initialWords = [];
+  let initialNewsletters = [];
+
+  try {
+    console.info(`[Server] Fetching initial feeds data...`);
+    [initialWords, initialNewsletters] = await Promise.all([
+      CMSService.getWeeklyWords(lang),
+      CMSService.getNewsletters(lang)
+    ]);
+    console.info(`[Server] Successfully fetched ${initialWords.length} words and ${initialNewsletters.length} newsletters.`);
+  } catch (error) {
+    console.error(`[Server] Error loading home page feeds:`, error);
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-black font-sans">
@@ -25,7 +42,7 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
       <Header />
       
       <main className="flex-1 w-full flex flex-col">
-        {/* HERO SECTION WITH CAROUSEL */}
+        {/* 1. HERO SECTION */}
         <div className="flex flex-col md:flex-row h-full relative w-full overflow-hidden">
           <Carousel />
           
@@ -51,24 +68,60 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
           </div>
         </div>
 
-        {/* CONTENT SECTIONS */}
+        {/* CONTENT SECTIONS REORDERED FOR LOGICAL FLOW */}
         <div className="flex flex-col w-full">
-          <About />
           
-          {/* Director's Greeting */}
-          <DirectorGreeting />
-          
-          {/* Ministries / Impact Section (Renamed & Moved) */}
+          {/* 2. IMPACT & MINISTRIES (What we do & Where) */}
           <ImpactSection />
           
-          {/* Dynamic Feeds */}
-          <WeeklyWordFeed lang={lang} />
-
-          {/* Testimonials */}
-          <TestimonialsSection />
-
-          <NewsletterFeed lang={lang} />
+          {/* 3. ABOUT (Who we are) */}
+          <About />
           
+          {/* 4. DIRECTOR GREETING (Leadership invitation) */}
+          <DirectorGreeting />
+          
+          {/* 5. TESTIMONIALS (Social Proof) */}
+          <TestimonialsSection lang={lang} />
+
+          {/* 6. SPIRITUAL CONTENT (Weekly Word) */}
+          <WeeklyWordFeed lang={lang} initialWords={initialWords} />
+
+          {/* 7. RESOURCES (Newsletters) */}
+          <NewsletterFeed lang={lang} initialNewsletters={initialNewsletters} />
+          
+          {/* 8. CALL TO ACTION (Final Step) */}
+          <section className="py-20 px-4">
+            <div className="container mx-auto max-w-5xl">
+              <div className="relative bg-zinc-900 text-white rounded-3xl p-8 md:p-16 text-center overflow-hidden shadow-2xl">
+                {/* Decorative background elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#981a3c]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                
+                <div className="relative z-10 space-y-6">
+                  <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+                    <CMSText k="home.cta_join.title" defaultVal="Prêt à faire une différence ?" />
+                  </h2>
+                  <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                    <CMSText k="home.cta_join.desc" defaultVal="Rejoignez notre mission et aidez-nous à transformer la vie des enfants dans chaque nation, chaque jour." />
+                  </p>
+                  <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a 
+                      href={`/${lang}/implicate`} 
+                      className="inline-block bg-[#981a3c] hover:bg-[#7a1530] text-white font-bold py-4 px-8 rounded-full transition-all hover:scale-105 shadow-lg"
+                    >
+                      <CMSText k="home.cta_join.btn_primary" defaultVal="Devenir Volontaire" />
+                    </a>
+                    <a 
+                      href={`/${lang}/donation`} 
+                      className="inline-block bg-white text-zinc-900 hover:bg-zinc-100 font-bold py-4 px-8 rounded-full transition-all hover:scale-105 shadow-md"
+                    >
+                      <CMSText k="home.cta_join.btn_secondary" defaultVal="Faire un Don" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
 

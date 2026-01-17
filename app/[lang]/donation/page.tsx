@@ -125,6 +125,7 @@ const Donation = () => {
 
   const handleSubmitContact = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.info("[Form] Donation Contact: Envoi de la requête de support...", { type: donationType, country: userCountry });
     setSubmitStatus('sending');
     try {
         const messageBody = donationType === 'material' 
@@ -137,9 +138,14 @@ const Donation = () => {
             message: messageBody
         }] as any);
 
-        if (error) throw error;
+        if (error) {
+            console.error("[Form] Donation Contact: Erreur Supabase:", error.message);
+            throw error;
+        }
+        console.info("[Form] Donation Contact: Requête enregistrée.");
         setSubmitStatus('success');
-    } catch (err) {
+    } catch (err: any) {
+        console.error("[Form] Donation Contact: Échec de l'envoi:", err);
         setSubmitStatus('error');
     }
   };
@@ -266,7 +272,7 @@ const Donation = () => {
                                 onChange={(e) => setSelectedMinistry(e.target.value)}
                                 className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] transition-shadow shadow-sm"
                             >
-                                <option value=""><CMSText k="donate.form.select_ministry" defaultVal="Là où le besoin est le plus grand" /></option>
+                                <option value="">Là où le besoin est le plus grand</option>
                                 {ministries.map((ministry) => (<option key={ministry.id} value={ministry.name}>{ministry.name}</option>))}
                             </select>
                         </div>
@@ -289,7 +295,7 @@ const Donation = () => {
                                 <div>
                                     <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="donate.form.method" defaultVal="Moyen de paiement" /></label>
                                     <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm">
-                                        <option value=""><CMSText k="donate.form.select_method" defaultVal="Choisir..." /></option>
+                                        <option value="">Choisir...</option>
                                         <option value="CreditCard">Carte de crédit / Débit</option>
                                         <option value="BankTransfer">Virement bancaire</option>
                                         <option value="Paypal">PayPal</option>

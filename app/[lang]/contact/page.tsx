@@ -14,6 +14,7 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.info("[Form] Contact: Tentative d'envoi du message...", { name, email });
     setLoading(true);
     try {
       const { error } = await supabase
@@ -21,14 +22,17 @@ const Contact = () => {
         .insert([{ name, email, message }] as any);
 
       if (error) {
+        console.error("[Form] Contact: Erreur d'insertion Supabase:", error.message);
         setStatusMessage('Désolé, une erreur est survenue. Veuillez réessayer.');
       } else {
+        console.info("[Form] Contact: Message envoyé avec succès.");
         setStatusMessage('Merci pour votre message. Nous vous répondrons bientôt !');
         setName('');
         setEmail('');
         setMessage('');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("[Form] Contact: Erreur inattendue:", error);
       setStatusMessage('Une erreur est survenue. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);

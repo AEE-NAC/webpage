@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { CMSText } from '../cms/cms-text';
 import dynamic from 'next/dynamic';
 
@@ -35,31 +35,59 @@ const IconArrowLeft = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" h
 const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
 
 const ImpactSection = () => {
-  const [activeTab, setActiveTab] = useState<'child' | 'nation' | 'day'>('nation');
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { amount: 0.2 });
+  
+  // TRACE: Monitoring de la vue
+  useEffect(() => {
+    console.log(`[View] ImpactSection is currently in view: ${isInView}`);
+  }, [isInView]);
+
+  const [activeTab, setActiveTab] = useState<'child' | 'nation' | 'day'>('child');
   const [activeCountryIndex, setActiveCountryIndex] = useState(0);
   const [activeActivityIndex, setActiveActivityIndex] = useState(0);
 
-  // Auto-rotate countries
+  // Tab Orchestration
   useEffect(() => {
-    if (activeTab !== 'nation') return;
+    if (!isInView) return;
+    console.info("[Orchestration] ImpactSection: Starting 5s timer to 'nation'...");
+
+    const toNation = setTimeout(() => {
+      console.info("[Orchestration] ImpactSection: Switching to 'nation'");
+      setActiveTab(prev => prev === 'child' ? 'nation' : prev);
+    }, 5000);
+
+    const toDay = setTimeout(() => {
+      console.info("[Orchestration] ImpactSection: Switching to 'day' (2min mark)");
+      setActiveTab(prev => prev === 'nation' ? 'day' : prev);
+    }, 120000);
+
+    return () => {
+      clearTimeout(toNation);
+      clearTimeout(toDay);
+    };
+  }, [isInView]);
+
+  // Auto-rotate countries - Only when section is in view
+  useEffect(() => {
+    if (activeTab !== 'nation' || !isInView) return;
     
     const interval = setInterval(() => {
       setActiveCountryIndex((prev) => (prev + 1) % COUNTRIES_DATA.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [activeTab]);
+  }, [activeTab, isInView]);
 
-  // Auto-scroll logic for country list
+  // Auto-scroll logic for country list - Protected by isInView to avoid page jumping
   useEffect(() => {
-    if (activeTab === 'nation') {
+    if (activeTab === 'nation' && isInView) {
         const el = document.getElementById(`country-item-${activeCountryIndex}`);
         if (el) {
-            // Use block 'nearest' to avoid jumping if already visible, or 'center' to center it
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
-  }, [activeCountryIndex, activeTab]);
+  }, [activeCountryIndex, activeTab, isInView]);
 
   // Activity Navigation
   const nextActivity = () => {
@@ -78,7 +106,7 @@ const ImpactSection = () => {
 
   // Adjusted padding and height class to fits within viewport accounting for header
   return (
-    <section className="relative bg-zinc-900 text-white overflow-hidden flex flex-col justify-center min-h-[calc(100vh-65px)] scroll-mt-16" id="ministries">
+    <section ref={sectionRef} className="relative bg-zinc-900 text-white overflow-hidden flex flex-col justify-center min-h-[calc(100vh-65px)] scroll-mt-16" id="ministries">
         {/* Background Decorative */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-green-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>

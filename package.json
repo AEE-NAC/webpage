@@ -28,6 +28,7 @@
     "react-dom": "19.2.3",
     "react-leaflet": "^5.0.0",
     "react-leaflet-markercluster": "^5.0.0-rc.0",
+    "react-pdf": "^10.3.0",
     "supabase": "^2.72.6",
     "tailwind-merge": "^3.4.0"
   },

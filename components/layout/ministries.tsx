@@ -20,16 +20,28 @@ const Ministries = () => {
 
     useEffect(() => {
         const fetchClubs = async () => {
-            const { data, error } = await supabase
-                .from('cms_clubs')
-                .select('*')
-                .eq('language', locale)
-                .order('created_at', { ascending: true });
-            
-            if (data && !error) {
-                setClubs(data as any);
+            console.info(`[CMS] Ministries: Chargement des clubs pour le locale: ${locale}`);
+            try {
+                const { data, error } = await supabase
+                    .from('cms_clubs')
+                    .select('*')
+                    .eq('language', locale)
+                    .order('created_at', { ascending: true });
+                
+                if (error) {
+                    console.error("[CMS] Ministries: Erreur Supabase:", error.message);
+                    throw error;
+                }
+                
+                console.info(`[CMS] Ministries: ${data?.length || 0} clubs récupérés avec succès.`);
+                if (data) {
+                    setClubs(data as any);
+                }
+            } catch (err: any) {
+                console.error("[CMS] Ministries: Erreur lors de la récupération des données:", err);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchClubs();

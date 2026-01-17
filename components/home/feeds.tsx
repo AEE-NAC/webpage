@@ -1,26 +1,55 @@
-import { CMSService } from "@/services/supabase.conf";
+"use client";
+
+import React, { useState, useMemo } from "react";
 import { SupportedLanguage } from "@/context/adapt";
 import Link from "next/link";
 import { CMSText } from "@/components/cms/cms-text";
-import { CMSImage } from "@/components/cms/cms-image"; // Import CMSImage
+import { CMSImage } from "@/components/cms/cms-image";
+import { CMSWeeklyWord, CMSNewsletter } from "@/services/types";
 
-// Helper for date formatting
-const formatDate = (dateConfig: string, lang: string) => {
-    return new Date(dateConfig).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' });
+const formatDate = (dateString: string, lang: string) => {
+    return new Date(dateString).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-export async function WeeklyWordFeed({ lang }: { lang: SupportedLanguage }) {
-   const words = await CMSService.getWeeklyWords(lang);
-   if (!words.length) return null;
+const FilterBar = ({ selectedYear, onYearChange, years, label }: { selectedYear: string, onYearChange: (y: string) => void, years: string[], label: string }) => (
+    <div className="flex items-center gap-3 mb-6">
+        <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{label}</span>
+        <select 
+            value={selectedYear} 
+            onChange={(e) => onYearChange(e.target.value)}
+            className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-1 text-sm font-medium focus:ring-2 focus:ring-[#981a3c] outline-none transition-all"
+        >
+            <option value="all">Toutes les années</option>
+            {years.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+    </div>
+);
+
+export function WeeklyWordFeed({ lang, initialWords }: { lang: SupportedLanguage, initialWords: CMSWeeklyWord[] }) {
+   console.log(`[Component] WeeklyWordFeed: Rendered with ${initialWords?.length || 0} initial words.`);
+   const [year, setYear] = useState('all');
+   
+   const years = useMemo(() => {
+       const yrs = initialWords.map(w => new Date(w.start_date || '').getFullYear().toString());
+       return Array.from(new Set(yrs)).sort().reverse();
+   }, [initialWords]);
+
+   const filteredWords = initialWords.filter(w => year === 'all' || new Date(w.start_date || '').getFullYear().toString() === year);
+
+   if (!initialWords.length) return null;
 
    return (
      <section className="w-full max-w-5xl mx-auto py-12 px-4">
-        <h2 className="text-2xl font-bold mb-6 text-zinc-800 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2 flex items-center gap-2">
-            <span className="w-2 h-6 bg-[#981a3c] rounded-full"></span>
-            <CMSText k="home.weekly_words.title" defaultVal="Weekly Words" />
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+            <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                <span className="w-2 h-6 bg-[#981a3c] rounded-full"></span>
+                <CMSText k="home.weekly_words.title" defaultVal="Paroles de la Semaine" />
+            </h2>
+            <FilterBar selectedYear={year} onYearChange={setYear} years={years} label="Filtrer par" />
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {words.slice(0, 3).map(w => (
+            {filteredWords.slice(0, 6).map(w => (
                 <Link key={w.id} href={`/${lang}/weekly-word/${w.id}`} className="group block h-full">
                     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#981a3c]/50 transition-all h-full flex flex-col">
                         <div className="h-48 w-full bg-zinc-100 relative overflow-hidden">
@@ -51,27 +80,42 @@ export async function WeeklyWordFeed({ lang }: { lang: SupportedLanguage }) {
    )
 }
 
-export async function NewsletterFeed({ lang, countryCode }: { lang: SupportedLanguage, countryCode?: string }) {
-    const newsletters = await CMSService.getNewsletters(lang, countryCode);
-    if (!newsletters.length) return null;
+export function NewsletterFeed({ lang, initialNewsletters }: { lang: SupportedLanguage, initialNewsletters: CMSNewsletter[] }) {
+    console.log(`[Component] NewsletterFeed: Rendered with ${initialNewsletters?.length || 0} initial newsletters.`);
+    const [year, setYear] = useState('all');
+
+    const years = useMemo(() => {
+        const yrs = initialNewsletters.map(n => new Date(n.publication_date).getFullYear().toString());
+        return Array.from(new Set(yrs)).sort().reverse();
+    }, [initialNewsletters]);
+
+    const filtered = initialNewsletters.filter(n => year === 'all' || new Date(n.publication_date).getFullYear().toString() === year);
+
+    if (!initialNewsletters.length) return null;
 
     return (
-        <section className="w-full max-w-5xl mx-auto py-12 px-4 bg-zinc-50 dark:bg-zinc-900/30 rounded-3xl my-8">
-            <h2 className="text-2xl font-bold mb-6 text-zinc-800 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2 flex items-center gap-2">
-                <CMSText k="home.newsletters.title" defaultVal="Newsletter Archive" />
-                {countryCode && <img src={`https://flagcdn.com/w20/${countryCode.toLowerCase()}.png`} alt={countryCode} className="h-4 w-auto rounded-sm opacity-80" />}
-            </h2>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                 {newsletters.slice(0, 4).map(n => (
-                     <a key={n.id} href={n.pdf_url} target="_blank" rel="noopener noreferrer" className="group block">
-                         <div className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl hover:border-green-500 hover:shadow-md transition-all flex items-center gap-4">
-                             <div className="w-12 h-12 bg-green-50 text-green-600 rounded-lg flex items-center justify-center shrink-0 border border-green-100 group-hover:bg-green-600 group-hover:text-white transition-colors">
-                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        <section className="w-full max-w-5xl mx-auto py-12 px-4 my-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+                <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                    <span className="w-2 h-6 bg-green-600 rounded-full"></span>
+                    <CMSText k="home.newsletters.title" defaultVal="Archives Newsletters" />
+                </h2>
+                <FilterBar selectedYear={year} onYearChange={setYear} years={years} label="Archives de" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                 {filtered.slice(0, 8).map(n => (
+                     <a key={n.id} href={n.pdf_url} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden hover:shadow-xl hover:border-green-500/50 transition-all duration-300">
+                         <div className="aspect-[3/4] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative group-hover:bg-green-50 transition-colors">
+                             <div className="w-16 h-20 bg-white border-2 border-zinc-200 rounded-md shadow-sm transform group-hover:-rotate-3 group-hover:scale-110 transition-all flex flex-col items-center justify-center">
+                                 <span className="text-[10px] font-black text-red-600 mb-1">PDF</span>
+                                 <svg className="w-8 h-8 text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                              </div>
-                             <div className="overflow-hidden">
-                                 <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-green-600 truncate">{n.title}</h4>
-                                 <p className="text-xs text-zinc-500">{formatDate(n.publication_date, lang)}</p>
-                             </div>
+                             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/5 to-transparent"></div>
+                         </div>
+                         <div className="p-4 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800">
+                             <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-green-600 line-clamp-1">{n.title}</h4>
+                             <p className="text-[10px] uppercase font-bold text-zinc-400 mt-1">{formatDate(n.publication_date, lang)}</p>
                          </div>
                      </a>
                  ))}

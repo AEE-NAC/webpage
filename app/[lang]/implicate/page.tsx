@@ -19,6 +19,7 @@ const ImpliquezVous = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.info(`[Form] Application: Envoi d'une candidature pour le rôle "${selectedRole}"...`);
     setLoading(true);
     try {
       const { error } = await supabase
@@ -26,14 +27,16 @@ const ImpliquezVous = () => {
         .insert([{ ...formData, role: selectedRole }] as any);
 
       if (error) {
+        console.error("[Form] Application: Échec de l'insertion:", error.message);
         alert('Error submitting application. Please try again.');
       } else {
+        console.info("[Form] Application: Soumission réussie.");
         alert('Application submitted successfully!');
         setShowModal(false);
         setFormData({ name: '', email: '', phone: '', message: '' });
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error: any) {
+      console.error("[Form] Application: Erreur fatale:", error);
       alert('An error occurred. Please try again.');
     } finally {
       setLoading(false);
