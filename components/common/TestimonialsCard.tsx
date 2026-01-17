@@ -15,7 +15,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ name, title, text, im
           <img
             src={imgSrc || 'https://via.placeholder.com/50'}
             alt={name}
-            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full object-cover"
+            className="w-10 h-10 md:w-12.5 md:h-12.5 rounded-full object-cover"
           />
           <div className="flex flex-col pl-3 md:pl-4">
             <span className="text-sm md:text-base text-[#0f0f0fff] font-semibold">

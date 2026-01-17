@@ -39,13 +39,13 @@ const LanguageSwitcher = () => {
         <img 
           src={`https://flagcdn.com/w20/${currentLanguageConfig.country}.png`} 
           alt={currentLanguageConfig.name}
-          className="w-5 h-[15px] rounded-[2px]"
+          className="w-5 h-3.75 rounded-[2px]"
         />
         <span className="text-sm font-medium">{currentLanguageConfig.name}</span>
       </button>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+4px)] left-0 z-[999] w-full min-w-[100px] bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-lg">
+        <div className="absolute top-[calc(100%+4px)] left-0 z-999 w-full min-w-25 bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-lg">
           {languages.map(lang => (
             <button
               key={lang.code}
@@ -55,7 +55,7 @@ const LanguageSwitcher = () => {
               <img 
                 src={`https://flagcdn.com/w20/${lang.country}.png`} 
                 alt={lang.name}
-                className="w-5 h-[15px] rounded-[2px]"
+                className="w-5 h-3.75 rounded-[2px]"
               />
               <span className="text-sm text-zinc-700">{lang.name}</span>
             </button>
@@ -64,7 +64,7 @@ const LanguageSwitcher = () => {
       )}
       
       {/* Backdrop to close */}
-      {isOpen && <div className="fixed inset-0 z-[990]" onClick={() => setIsOpen(false)}></div>}
+      {isOpen && <div className="fixed inset-0 z-990" onClick={() => setIsOpen(false)}></div>}
     </div>
   );
 };

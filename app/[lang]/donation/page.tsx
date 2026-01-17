@@ -175,7 +175,7 @@ const Donation = () => {
           {showMap ? (
              <div className="absolute inset-0 z-10 animate-in fade-in duration-700">
                 <DonationMap points={DEFAULT_COLLECTION_POINTS} />
-                <div className="absolute top-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-[1000] border border-gray-200">
+                <div className="absolute top-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-1000 border border-gray-200">
                     <p className="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                         <CMSText k="donate.map.legend" defaultVal="Points de collecte actifs" />
@@ -188,10 +188,10 @@ const Donation = () => {
                   k="donate.hero.image"
                   defaultSrc="/CP_pichon.jpeg"
                   alt="Donation illustration" 
-                  className="w-full h-full object-cover grayscale-[10%]"
+                  className="w-full h-full object-cover grayscale-10"
                   fill
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-8">
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent flex items-end p-8">
                     <div className="animate-in slide-in-from-bottom-6 duration-700">
                       <p className="text-white text-xl font-medium italic leading-relaxed">
                           "<CMSText k="donate.hero.quote" defaultVal="Que chacun donne comme il l'a résolu en son cœur, sans tristesse ni contrainte; car Dieu aime celui qui donne avec joie." />"
@@ -287,7 +287,7 @@ const Donation = () => {
                                     </div>
                                     <div>
                                         <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="donate.form.currency" defaultVal="Devise" /></label>
-                                        <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm h-[54px]">
+                                        <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm h-13.5">
                                             {availableCurrencies.map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
                                     </div>
@@ -377,7 +377,7 @@ const Donation = () => {
                                 <div className="space-y-4">
                                      <div className="bg-white p-6 rounded-2xl border border-zinc-200/60 shadow-sm relative overflow-hidden">
                                         <div className="absolute top-0 right-0 w-24 h-24 bg-[#981a3c]/5 rounded-bl-full -mr-8 -mt-8"></div>
-                                        <h3 className="font-bold text-zinc-900 mb-4 flex items-center gap-2 relative z-10">
+                                        <h3 className="font-bold text-[#981a3c] mb-4 flex items-center gap-2 relative z-10">
                                             <span className="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg></span>
                                             <span>Instructions</span>
                                         </h3>

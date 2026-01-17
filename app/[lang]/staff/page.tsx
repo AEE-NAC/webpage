@@ -71,7 +71,7 @@ export default function StaffPage() {
                             {STAFF_MEMBERS.map((member) => (
                                 <div key={member.id} className="group flex flex-col items-center">
                                     {/* Reduced max-width from 320px to 240px and border radius */}
-                                    <div className="w-full aspect-[3/4] max-w-[240px] relative rounded-xl overflow-hidden shadow-md mb-4 bg-zinc-100 border border-zinc-200">
+                                    <div className="w-full aspect-3/4 max-w-60 relative rounded-xl overflow-hidden shadow-md mb-4 bg-zinc-100 border border-zinc-200">
                                         <CMSImage 
                                             k={`staff.member.${member.id}.image`}
                                             defaultSrc="https://placehold.co/400x533/e2e8f0/94a3b8?text=Photo"
@@ -81,7 +81,7 @@ export default function StaffPage() {
                                             height={400}
                                         />
                                         {/* Overlay gradient for premium feel */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </div>
                                     
                                     <div className="text-center w-full px-4">
@@ -102,7 +102,7 @@ export default function StaffPage() {
 
                 {/* Join CTA */}
                 <section className="py-16 bg-zinc-900 text-white text-center rounded-2xl mx-4 md:mx-8 mb-8 relative overflow-hidden shadow-xl">
-                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400 via-gray-900 to-black"></div>
+                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-blue-400 via-gray-900 to-black"></div>
                     <div className="relative z-10 container mx-auto px-4">
                         <h2 className="text-2xl font-bold mb-4">
                             <CMSText k="staff.cta.title" defaultVal="Rejoignez Notre Mission" />

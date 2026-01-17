@@ -12,6 +12,7 @@ import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/h
 import ImpactSection from '@/components/home/impact-section';
 import TestimonialsSection from '@/components/home/testimonials-section';
 import { CMSService } from "@/services/supabase.conf";
+import { CMSWeeklyWord, CMSNewsletter } from '@/services/types';
 
 export default async function Home({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
   const { lang } = await params;
@@ -19,8 +20,8 @@ export default async function Home({ params }: { params: Promise<{ lang: Support
   console.info(`[Server] Rendering Home Page for lang: ${lang}`);
 
   // Pre-fetch feeds data
-  let initialWords = [];
-  let initialNewsletters = [];
+  let initialWords: CMSWeeklyWord[] = [];
+  let initialNewsletters: CMSNewsletter[] = [];
 
   try {
     console.info(`[Server] Fetching initial feeds data...`);

@@ -79,7 +79,7 @@ const TestimonialsSection = ({ lang }: { lang: string }) => {
   return (
     <section className="py-24 bg-zinc-50 dark:bg-zinc-900/40 relative overflow-hidden">
         {/* Decorative background element */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full opacity-5 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full opacity-5 bg-[radial-gradient(circle,var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent pointer-events-none"></div>
         
         <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
@@ -91,7 +91,7 @@ const TestimonialsSection = ({ lang }: { lang: string }) => {
             </div>
             <div className="flex flex-col md:flex-row gap-8 overflow-x-auto pb-8 justify-center">
                 {testimonials.map(t => (
-                    <div key={t.id} className="w-full md:w-[400px] flex-shrink-0">
+                    <div key={t.id} className="w-full md:w-100 shrink-0">
                         <TestimonialCard 
                             name={t.author_name}
                             title={t.author_role}
