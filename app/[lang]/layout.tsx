@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   title: "Website AEE",
   description: "Association Evangelique El Shaddai",
   alternates: {
-    canonical: "/",
     languages: {
       "en": "/en",
       "fr": "/fr",

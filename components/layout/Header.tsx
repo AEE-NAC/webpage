@@ -33,7 +33,7 @@ const Header = () => {
                     <nav className="hidden md:flex items-center gap-6 text-[1em]">
                         <NavLink href="/" k="header.nav.home" defaultVal="Home" />
                         <NavLink href="/about" k="header.nav.about" defaultVal="About" />
-                        <NavLink href="/#ministries" k="header.nav.ministries" defaultVal="Ministries" />
+                        <NavLink href="/ministry" k="header.nav.ministries" defaultVal="Ministries" />
                         <NavLink href="/implicate" k="header.nav.get_involved" defaultVal="Get Involved" />
                         <NavLink href="/contact" k="header.nav.contact" defaultVal="Contact" />
                         <NavLink href="/staff" k="header.nav.staff" defaultVal="Our Team" />
