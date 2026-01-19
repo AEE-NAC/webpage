@@ -1,50 +1,59 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
+interface TextRollProps {
+  words: string[];
+}
+
 // Composant pour le texte défilant
-const TextRoll = ({ words }) => {
+const TextRoll = ({ words }: TextRollProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (!words || words.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 2000);
+    }, 3000);
     return () => clearInterval(interval);
   }, [words]);
 
+  if (!words || words.length === 0) return null;
+
   return (
-    <div style={styles.roller}>
+    <span style={styles.roller}>
       <AnimatePresence mode="wait">
         <motion.span
-          className="baseline"
           key={currentIndex}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -20, opacity: 0 }}
+          transition={{ 
+            duration: 0.4,
+            ease: "easeOut"
+          }}
           style={styles.textPrimary}
         >
           {words[currentIndex]}
         </motion.span>
       </AnimatePresence>
-    </div>
+    </span>
   );
 };
 
 const styles = {
   roller: {
-    height: '4.125rem',
-    lineHeight: '4rem',
-    position: 'relative',
+    display: 'inline-flex',
+    position: 'relative' as const,
+    height: '1.2em',
     overflow: 'hidden',
-    width: '100%',
-    display: 'flex',
+    verticalAlign: 'bottom',
     justifyContent: 'center',
     alignItems: 'center',
-    color: '#1D3557',
   },
   textPrimary: {
-    position: 'absolute',
+    display: 'block',
+    whiteSpace: 'nowrap' as const,
+    position: 'relative' as const,
   },
 };
 

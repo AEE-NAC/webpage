@@ -62,10 +62,10 @@ const Join = () => {
                             k="join.hero.image"
                             defaultSrc="/static/website1.avif"
                             alt="Join us illustration"
-                            className="w-full h-full object-cover grayscale-[10%]"
+                            className="w-full h-full object-cover grayscale-10"
                             fill
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-8">
+                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent flex items-end p-8">
                             <div className="animate-in slide-in-from-bottom-6 duration-700">
                                 <p className="text-white text-xl font-medium italic leading-relaxed">
                                     "<CMSText k="join.hero.quote" defaultVal="Rejoignez-nous pour porter la Bonne Nouvelle à chaque enfant." />"
@@ -98,7 +98,7 @@ const Join = () => {
                         
                         {/* Title Section */}
                         <div className={`text-center mb-8 transition-all duration-300 ${step > 1 ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
-                            <h1 className="text-4xl font-extrabold text-zinc-900 mb-3 text-[#981a3c]">
+                            <h1 className="text-4xl font-extrabold mb-3 text-[#981a3c]">
                                 <CMSText k="join.title" defaultVal="Rejoignez l'Aventure" />
                             </h1>
                             <p className="text-zinc-500 text-sm leading-relaxed max-w-xs mx-auto">

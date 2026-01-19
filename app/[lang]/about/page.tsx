@@ -66,6 +66,12 @@ export default function MinistersPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
+      {/* Hidden CMS registration for TextRoll words */}
+      <div className="hidden" aria-hidden="true">
+          <CMSText k="about.header.roll.word1" defaultVal="enfant" />
+          <CMSText k="about.header.roll.word2" defaultVal="nation" />
+          <CMSText k="about.header.roll.word3" defaultVal="jour" />
+      </div>
       <header className="relative w-full min-h-screen">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
