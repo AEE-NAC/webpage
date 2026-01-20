@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { CMSText } from '../cms/cms-text';
+import { usePathname } from 'next/navigation';
+
 const SUPPORTED_COUNTRIES = [
     { code: 'HT', name: 'Haïti' },
     { code: 'SX', name: 'Sint Maarten' },
@@ -11,7 +13,12 @@ const SUPPORTED_COUNTRIES = [
     { code: 'GP', name: 'Guadeloupe' },
     { code: 'GF', name: 'Guyane Française' },
 ];
+
 const CountryBar = () => {
+    const pathname = usePathname();
+    // Default to 'fr' if not found or handled by middleware
+    const currentLang = pathname?.split('/')[1] || 'fr'; 
+
     return (
         <div className="w-full bg-[#981a3c] p-1 flex items-center justify-center shadow-sm">
             <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
@@ -23,7 +30,7 @@ const CountryBar = () => {
                 {SUPPORTED_COUNTRIES.map((country) => (
                     <Link
                         key={country.code}
-                        href={`/country/${country.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        href={`/${currentLang}/${country.code}`}
                         className="px-4 py-1 text-sm text-white hover:text-white/80 cursor-pointer whitespace-nowrap transition-colors duration-200"
                     >
                         <span className="text-white text-sm font-bold">{country.name}</span>

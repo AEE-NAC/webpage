@@ -558,14 +558,21 @@ export default function CMSAdminPage() {
                     {locales.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
                 </select>
                 <div className="h-4 w-px bg-zinc-300"></div>
-                <input 
-                    type="text" 
-                    placeholder="Region" 
+                
+                {/* Updated Region Selector */}
+                <select 
                     value={selectedRegion}
-                    onChange={(e) => setSelectedRegion(e.target.value.toUpperCase())}
-                    maxLength={2}
-                    className="w-20 text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1 uppercase placeholder:normal-case"
-                />
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    className="text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1 cursor-pointer min-w-[140px]"
+                >
+                    <option value="">🌐 GLOBAL</option>
+                    {SUPPORTED_COUNTRIES.map(c => (
+                        <option key={c.code} value={c.code}>
+                           {c.code} - {c.name}
+                        </option>
+                    ))}
+                </select>
+                
                 <div className="flex items-center gap-2">
                      <span className="text-xs uppercase font-bold text-zinc-400">{selectedLang}</span>
                  </div>

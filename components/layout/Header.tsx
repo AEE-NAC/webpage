@@ -6,14 +6,29 @@ import SignupButton from '../common/btn-signup';
 import CountryBar from '../common/country_bar';
 import { CMSText } from '../cms/cms-text';
 import { CMSImage } from '../cms/cms-image';
+import { useParams, usePathname } from 'next/navigation';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const params = useParams();
+    const country = params?.country as string | undefined;
+    const lang = params?.lang as string || 'fr';
+
+    // Helper to build paths respecting the current country context
+    // If country is present, Home and Staff link to country specific pages
+    const getPath = (path: string) => {
+        if (country && (path === '/' || path === '/staff')) {
+            // Remove trailing slash if root
+            return `/${lang}/${country}${path === '/' ? '' : path}`;
+        }
+        // Ministry, Implicate, Contact, About usually stay global or redirect implicitly
+        return `/${lang}${path === '/' ? '' : path}`;
+    };
 
     const NavLink = ({ href, k, defaultVal }: { href: string, k: string, defaultVal: string }) => (
         <Link
             className="text-[1em] font-medium text-[#0f0f0fff] hover:text-[#D8394D] transition-colors"
-            href={href}
+            href={getPath(href)}
         >
             <CMSText k={k} defaultVal={defaultVal} />
         </Link>
@@ -25,7 +40,7 @@ const Header = () => {
         >
             <div className="w-full h-full bg-[#fdfff4ff] flex flex-col border-b border-[#878578ff]">
                 <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-6">
-                    <Link className="flex items-center gap-2" href="/">
+                    <Link className="flex items-center gap-2" href={getPath('/')}>
                         <CMSImage k="layout.header.logo" defaultSrc="/images/logo_1st.png" alt="AEE Logo" className="h-12 w-auto object-contain" width={100} height={48} />
                     </Link>
                     
@@ -66,22 +81,22 @@ const Header = () => {
                 {menuOpen && (
                     <nav className="flex flex-col md:hidden bg-[#fdfff4ff] border-t border-[#878578ff] animate-in slide-in-from-top-2">
                         <div className="flex flex-col px-4 py-4 gap-4">
-                            <Link href="/" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={getPath('/')} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.home" defaultVal="Home" />
                             </Link>
-                            <Link href="/about" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={`/${lang}/about`} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.about" defaultVal="About" />
                             </Link>
-                            <Link href="/#ministries" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={`/${lang}/ministry`} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.ministries" defaultVal="Ministries" />
                             </Link>
-                            <Link href="/implicate" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={`/${lang}/implicate`} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.get_involved" defaultVal="Get Involved" />
                             </Link>
-                            <Link href="/contact" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={`/${lang}/contact`} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.contact" defaultVal="Contact" />
                             </Link>
-                            <Link href="/staff" className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
+                            <Link href={getPath('/staff')} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="header.nav.staff" defaultVal="Our Team" />
                             </Link>
                             
