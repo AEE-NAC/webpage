@@ -4,9 +4,12 @@ import { Database } from './types_db';
 
 // Admin client to bypass RLS for auth checks
 // We use <any> here because cms_users and cms_invites are not yet in types_db generated types
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key-for-build';
+
 const supabaseAdmin = createClient<any>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  supabaseUrl,
+  supabaseServiceKey
 );
 
 export type AuthUser = {

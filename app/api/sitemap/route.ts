@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { locales, SUPPORTED_COUNTRIES } from '@/context/adapt';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const staticRoutes = ['', '/about', '/staff', '/ministry', '/implicate', '/donation', '/join', '/contact'];
   const paths: string[] = [];

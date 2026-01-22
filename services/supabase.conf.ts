@@ -8,7 +8,7 @@ const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PU
 
 const supabaseKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== 'undefined')
   ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY 
-  : 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
+  : 'sb_publishable_placeholder_key_for_build';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
