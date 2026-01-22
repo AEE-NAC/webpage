@@ -3,8 +3,9 @@ import { SupportedLanguage } from "@/context/adapt";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-export default async function WeeklyWordPage({ params }: { params: Promise<{ lang: SupportedLanguage, id: string }> }) {
-    const { lang, id } = await params;
+export default async function WeeklyWordPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
+    const { lang: langParam, id } = await params;
+    const lang = langParam as SupportedLanguage;
     const word = await CMSService.getWeeklyWordById(id);
 
     if (!word) return notFound();

@@ -44,9 +44,10 @@ export default async function RootLayout({
   params
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: SupportedLanguage }>;
+  params: Promise<{ lang: string }>;
 }) {
-  const { lang } = await params;
+  const { lang: langParam } = await params;
+  const lang = langParam as SupportedLanguage;
   
   // Fetch content for the current language server-side
   // We fetch with empty prefix '' to get all global content needed for initial render

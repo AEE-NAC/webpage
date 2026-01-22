@@ -4,7 +4,7 @@ import Footer from '@/components/layout/Footer';
 import { CMSText } from '@/components/cms/cms-text';
 import { CMSImage } from '@/components/cms/cms-image';
 
-export default async function CountryStaffPage(props: { params: Promise<{ country: string }> }) {
+export default async function CountryStaffPage(props: { params: Promise<{ lang: string, country: string }> }) {
     const params = await props.params;
     const country = (params.country || '').toUpperCase();
 

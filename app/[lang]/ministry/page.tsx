@@ -16,8 +16,9 @@ interface CMSClub {
   image_url: string;
 }
 
-export default async function MinistryPage({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
-  const { lang } = await params;
+export default async function MinistryPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang: langParam } = await params;
+  const lang = langParam as SupportedLanguage;
   
   // Fetch dictionary
   const dictionary = await CMSService.getPageContent('ministry', lang);

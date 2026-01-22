@@ -5,17 +5,11 @@ import About from '@/components/layout/About';
 import Carousel from '@/components/layout/carousel';
 import { CMSText } from '@/components/cms/cms-text';
 import { VisualEditorListener } from '@/components/admin/visual-editor-listener';
-import { SupportedLanguage } from '@/context/adapt';
+import { SupportedLanguage } from "@/context/adapt";
 
-// New Imports
-import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/home/feeds';
-import ImpactSection from '@/components/home/impact-section';
-import TestimonialsSection from '@/components/home/testimonials-section';
-import { CMSService } from "@/services/supabase.conf";
-import { CMSWeeklyWord, CMSNewsletter } from '@/services/types';
-
-export default async function Home({ params }: { params: Promise<{ lang: SupportedLanguage }> }) {
-  const { lang } = await params;
+export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang: langParam } = await params;
+  const lang = langParam as SupportedLanguage;
   
   console.info(`[Server] Rendering Home Page for lang: ${lang}`);
 

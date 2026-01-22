@@ -20,8 +20,9 @@ const getFlagGradient = (code: string) => {
     return colors[code] || "from-zinc-400 to-zinc-600";
 };
 
-export default async function CountryHome({ params }: { params: Promise<{ lang: SupportedLanguage, country: string }> }) {
-  const { lang, country } = await params;
+export default async function CountryHome({ params }: { params: Promise<{ lang: string, country: string }> }) {
+  const { lang: langParam, country } = await params;
+  const lang = langParam as SupportedLanguage;
   const countryCode = country.toUpperCase();
   const dictionary = await CMSService.getPageContent('', lang, countryCode);
   const flagGradient = getFlagGradient(countryCode);
