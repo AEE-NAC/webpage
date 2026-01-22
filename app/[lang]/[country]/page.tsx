@@ -43,7 +43,8 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             
                             {/* ORGANIZATIONAL CARD - Keep as is (text & flag gradient) */}
                             <div className={`md:col-span-5 md:row-span-2 relative rounded-[2rem] p-1 bg-linear-to-br ${flagGradient} shadow-xl flex flex-col justify-between overflow-hidden group`}>
-                                <div className="absolute inset-0 bg-white m-[2px] rounded-[calc(2rem-2px)] z-0">
+                                {/* Fixed m-[2px] to m-0.5 */}
+                                <div className="absolute inset-0 bg-white m-0.5 rounded-[calc(2rem-2px)] z-0">
                                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/gplay.png')]"></div>
                                 </div>
                                 
@@ -188,7 +189,8 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             {['cbn', 'c5j', 'formation'].map((m) => (
                                 <div key={m} className="group relative overflow-hidden rounded-xl bg-zinc-100 aspect-video">
                                     <CMSImage k={`country.ministry.${m}.image`} defaultSrc="/static/CP_pichon.jpeg" alt={m} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" fill />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
+                                    {/* Fixed gradient class name if applicable, ensure valid standard utility or custom alias */}
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex items-end p-4">
                                         <h3 className="text-white font-bold text-lg"><CMSText k={`country.ministry.${m}.name`} defaultVal={m.toUpperCase()} /></h3>
                                     </div>
                                 </div>

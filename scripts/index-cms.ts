@@ -124,13 +124,27 @@ async function indexCMS() {
     files.forEach(file => {
         const content = fs.readFileSync(file, 'utf-8');
         
-        // Match <CMSText ... />
-        const textRegex = /<CMSText\s+[^>]*?k=(['"])(.*?)\1[^>]*?defaultVal=(['"])(.*?)\3/gs;
+        // Updated Regex to catch more patterns (skipping complex logic, but better coverage)
+        const textRegex = /<CMSText\s+[^>]*?k={?(['"`])(.*?)\1}?/gs;
         let match;
         while ((match = textRegex.exec(content)) !== null) {
             const key = match[2];
+            // Only index if value is provided and key is static
+            const valMatch = content.slice(match.index).match(/defaultVal=(['"])(.*?)\1/);
+            const defaultVal = valMatch ? valMatch[2] : "";
+            
+            if (key && !key.includes('${') && !keysFound.has(key)) {
+                keysFound.set(key, { key, value: defaultVal, type: 'text' });
+                count++;
+            }
+        }
+
+        // New: Match cms('key', 'default') function calls for placeholders/attributes
+        const funcRegex = /cms\s*\(\s*(['"`])(.*?)\1\s*,\s*(['"`])(.*?)\3\s*\)/gs;
+        while ((match = funcRegex.exec(content)) !== null) {
+            const key = match[2];
             const defaultVal = match[4];
-            if (key && !keysFound.has(key)) {
+            if (key && !key.includes('${') && !keysFound.has(key)) {
                 keysFound.set(key, { key, value: defaultVal, type: 'text' });
                 count++;
             }

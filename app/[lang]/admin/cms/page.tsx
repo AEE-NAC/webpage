@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+// Import AuthService to verify session client-side (or check cookie existence)
 import { CMSService, supabase } from "@/services/supabase.conf";
 import { CMSPopover, CMSWeeklyWord, CMSNewsletter } from "@/services/types"; // Import types
 import { SupportedLanguage, locales, SUPPORTED_COUNTRIES } from "@/context/adapt";
@@ -28,8 +29,12 @@ interface CMSClub {
   image_url?: string | null;
 }
 
+// Add AuthUser Type locally or from auth service
+type AuthUser = { username: string; role: string; country_code: string | null };
+
 export default function CMSAdminPage() {
   const router = useRouter();
+  const [user, setUser] = useState<AuthUser | null>(null); // track user
   const [structure, setStructure] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   
@@ -49,11 +54,10 @@ export default function CMSAdminPage() {
   const [savingKey, setSavingKey] = useState<string | null>(null);
 
   // Preview State
+  const [sitemapRoutes, setSitemapRoutes] = useState<string[]>([]);
   const [previewRoute, setPreviewRoute] = useState<string>('');
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  
-  const sitemapRoutes = ['', '/about', '/staff', '/ministry', '/implicate', '/donate', '/contact'];
   
   // Marketing State
   const [marketingList, setMarketingList] = useState<CMSPopover[]>([]);
@@ -85,6 +89,12 @@ export default function CMSAdminPage() {
       .then(res => res.json())
       .then((data: any) => { 
         setStructure(data.structure || {});
+      });
+    
+    fetch('/api/sitemap')
+      .then(res => res.json())
+      .then((data: any) => {
+        setSitemapRoutes(data.paths || []);
         setLoading(false);
       });
   };
@@ -92,6 +102,13 @@ export default function CMSAdminPage() {
   useEffect(() => {
     fetchTree();
   }, []);
+
+  // Update preview when route or lang changes
+  useEffect(() => {
+    if (iframeRef.current && previewRoute) {
+        iframeRef.current.src = `${previewRoute}?edit_mode=true`;
+    }
+  }, [previewRoute]);
 
   // Main Loading Logic Switcher
   useEffect(() => {
@@ -403,6 +420,24 @@ export default function CMSAdminPage() {
   const IconMail = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>;
   const IconStar = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>;
   const IconUsers = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
+  const IconKey = () => <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m-2 4a2 2 0 012 2m-8-3a3 3 0 11-6 0 3 3 0 016 0zm6 3l-4 4m0 0l-4-4m4 4V13" /></svg>;
+
+  // Check Session on Mount
+  useEffect(() => {
+     // We can reuse the API or a client wrapper to get session payload
+     fetch('/api/auth/session').then(res => {
+         if(res.ok) return res.json();
+         throw new Error("Unauth");
+     }).then(data => {
+         setUser(data.user);
+         // Enforce country constraint
+         if (data.user.country_code) {
+             setSelectedRegion(data.user.country_code);
+         }
+     }).catch(() => {
+         // router.push('login'); // handled by middleware usually
+     });
+  }, []);
 
   if (loading && !structure && !activePage) return <div className="flex items-center justify-center h-screen text-zinc-400">Loading Workspace...</div>;
 
@@ -458,6 +493,17 @@ export default function CMSAdminPage() {
                  <span className={activePage==='__clubs' ? 'text-orange-600' : 'text-zinc-400'}><IconUsers /></span>
                  Clubs & Activities
              </button>
+
+             {/* ACCESS CONTROL */}
+             {user?.role === 'super_admin' && (
+                <button 
+                    onClick={() => router.push(`/${selectedLang}/admin/invites`)}
+                    className="w-full flex items-center px-3 py-1.5 text-sm rounded-md text-zinc-600 hover:bg-zinc-100 transition-colors"
+                >
+                    <span className="text-zinc-400"><IconKey /></span>
+                    Access & Invites
+                </button>
+             )}
 
              {/* COMPONENTS SECTIONS */}
              <div className="text-xs font-semibold text-zinc-400 px-3 py-2 mt-4 uppercase tracking-wider">Components</div>
@@ -537,15 +583,16 @@ export default function CMSAdminPage() {
             </div>
 
             <div className="flex items-center gap-4">
-                 {/* Only show preview dropdown for regular pages */}
+                 {/* Updated Dynamic Dropdown */}
                  {!activePage?.startsWith('__') && (
                      <>
                         <select 
                             value={previewRoute} 
                             onChange={(e) => setPreviewRoute(e.target.value)}
-                            className="text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1"
+                            className="text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1 max-w-50"
                         >
-                            {sitemapRoutes.map(r => <option key={r} value={r}>{r === '' ? 'Home' : r}</option>)}
+                            <option value="">Select Preview Page...</option>
+                            {sitemapRoutes.map(r => <option key={r} value={r}>{r}</option>)}
                         </select>
                         <div className="h-4 w-px bg-zinc-300"></div>
                      </>
@@ -563,7 +610,8 @@ export default function CMSAdminPage() {
                 <select 
                     value={selectedRegion}
                     onChange={(e) => setSelectedRegion(e.target.value)}
-                    className="text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1 cursor-pointer min-w-[140px]"
+                    disabled={!!user?.country_code} // Disable if restricted
+                    className={`text-sm bg-zinc-50 border border-zinc-200 rounded px-2 py-1 cursor-pointer min-w-35 ${user?.country_code ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <option value="">🌐 GLOBAL</option>
                     {SUPPORTED_COUNTRIES.map(c => (
@@ -575,6 +623,11 @@ export default function CMSAdminPage() {
                 
                 <div className="flex items-center gap-2">
                      <span className="text-xs uppercase font-bold text-zinc-400">{selectedLang}</span>
+                     {/* Add Logout Button */}
+                     <button onClick={async () => {
+                         await fetch('/api/auth/logout', { method: 'POST' });
+                         window.location.href = `/${selectedLang}/admin/login`;
+                     }} className="text-xs text-red-400 hover:text-red-600 underline ml-2">Logout</button>
                  </div>
             </div>
         </header>
@@ -1053,7 +1106,10 @@ export default function CMSAdminPage() {
                                           <label className="text-xs font-bold text-zinc-500 uppercase">Logo / Icon</label>
                                           <div className="flex gap-2 mt-1">
                                               <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingClub.logo_url || ''} onChange={e => setEditingClub({...editingClub, logo_url: e.target.value})} placeholder="URL..." />
-                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'logo_url')} /></label>
+                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50">
+                                                  <IconUpload />
+                                                  <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'logo_url')} />
+                                              </label>
                                           </div>
                                           {editingClub.logo_url && <img src={editingClub.logo_url} alt="Logo" className="mt-2 h-12 w-12 object-contain bg-zinc-100 rounded p-1" />}
                                      </div>
@@ -1067,20 +1123,22 @@ export default function CMSAdminPage() {
                                           <label className="text-xs font-bold text-zinc-500 uppercase">Cover Image</label>
                                           <div className="flex gap-2 mt-1">
                                               <input type="text" className="flex-1 border p-2 rounded text-sm" value={editingClub.image_url || ''} onChange={e => setEditingClub({...editingClub, image_url: e.target.value})} placeholder="URL..." />
-                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50"><IconUpload /><input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'image_url')} /></label>
+                                              <label className="border p-2 rounded cursor-pointer hover:bg-zinc-50">
+                                                  <IconUpload />
+                                                  <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && handleClubUpload(e.target.files[0], 'image_url')} />
+                                              </label>
                                           </div>
-                                          {editingClub.image_url && <img src={editingClub.image_url} alt="Cover" className="mt-2 h-24 w-full object-cover rounded bg-zinc-100" />}
-                                     </div>
-                                     <div className="pt-4 flex justify-end gap-2 border-t border-zinc-100 mt-4">
-                                          {editingClub.id && <button onClick={() => deleteClub(editingClub.id!)} className="text-red-500 px-4 py-2 hover:bg-red-50 rounded">Delete</button>}
-                                          <button onClick={() => saveClub(editingClub)} className="bg-orange-600 text-white px-6 py-2 rounded font-medium hover:bg-orange-700">Save Club</button>
+                                          {editingClub.image_url && <img src={editingClub.image_url} alt="Preview" className="mt-2 h-24 object-cover rounded bg-zinc-100" />}
                                      </div>
                                  </div>
                              </div>
+                             <div className="pt-4 flex justify-end gap-2 border-t border-zinc-100 mt-4">
+                                  {editingClub.id && <button onClick={() => deleteClub(editingClub.id!)} className="text-red-500 px-4 py-2 hover:bg-red-50 rounded">Delete</button>}
+                                  <button onClick={() => saveClub(editingClub)} className="bg-orange-600 text-white px-6 py-2 rounded font-medium hover:bg-orange-700">Save Club</button>
+                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-3">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {clubsList.map(c => (
                                     <div key={c.id} onClick={() => setEditingClub(c)} className="group bg-white rounded-lg border border-zinc-200 overflow-hidden hover:border-orange-300 hover:shadow-md cursor-pointer transition-all">
                                         <div className="h-32 bg-zinc-100 relative">
@@ -1098,9 +1156,8 @@ export default function CMSAdminPage() {
                                     </div>
                                 ))}
                             </div>
-                            {clubsList.length === 0 && <div className="text-center text-zinc-400 py-10">No clubs or ministries found.</div>}
-                        </div>
                     )}
+                    {clubsList.length === 0 && !editingClub && <div className="text-center text-zinc-400 py-10">No clubs or ministries found.</div>}
                 </div>
             </div>
         ) : (
@@ -1109,9 +1166,8 @@ export default function CMSAdminPage() {
                 {/* Editor Column - Collapsible */}
                 <div 
                     className={`
-
                         overflow-y-auto border-r border-zinc-200 transition-all duration-300 ease-in-out bg-white
-                        ${isEditorOpen ? 'w-[450px] opacity-100 p-8' : 'w-0 opacity-0 p-0 overflow-hidden'}
+                        ${isEditorOpen ? 'w-112.5 opacity-100 p-8' : 'w-0 opacity-0 p-0 overflow-hidden'}
                     `}
                 >
                     {!activePage ? (

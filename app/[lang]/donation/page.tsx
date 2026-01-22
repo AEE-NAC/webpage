@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
+import { CMSProvider } from '../../../components/cms/cms-provider';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { defaultLocale, SupportedLanguage, SUPPORTED_COUNTRIES } from '../../../context/adapt';
-import { supabase } from '../../../services/supabase.conf';
+import { supabase, CMSService } from '../../../services/supabase.conf';
 
 // Dynamic Map Import to avoid SSR issues
 const DonationMap = dynamic(async () => {
@@ -67,6 +68,15 @@ const Donation = () => {
   const params = useParams();
   const lang = (params?.lang as SupportedLanguage) || defaultLocale;
   
+  const [dictionary, setDictionary] = useState<Record<string, string>>({});
+  
+  useEffect(() => {
+    CMSService.getPageContent('donate', lang).then(setDictionary);
+  }, [lang]);
+
+  // Helper for attributes regex scanner
+  const cms = (k: string, v: string) => dictionary[k] || v;
+
   // Step Management: 1=Type, 2=Details, 3=Result (Info)
   const [step, setStep] = useState(1);
 
@@ -167,6 +177,7 @@ const Donation = () => {
   const showMap = step === 3 && donationType === 'material' && isInRegion;
 
   return (
+    <CMSProvider dictionary={dictionary}>
     <div className="h-screen flex justify-center items-center p-4 md:p-6 bg-zinc-50 font-sans overflow-hidden">
       <div className="w-full max-w-7xl h-full md:h-[90vh] flex flex-col md:flex-row gap-8">
         
@@ -272,7 +283,7 @@ const Donation = () => {
                                 onChange={(e) => setSelectedMinistry(e.target.value)}
                                 className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] transition-shadow shadow-sm"
                             >
-                                <option value="">Là où le besoin est le plus grand</option>
+                                <option value="">{cms('donate.option.ministry_any', 'Là où le besoin est le plus grand')}</option>
                                 {ministries.map((ministry) => (<option key={ministry.id} value={ministry.name}>{ministry.name}</option>))}
                             </select>
                         </div>
@@ -295,10 +306,10 @@ const Donation = () => {
                                 <div>
                                     <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="donate.form.method" defaultVal="Moyen de paiement" /></label>
                                     <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm">
-                                        <option value="">Choisir...</option>
-                                        <option value="CreditCard">Carte de crédit / Débit</option>
-                                        <option value="BankTransfer">Virement bancaire</option>
-                                        <option value="Paypal">PayPal</option>
+                                        <option value="">{cms('donate.option.choose', 'Choisir...')}</option>
+                                        <option value="CreditCard">{cms('donate.option.card', 'Carte de crédit / Débit')}</option>
+                                        <option value="BankTransfer">{cms('donate.option.transfer', 'Virement bancaire')}</option>
+                                        <option value="Paypal">{cms('donate.option.paypal', 'PayPal')}</option>
                                         {isHaiti && <option value="MonCash">MonCash</option>}
                                     </select>
                                 </div>
@@ -317,9 +328,9 @@ const Donation = () => {
                                             onChange={(e) => setUserCountry(e.target.value)}
                                             className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 pl-10 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm appearance-none"
                                         >
-                                            <option value="">Sélectionner...</option>
+                                            <option value="">{cms('donate.option.select', 'Sélectionner...')}</option>
                                             {SUPPORTED_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
-                                            <option value="OTHER">Autre / Other</option>
+                                            <option value="OTHER">{cms('donate.option.other', 'Autre / Other')}</option>
                                         </select>
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                                             {userCountry && userCountry !== 'OTHER' ? (
@@ -333,7 +344,7 @@ const Donation = () => {
                                 <div>
                                     <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="donate.form.materials" defaultVal="Articles à donner" /></label>
                                     <div className="flex gap-2">
-                                        <input type="text" value={materialInput} onChange={(e) => setMaterialInput(e.target.value)} placeholder="Ex: Livres..." className="flex-1 bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 shadow-sm focus:ring-[#981a3c] focus:border-[#981a3c]" onKeyDown={(e) => e.key === 'Enter' && handleAddMaterial()} />
+                                        <input type="text" value={materialInput} onChange={(e) => setMaterialInput(e.target.value)} placeholder={cms('donate.placeholder.materials', 'Ex: Livres...')} className="flex-1 bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 shadow-sm focus:ring-[#981a3c] focus:border-[#981a3c]" onKeyDown={(e) => e.key === 'Enter' && handleAddMaterial()} />
                                         <button onClick={handleAddMaterial} className="px-4 py-2 bg-zinc-800 text-white rounded-xl text-lg font-bold hover:bg-zinc-700 transition-colors shadow-sm">+</button>
                                     </div>
                                     {materials.length > 0 && (
@@ -353,7 +364,7 @@ const Donation = () => {
                         {donationType === 'service' && (
                              <div>
                                 <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="donate.form.service_desc" defaultVal="Description du service" /></label>
-                                <textarea value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} placeholder="Comment souhaitez-vous aider ?" rows={4} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm resize-none" />
+                                <textarea value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} placeholder={cms('donate.placeholder.service', 'Comment souhaitez-vous aider ?')} rows={4} className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm resize-none" />
                              </div>
                         )}
 
@@ -425,9 +436,9 @@ const Donation = () => {
                                          <div className="text-center py-6 text-green-600 font-bold">Message Envoyé !</div>
                                       ) : (
                                           <form onSubmit={handleSubmitContact} className="space-y-3 mt-4">
-                                              <input type="text" required placeholder="Nom" value={contactName} onChange={e => setContactName(e.target.value)} className="w-full text-sm p-3 rounded-lg border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-orange-500 transition-colors" />
-                                              <input type="email" required placeholder="Email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} className="w-full text-sm p-3 rounded-lg border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-orange-500 transition-colors" />
-                                              <button disabled={submitStatus === 'sending'} className="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 shadow-md mt-2">{submitStatus === 'sending' ? '...' : 'Envoyer'}</button>
+                                              <input type="text" required placeholder={cms('donate.placeholder.name', 'Nom')} value={contactName} onChange={e => setContactName(e.target.value)} className="w-full text-sm p-3 rounded-lg border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-orange-500 transition-colors" />
+                                              <input type="email" required placeholder={cms('donate.placeholder.email', 'Email')} value={contactEmail} onChange={e => setContactEmail(e.target.value)} className="w-full text-sm p-3 rounded-lg border border-zinc-200 bg-zinc-50 focus:bg-white focus:ring-orange-500 transition-colors" />
+                                              <button disabled={submitStatus === 'sending'} className="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 shadow-md mt-2">{submitStatus === 'sending' ? cms('donate.btn.sending', '...') : cms('donate.btn.send', 'Envoyer')}</button>
                                           </form>
                                       )}
                                  </div>
@@ -454,6 +465,7 @@ const Donation = () => {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
       `}</style>
     </div>
+    </CMSProvider>
   );
 };
 

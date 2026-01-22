@@ -106,7 +106,7 @@ export const CMSPopupManager = () => {
         <>
             {/* Banner UI - Relative (Pushes content down) */}
             {visibleBanner && (
-                <div className="relative z-[50] w-full bg-indigo-600 text-white px-4 py-2 text-xs sm:text-sm shadow-sm transition-all animate-in slide-in-from-top duration-300 font-sans">
+                <div className="relative z-50 w-full bg-indigo-600 text-white px-4 py-2 text-xs sm:text-sm shadow-sm transition-all animate-in slide-in-from-top duration-300 font-sans">
                     <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 relative pr-8">
                         {/* Title & Body */}
                         <div className="flex items-center gap-2 text-center md:text-left flex-wrap justify-center">
@@ -135,8 +135,8 @@ export const CMSPopupManager = () => {
 
             {/* Popover UI - Bottom Right Toast Style */}
             {visibleModal && (
-                <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[100] flex flex-col items-end gap-2 animate-in slide-in-from-bottom-10 fade-in duration-500 font-sans">
-                     <div className="w-full max-w-[320px] sm:max-w-sm bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden relative rings-1 ring-black/5">
+                <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-100 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-10 fade-in duration-500 font-sans">
+                     <div className="w-full max-w-[320px] sm:max-w-sm bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden relative ring-1 ring-black/5">
                         
                         {/* Close Button - More visible */}
                         <button 
@@ -151,7 +151,7 @@ export const CMSPopupManager = () => {
                             <div className="h-32 w-full bg-zinc-100 relative group">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={visibleModal.image_url} alt="" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
+                                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-60"></div>
                             </div>
                         )}
                         

@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Database } from './types_db'; 
 import { CMSContentItem, CMSPopover, CMSWeeklyWord, CMSNewsletter } from './types';
 
-const supabaseUrl = 'https://pfijkpxlsbyepxhwjsep.supabase.co';
-const supabaseKey = 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pfijkpxlsbyepxhwjsep.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_x3M92O40t4wvnrpoTlGTcw_0YpuIuw9';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 

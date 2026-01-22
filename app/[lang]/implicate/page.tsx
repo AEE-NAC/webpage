@@ -1,13 +1,27 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../../components/layout/Header';
 import Footer from '../../../components/layout/Footer';
-import { supabase } from '../../../services/supabase.conf';
+import { supabase, CMSService } from '../../../services/supabase.conf';
 import { CMSText } from '../../../components/cms/cms-text';
+import { CMSProvider } from '../../../components/cms/cms-provider';
 import { motion } from 'framer-motion';
+import { useParams } from 'next/navigation';
+import { SupportedLanguage } from '../../../context/adapt';
 
 const ImpliquezVous = () => {
+  const params = useParams();
+  const lang = (params?.lang as SupportedLanguage) || 'fr';
+  const [dictionary, setDictionary] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    CMSService.getPageContent('implicate', lang).then(setDictionary);
+  }, [lang]);
+
+  // Helper for attributes regex scanner
+  const cms = (k: string, v: string) => dictionary[k] || v;
+
   const [showModal, setShowModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState('');
   const [formData, setFormData] = useState({
@@ -111,7 +125,7 @@ const ImpliquezVous = () => {
   };
 
   return (
-    <>
+    <CMSProvider dictionary={dictionary}>
       <Header />
       <div className="bg-[#fdfff4ff] py-32 min-h-screen flex items-center">
         <div className="container mx-auto px-4">
@@ -235,7 +249,7 @@ const ImpliquezVous = () => {
                   className="w-full p-2.5 border rounded-xl text-zinc-900 bg-zinc-50 focus:ring-2 focus:ring-[#981a3c] outline-none transition-all"
                   value={formData.churchName}
                   onChange={(e) => setFormData({...formData, churchName: e.target.value})}
-                  placeholder="Ex: Église Biblique de..."
+                  placeholder={cms('implicate.placeholder.church', 'Ex: Église Biblique de...')}
                 />
               </div>
 
@@ -266,7 +280,7 @@ const ImpliquezVous = () => {
                 <textarea
                   className="w-full p-2.5 border rounded-xl text-zinc-900 bg-zinc-50 focus:ring-2 focus:ring-[#981a3c] outline-none transition-all h-24 resize-none"
                   value={formData.message}
-                  placeholder="Dites-nous en plus sur vos motivations..."
+                  placeholder={cms('implicate.placeholder.message', 'Dites-nous en plus sur vos motivations...')}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
                 ></textarea>
               </div>
@@ -292,7 +306,7 @@ const ImpliquezVous = () => {
         </motion.div>
       )}
       <Footer />
-    </>
+    </CMSProvider>
   );
 };
 

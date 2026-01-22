@@ -1,16 +1,26 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
 import { useParams, useRouter } from 'next/navigation';
 import { defaultLocale, SupportedLanguage } from '../../../context/adapt';
-import { supabase } from '../../../services/supabase.conf';
+import { supabase, CMSService } from '../../../services/supabase.conf';
+import { CMSProvider } from '../../../components/cms/cms-provider';
 
 const Join = () => {
     const params = useParams();
     const router = useRouter();
     const lang = (params?.lang as SupportedLanguage) || defaultLocale;
+    
+    // FETCH DICTIONARY FOR ATTRIBUTES
+    const [dictionary, setDictionary] = useState<Record<string, string>>({});
+    useEffect(() => {
+        CMSService.getPageContent('join', lang).then(setDictionary);
+    }, [lang]);
+
+    // Helper for attributes regex scanner: matches /cms\s*\(\s*(['"`])(.*?)\1\s*,\s*(['"`])(.*?)\3\s*\)/gs
+    const cms = (k: string, v: string) => dictionary[k] || v;
 
     const [step, setStep] = useState(1);
     const [joinType, setJoinType] = useState('');
@@ -52,6 +62,7 @@ const Join = () => {
     };
 
     return (
+      <CMSProvider dictionary={dictionary}>
         <div className="h-screen flex justify-center items-center p-4 md:p-6 bg-zinc-50 font-sans overflow-hidden">
             <div className="w-full max-w-7xl h-full md:h-[90vh] flex flex-col md:flex-row gap-8">
                 
@@ -148,11 +159,25 @@ const Join = () => {
                                     </div>
                                     <div>
                                         <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="join.form.name" defaultVal="Nom complet" /></label>
-                                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Prénom Nom" className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm" />
+                                        <input 
+                                            type="text" 
+                                            value={name} 
+                                            onChange={(e) => setName(e.target.value)} 
+                                            required 
+                                            placeholder={cms('join.placeholder.name', 'Prénom Nom')}
+                                            className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm" 
+                                        />
                                     </div>
                                     <div>
                                         <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block"><CMSText k="join.form.email" defaultVal="Email" /></label>
-                                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="exemple@mail.com" className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm" />
+                                        <input 
+                                            type="email" 
+                                            value={email} 
+                                            onChange={(e) => setEmail(e.target.value)} 
+                                            required 
+                                            placeholder={cms('join.placeholder.email', 'exemple@mail.com')}
+                                            className="w-full bg-white border border-zinc-200 text-zinc-900 text-sm rounded-xl p-3 focus:ring-[#981a3c] focus:border-[#981a3c] shadow-sm" 
+                                        />
                                     </div>
                                     <div className="pt-4">
                                         <button type="submit" disabled={loading} className="w-full bg-[#981a3c] text-white py-3.5 rounded-xl font-bold hover:bg-[#7a1530] transition-all disabled:opacity-50">
@@ -186,6 +211,7 @@ const Join = () => {
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
             `}</style>
         </div>
+      </CMSProvider>
     );
 };
 
