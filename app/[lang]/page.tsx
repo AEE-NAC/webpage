@@ -4,8 +4,14 @@ import Footer from '@/components/layout/Footer';
 import About from '@/components/layout/About';
 import Carousel from '@/components/layout/carousel';
 import { CMSText } from '@/components/cms/cms-text';
-import { VisualEditorListener } from '@/components/admin/visual-editor-listener';
-import { SupportedLanguage } from "@/context/adapt";
+import { SupportedLanguage } from '@/context/adapt';
+
+// Ensure these imports are present
+import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/home/feeds';
+import ImpactSection from '@/components/home/impact-section';
+import TestimonialsSection from '@/components/home/testimonials-section';
+import { CMSService } from "@/services/supabase.conf";
+import { CMSWeeklyWord, CMSNewsletter } from '@/services/types';
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang: langParam } = await params;
@@ -30,10 +36,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-black font-sans">
-      <Suspense fallback={null}>
-        <VisualEditorListener />
-      </Suspense>
-
       <Header />
       
       <main className="flex-1 w-full flex flex-col">

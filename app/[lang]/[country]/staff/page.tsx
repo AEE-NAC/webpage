@@ -3,9 +3,11 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CMSText } from '@/components/cms/cms-text';
 import { CMSImage } from '@/components/cms/cms-image';
+import { SupportedLanguage } from '@/context/adapt';
 
 export default async function CountryStaffPage(props: { params: Promise<{ lang: string, country: string }> }) {
     const params = await props.params;
+    const lang = params.lang as SupportedLanguage;
     const country = (params.country || '').toUpperCase();
 
     // In a real app, fetch staff filtered by country here from Supabase

@@ -1,11 +1,10 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CMSText } from '@/components/cms/cms-text';
 import { CMSImage } from '@/components/cms/cms-image';
 import { CMSService, supabase } from '@/services/supabase.conf';
 import { SupportedLanguage } from '@/context/adapt';
-import { VisualEditorListener } from '@/components/admin/visual-editor-listener';
 import { CMSProvider } from '@/components/cms/cms-provider';
 
 // Helper to get flag-based gradient colors
@@ -30,7 +29,6 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
   return (
     <CMSProvider dictionary={dictionary}>
         <div className="bg-[#f7f7f2] min-h-screen font-sans text-zinc-900 relative overflow-x-hidden">
-            <Suspense fallback={null}><VisualEditorListener /></Suspense>
             <Header />
             
             <main className="relative z-10">

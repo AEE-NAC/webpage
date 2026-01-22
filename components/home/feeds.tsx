@@ -61,16 +61,14 @@ function PDFThumbnail({ url }: { url: string }) {
             </PDFDocument>
             
             {/* Fallback : Icône originale affichée si erreur ou chargement */}
-            {(status === 'loading' || status === 'error') && (
-                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${status === 'success' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                    <div className="w-16 h-20 bg-white border-2 border-zinc-200 rounded-md shadow-sm transform group-hover:-rotate-3 group-hover:scale-110 transition-all flex flex-col items-center justify-center">
-                        <span className="text-[10px] font-black text-red-600 mb-1">PDF</span>
-                        <svg className="w-8 h-8 text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
+            <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${status === 'success' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                <div className="w-16 h-20 bg-white border-2 border-zinc-200 rounded-md shadow-sm transform group-hover:-rotate-3 group-hover:scale-110 transition-all flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-black text-red-600 mb-1">PDF</span>
+                    <svg className="w-8 h-8 text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                 </div>
-            )}
+            </div>
         </div>
     );
 }

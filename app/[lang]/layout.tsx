@@ -6,6 +6,7 @@ import { CMSService } from "@/services/supabase.conf";
 import { CMSProvider } from "@/components/cms/cms-provider";
 import { CMSPopupManager } from "@/components/cms/cms-popup-manager";
 import { VisualEditorListener } from "@/components/admin/visual-editor-listener"; // Import Listener
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,7 +59,9 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CMSProvider dictionary={dictionary}>
           <CMSPopupManager />
-          <VisualEditorListener /> {/* Activate visual editing */}
+          <Suspense fallback={null}>
+            <VisualEditorListener /> {/* Activate visual editing */}
+          </Suspense>
           {children}
         </CMSProvider>
       </body>
