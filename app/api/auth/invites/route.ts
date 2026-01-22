@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { AuthService } from '@/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const invites = await AuthService.getInvites();
