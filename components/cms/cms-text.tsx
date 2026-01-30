@@ -1,33 +1,41 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCMS } from './cms-provider';
 
 interface CMSTextProps {
   k: string;
   defaultVal?: string;
-  as?: any; 
+  as?: any;
   className?: string;
   [key: string]: any;
 }
 
-export const CMSText = ({ k, defaultVal, as: Tag = 'span', className, ...props }: CMSTextProps) => {
-  const { dictionary } = useCMS();
+export const CMSText = ({ k, defaultVal = "", as: Component = "span", className, ...props }: CMSTextProps) => {
+  const { dictionary, loading } = useCMS();
   
-  // Logic: 
-  // 1. Try to find key in Supabase dictionary
-  // 2. Fallback to defaultVal provided in code
-  // 3. Fallback to key itself
-  const val = dictionary[k] || defaultVal || k;
+  // Check if key exists in dictionary
+  const val = dictionary?.[k];
+  const isFromDB = val !== undefined && val !== null;
+  const displayVal = isFromDB ? val : defaultVal;
+
+  useEffect(() => {
+    // Only log in production or dev to verify sources
+    if (loading) return;
+
+    if (!isFromDB) {
+      console.warn(`%c[CMS] Missing Key: "${k}"`, "color: orange; font-weight: bold;", `Using default: "${defaultVal}"`);
+    } else {
+      // Optional: Uncomment to see successful translations (very verbose)
+      // console.debug(`%c[CMS] Loaded: "${k}"`, "color: green;", `Value: "${val}"`);
+    }
+  }, [k, isFromDB, loading, defaultVal, val]);
+
+  if (loading && !defaultVal) return <span className="opacity-50">...</span>;
 
   return (
-    <Tag 
-      className={className}
-      data-cms-key={k}
-      style={{ cursor: 'context-menu' }}
-      {...props}
-    >
-      {val}
-    </Tag>
+    <Component className={className} {...props} data-cms-key={k} data-cms-source={isFromDB ? 'db' : 'code'}>
+      {displayVal}
+    </Component>
   );
 };

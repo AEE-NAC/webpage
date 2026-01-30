@@ -23,7 +23,10 @@ export const CMSService = {
     lang: string, 
     countryCode?: string
   ): Promise<Record<string, string>> {
-    console.info(`[CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}")`);
+    const isServer = typeof window === 'undefined';
+    const envLabel = isServer ? '[SERVER]' : '[CLIENT]';
+    
+    console.info(`${envLabel} [CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}")`);
     
     // Fetch all potentially relevant rows for this namespace
     const { data, error } = await supabase
@@ -33,16 +36,16 @@ export const CMSService = {
       .in('language', [lang, 'en']); // Fetch current lang AND english fallback
 
     if (error) {
-      console.error(`[CMS Service] getPageContent ERROR:`, error.message);
+      console.error(`${envLabel} [CMS Service] getPageContent ERROR:`, error.message);
       return {};
     }
 
     if (!data) {
-      console.warn(`[CMS Service] getPageContent: Aucune donnée trouvée pour "${prefix}"`);
+      console.warn(`${envLabel} [CMS Service] getPageContent: Aucune donnée trouvée pour "${prefix}"`);
       return {};
     }
 
-    console.info(`[CMS Service] getPageContent: ${data.length} entrées brutes récupérées.`);
+    console.info(`${envLabel} [CMS Service] getPageContent: ${data.length} entrées brutes trouvées dans la BD.`);
 
     const items = data as CMSContentItem[];
     const dictionary: Record<string, string> = {};
