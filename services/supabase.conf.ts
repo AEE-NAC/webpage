@@ -21,16 +21,19 @@ export const CMSService = {
   async getPageContent(
     prefix: string, 
     lang: string, 
-    countryCode?: string
+    countryCode?: string,
+    extraPrefixes: string[] = []
   ): Promise<Record<string, string>> {
     const isServer = typeof window === 'undefined';
     const envLabel = isServer ? '[SERVER]' : '[CLIENT]';
     
-    console.info(`${envLabel} [CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}")`);
+    console.info(`${envLabel} [CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}", extra: [${extraPrefixes.join(', ')}])`);
     
-    // Toujours inclure les clés globales (shared, nav, footer, layout) en plus de la page spécifique
-    const prefixes = [prefix, 'shared.', 'nav.', 'footer.', 'layout.'];
-    const orCondition = prefixes.map(p => `key.ilike.${p}%`).join(',');
+    // Toujours inclure les clés globales (shared, nav, footer, layout, header) en plus de la page spécifique
+    // extraPrefixes permet de charger des clés d'autres pages (ex: 'home.' sur la page ministry)
+    const extraNormalized = extraPrefixes.map(p => p.endsWith('.') ? p : `${p}.`);
+    const prefixes = [prefix, 'shared.', 'nav.', 'footer.', 'layout.', 'header.', ...extraNormalized];
+    const orCondition = prefixes.filter(Boolean).map(p => `key.ilike.${p}%`).join(',');
 
     // Fetch all potentially relevant rows for this namespace
     const { data, error } = await supabase

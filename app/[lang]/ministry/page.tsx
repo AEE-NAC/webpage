@@ -172,7 +172,7 @@ export default async function MinistryPage({ params }: { params: Promise<{ lang:
   const { lang: langParam } = await params;
   const lang = langParam as SupportedLanguage;
 
-  const dictionary = await CMSService.getPageContent('ministry', lang);
+  const dictionary = await CMSService.getPageContent('ministry', lang, undefined, ['home']);
 
   return (
     <CMSProvider dictionary={dictionary}>
@@ -495,7 +495,7 @@ function ClubCard({ club, lang }: { club: ClubData; lang: string }) {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div
-          className="absolute inset-0 transition-opacity duration-500"
+          className="absolute inset-0 transition-opacity duration-500 pointer-events-none"
           style={{
             background: `linear-gradient(to top, ${club.accentColor}f0 0%, ${club.accentColor}99 45%, ${club.accentColor}33 100%)`,
           }}

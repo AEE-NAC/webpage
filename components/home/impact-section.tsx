@@ -365,7 +365,7 @@ const ImpactSection = () => {
                                                 `}
                                                 onClick={() => setActiveActivityIndex(i)}
                                             >
-                                                <div className="w-full pointer-events-none">
+                                                <div className="w-full">
                                                     <div className={`text-5xl mb-6 w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner ${isActive ? 'bg-zinc-900' : 'bg-transparent transition-colors duration-500'}`}>
                                                         {activity.icon}
                                                     </div>

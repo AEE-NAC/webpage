@@ -206,8 +206,8 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             ] as const).map(({ id, def }) => (
                                 <div key={id} className="group relative overflow-hidden rounded-2xl bg-zinc-100 aspect-video shadow-md hover:shadow-xl transition-shadow">
                                     <CMSImage k={`country.ministry.${id}.image`} defaultSrc={def} alt={id} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" fill />
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex items-end p-5">
-                                        <h3 className="text-white font-extrabold text-lg"><CMSText k={`country.ministry.${id}.name`} defaultVal={id.toUpperCase()} /></h3>
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex items-end p-5 pointer-events-none">
+                                        <h3 className="text-white font-extrabold text-lg pointer-events-auto"><CMSText k={`country.ministry.${id}.name`} defaultVal={id.toUpperCase()} /></h3>
                                     </div>
                                 </div>
                             ))}
@@ -240,7 +240,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             ] as const).map(({ key, def, tall }, i) => (
                                 <div key={i} className={`relative overflow-hidden rounded-2xl group ${tall ? 'row-span-2' : ''} aspect-square`}>
                                     <CMSImage k={key} defaultSrc={def} alt="" fill className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-colors duration-300" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                                 </div>
                             ))}
                         </div>
