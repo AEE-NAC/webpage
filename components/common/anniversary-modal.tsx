@@ -181,68 +181,64 @@ const FireworksCanvas: React.FC = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" />;
 };
 
-// ---------- Masonry Grid ----------
-interface MasonryTile {
-  cmsKey: string;
-  defaultSrc: string;
-  span: 'tall' | 'wide' | 'normal';
-}
-
-const MASONRY_TILES: MasonryTile[] = [
-  { cmsKey: 'anniversary.mosaic.img1',  defaultSrc: '/images/aee.jpg',              span: 'tall'   },
-  { cmsKey: 'anniversary.mosaic.img2',  defaultSrc: '/images/font_1.jpg',           span: 'normal' },
-  { cmsKey: 'anniversary.mosaic.img3',  defaultSrc: '/images/CBN_guadeloupe.jpeg',  span: 'normal' },
-  { cmsKey: 'anniversary.mosaic.img4',  defaultSrc: '/images/font_2.jpg',           span: 'wide'   },
-  { cmsKey: 'anniversary.mosaic.img5',  defaultSrc: '/images/CBN_haiti.jpeg',       span: 'normal' },
-  { cmsKey: 'anniversary.mosaic.img6',  defaultSrc: '/images/font_3.jpg',           span: 'tall'   },
-  { cmsKey: 'anniversary.mosaic.img7',  defaultSrc: '/images/CP_pichon.jpeg',       span: 'normal' },
-  { cmsKey: 'anniversary.mosaic.img8',  defaultSrc: '/images/signup.jpg',           span: 'normal' },
-  { cmsKey: 'anniversary.mosaic.img9',  defaultSrc: '/images/week_word.jpg',        span: 'wide'   },
-  { cmsKey: 'anniversary.mosaic.img10', defaultSrc: '/images/font_5.jpg',           span: 'normal' },
-];
-
-const MasonryGrid: React.FC = () => {
+// ---------- Candle Mosaic ----------
+const CandleMosaic: React.FC = () => {
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden">
-      {/* Masonry CSS grid */}
-      <div
-        className="grid grid-cols-3 md:grid-cols-4 auto-rows-[80px] md:auto-rows-[90px] gap-1.5 p-1.5 h-full"
-      >
-        {MASONRY_TILES.map((tile, idx) => {
-          const spanClass =
-            tile.span === 'tall'
-              ? 'row-span-3'
-              : tile.span === 'wide'
-                ? 'col-span-2 row-span-2'
-                : 'row-span-2';
-
-          return (
-            <div
-              key={tile.cmsKey}
-              className={`relative overflow-hidden rounded-xl group ${spanClass}`}
-              style={{
-                animation: `masonryFadeIn 0.6s ease-out ${idx * 0.07}s backwards`,
-              }}
-            >
-              <CMSImage
-                k={tile.cmsKey}
-                defaultSrc={tile.defaultSrc}
-                alt={`Souvenir AEE ${idx + 1}`}
-                fill
-                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                sizes="(max-width: 768px) 33vw, 25vw"
+    <div className="relative w-full h-full flex items-center justify-center p-8 bg-[#1a0e0a]">
+      {/* Container for the candle composition */}
+      <div className="relative w-full max-w-[300px] aspect-[2/3] drop-shadow-[0_0_50px_rgba(255,160,0,0.3)]">
+        
+        {/* Flame Image */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[30%] h-[20%] z-20 animate-pulse">
+           <div className="w-full h-full relative" style={{ clipPath: 'path("M50,0 C50,0 20,40 20,65 C20,85 35,100 50,100 C65,100 80,85 80,65 C80,40 50,0 50,0 Z")' }}>
+              <CMSImage 
+                k="anniversary.candle.flame" 
+                defaultSrc="/images/Haiti_staffs/promotional/IMG_8226.JPG" 
+                alt="Candle Flame" 
+                fill 
+                className="object-cover"
               />
-              {/* Warm overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-amber-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              {/* Subtle gold tint */}
-              <div className="absolute inset-0 bg-amber-500/5 mix-blend-overlay pointer-events-none" />
-            </div>
-          );
-        })}
-      </div>
+              <div className="absolute inset-0 bg-linear-to-t from-orange-500/80 via-yellow-400/50 to-white/80 mix-blend-overlay pointer-events-none" />
+           </div>
+        </div>
 
-      {/* Edge fade overlays */}
-      <div className="absolute inset-0 bg-linear-to-t from-[#1a0e0a] via-transparent to-transparent z-10 pointer-events-none md:bg-linear-to-l md:from-[#1a0e0a]/90 md:via-transparent md:to-transparent" />
+        {/* Candle Body Top - CBN Guadeloupe */}
+        <div className="absolute top-[22%] left-1/2 -translate-x-1/2 w-[50%] h-[35%] z-10">
+           <div className="w-full h-full relative rounded-t-lg overflow-hidden border-x-2 border-t-2 border-amber-900/30">
+               <CMSImage 
+                 k="anniversary.candle.body_top" 
+                 defaultSrc="/images/CBN_guadeloupe.jpeg" 
+                 alt="Candle Body Top" 
+                 fill 
+                 className="object-cover opacity-90 hover:scale-110 transition-transform duration-700" 
+               />
+               <div className="absolute inset-0 bg-linear-to-b from-amber-200/20 to-transparent pointer-events-none" />
+           </div>
+        </div>
+
+        {/* Candle Body Bottom - Haiti Staff */}
+        <div className="absolute top-[57%] left-1/2 -translate-x-1/2 w-[50%] h-[43%] z-10">
+           <div className="w-full h-full relative rounded-b-lg overflow-hidden border-x-2 border-b-2 border-amber-900/30">
+               <CMSImage 
+                 k="anniversary.candle.body_bottom" 
+                 defaultSrc="/images/Haiti_staffs/in%20action/C5D.JPG" 
+                 alt="Candle Body Bottom" 
+                 fill 
+                 className="object-cover opacity-90 hover:scale-110 transition-transform duration-700" 
+               />
+               <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent pointer-events-none" />
+           </div>
+        </div>
+
+        {/* Wax drip decoration (SVG) */}
+        <svg className="absolute top-[21%] left-1/2 -translate-x-1/2 w-[52%] h-10 text-[#fcf6ba] drop-shadow-md z-30 pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
+             <path d="M0,0 Q10,15 20,5 Q30,-5 40,10 Q50,20 60,5 Q70,0 80,10 Q90,15 100,0 L100,2 L0,2 Z" fill="currentColor" opacity="0.9" />
+        </svg>
+
+        {/* Halo Glow behind flame */}
+        <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[60%] h-[30%] bg-orange-500/30 blur-[40px] rounded-full pointer-events-none z-0 animate-pulse" />
+
+      </div>
     </div>
   );
 };
@@ -421,13 +417,13 @@ export const AnniversaryModal: React.FC = () => {
           order-2 md:order-1
           flex-1 md:flex-[0.55]
           flex flex-col justify-center items-center md:items-start
-          p-6 md:p-10 lg:p-12
+          p-5 md:p-8 lg:p-10
           text-center md:text-left
-          overflow-y-auto
+          overflow-hidden
         ">
 
           {/* Badge */}
-          <div className="mb-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 backdrop-blur-sm">
+          <div className="mb-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/25 bg-amber-500/10 backdrop-blur-sm">
             <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             <CMSText
               k="anniversary.badge"
@@ -437,12 +433,12 @@ export const AnniversaryModal: React.FC = () => {
           </div>
 
           {/* Title */}
-          <h2 className="text-white text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-3">
+          <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-black leading-[1.1] mb-2">
             <CMSText
               k="anniversary.subtitle"
               defaultVal="Célébrons"
               as="span"
-              className="block text-lg md:text-xl font-medium text-amber-200/70 mb-2"
+              className="block text-base md:text-lg font-medium text-amber-200/70 mb-1"
             />
             <span className="text-gold-shine drop-shadow-[0_2px_20px_rgba(255,215,0,0.3)]" style={{ animation: 'textShine 3s linear infinite, float 4s ease-in-out infinite' }}>
               <CMSText k="anniversary.years" defaultVal="43 Ans" />
@@ -453,24 +449,24 @@ export const AnniversaryModal: React.FC = () => {
             k="anniversary.tagline"
             defaultVal="au service des enfants"
             as="h3"
-            className="text-white/80 text-base md:text-lg font-light tracking-wide mb-5"
+            className="text-white/80 text-sm md:text-base font-light tracking-wide mb-3"
           />
 
           <CMSText
             k="anniversary.description"
             defaultVal="Depuis 1983, l'Évangile est partagé avec passion. Merci à chaque partenaire qui rend cette mission possible."
             as="p"
-            className="text-amber-100/50 text-sm md:text-[15px] leading-relaxed max-w-md mb-7"
+            className="text-amber-100/50 text-xs md:text-sm leading-relaxed max-w-md mb-4"
           />
 
           {/* Stats */}
-          <div className="flex gap-8 mb-8 border-t border-white/10 pt-6 w-full justify-center md:justify-start">
+          <div className="flex gap-8 mb-5 border-t border-white/10 pt-4 w-full justify-center md:justify-start">
             <div className="text-center md:text-left">
               <CMSText
                 k="anniversary.stat.year_start"
                 defaultVal="1983"
                 as="div"
-                className="text-rose-400 font-bold text-2xl md:text-3xl tabular-nums"
+                className="text-rose-400 font-bold text-xl md:text-2xl tabular-nums"
               />
               <CMSText
                 k="anniversary.stat.year_start_label"
@@ -485,7 +481,7 @@ export const AnniversaryModal: React.FC = () => {
                 k="anniversary.stat.year_now"
                 defaultVal="2026"
                 as="div"
-                className="text-amber-400 font-bold text-2xl md:text-3xl tabular-nums"
+                className="text-amber-400 font-bold text-xl md:text-2xl tabular-nums"
               />
               <CMSText
                 k="anniversary.stat.year_now_label"
@@ -505,7 +501,7 @@ export const AnniversaryModal: React.FC = () => {
               bg-linear-to-r from-rose-700 via-rose-600 to-amber-600
               hover:from-rose-600 hover:via-rose-500 hover:to-amber-500
               text-white font-bold uppercase tracking-wider text-sm
-              px-8 py-4
+              px-6 py-3
               rounded-2xl
               shadow-[0_8px_32px_rgba(200,30,70,0.35)]
               hover:shadow-[0_12px_40px_rgba(200,30,70,0.5)]
@@ -514,7 +510,7 @@ export const AnniversaryModal: React.FC = () => {
               transition-all duration-300
               whitespace-nowrap
               w-full md:w-auto
-              min-w-55
+              min-w-48
             "
           >
             <CMSText k="anniversary.cta" defaultVal="Découvrir l'histoire" />
@@ -522,17 +518,17 @@ export const AnniversaryModal: React.FC = () => {
 
           <button
             onClick={close}
-            className="mt-4 text-xs text-amber-200/30 hover:text-white/80 transition-colors underline decoration-amber-900/50 underline-offset-4 hover:decoration-white/30"
+            className="mt-3 text-xs text-amber-200/30 hover:text-white/80 transition-colors underline decoration-amber-900/50 underline-offset-4 hover:decoration-white/30"
           >
             <CMSText k="anniversary.skip" defaultVal="Passer l'introduction" />
           </button>
         </div>
 
-        {/* ---------- RIGHT: MASONRY MOSAIC ---------- */}
-        <div className="relative order-1 md:order-2 h-[38vh] md:h-auto flex-[0.45] overflow-hidden">
-          <MasonryGrid />
-
-          {/* Confetti over the mosaic */}
+        {/* ---------- RIGHT: CANDLE ILLUMINATION ---------- */}
+        <div className="relative order-1 md:order-2 h-[38vh] md:h-auto flex-[0.45] overflow-hidden bg-black/40">
+          <CandleMosaic />
+          
+          {/* Confetti over the candle */}
           <ConfettiCanvas />
 
           {/* Big watermark number */}
