@@ -5,6 +5,7 @@ import { CMSText } from '@/components/cms/cms-text';
 import { CMSImage } from '@/components/cms/cms-image';
 import { CMSService } from '@/services/supabase.conf';
 import { CMSProvider } from '@/components/cms/cms-provider';
+import { CMSVideo } from '@/components/cms/cms-video';
 import { SupportedLanguage } from '@/context/adapt';
 
 // ── Flag gradient helper ──────────────────────────────────────────────────────
@@ -331,21 +332,35 @@ export default async function CountryStaffPage(props: { params: Promise<{ lang: 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <VideoCard
                                 videoUrlKey="country.staff.video1.url"
-                                thumbnailKey="country.staff.video1.thumbnail"
-                                defaultThumbnail="/images/Haiti_staffs/promotional/IMG_8237.JPG"
+                                defaultVideoUrl="https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20Super%20Seminaire.mp4"
                                 titleKey="country.staff.video1.title"
-                                defaultTitle="Présentation de l'équipe"
+                                defaultTitle="Super Séminaire"
                                 descKey="country.staff.video1.desc"
-                                defaultDesc="Découvrez notre équipe et sa vision pour le pays."
+                                defaultDesc="Découvrez notre grand séminaire de formation et d'inspiration."
                             />
                             <VideoCard
                                 videoUrlKey="country.staff.video2.url"
-                                thumbnailKey="country.staff.video2.thumbnail"
-                                defaultThumbnail="/images/Haiti_staffs/promotional/IMG_8246.JPG"
+                                defaultVideoUrl="https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20Materiels.mp4"
                                 titleKey="country.staff.video2.title"
-                                defaultTitle="Nos activités sur le terrain"
+                                defaultTitle="Nos Matériels"
                                 descKey="country.staff.video2.desc"
-                                defaultDesc="Un aperçu concret de nos clubs et formations."
+                                defaultDesc="Aperçu des ressources pédagogiques et matériels utilisés sur le terrain."
+                            />
+                            <VideoCard
+                                videoUrlKey="country.staff.video3.url"
+                                defaultVideoUrl="https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20KBN.mp4"
+                                titleKey="country.staff.video3.title"
+                                defaultTitle="Club de la Bonne Nouvelle (KBN)"
+                                descKey="country.staff.video3.desc"
+                                defaultDesc="Le KBN en action : présentation de notre club biblique hebdomadaire."
+                            />
+                            <VideoCard
+                                videoUrlKey="country.staff.video4.url"
+                                defaultVideoUrl="https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20KATAK1.mp4"
+                                titleKey="country.staff.video4.title"
+                                defaultTitle="Formation KATAK — Moniteurs"
+                                descKey="country.staff.video4.desc"
+                                defaultDesc="Le programme KATAK1 : formation et équipement de nos moniteurs bénévoles."
                             />
                         </div>
                     </div>
@@ -475,40 +490,28 @@ function CoordCard({
 
 function VideoCard({
     videoUrlKey,
-    thumbnailKey, defaultThumbnail,
+    defaultVideoUrl,
     titleKey, defaultTitle,
     descKey, defaultDesc,
 }: {
     videoUrlKey: string;
-    thumbnailKey: string; defaultThumbnail: string;
+    defaultVideoUrl: string;
     titleKey: string; defaultTitle: string;
     descKey: string; defaultDesc: string;
 }) {
     return (
-        <div className="group relative rounded-3xl overflow-hidden bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-300">
-            {/* data-cms-key on wrapper so overlays don't block right-click */}
-            <div className="aspect-video relative overflow-hidden" data-cms-key={thumbnailKey}>
-                <CMSImage
-                    k={thumbnailKey}
-                    defaultSrc={defaultThumbnail}
-                    alt={defaultTitle}
-                    fill
-                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-all duration-500 group-hover:scale-105"
+        <div className="group rounded-3xl overflow-hidden bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col">
+            <div className="aspect-video relative overflow-hidden bg-zinc-950">
+                <CMSVideo
+                    k={videoUrlKey}
+                    defaultSrc={defaultVideoUrl}
+                    controls
+                    preload="metadata"
+                    className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none" />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
-                        <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                    </div>
-                </div>
             </div>
-            <div className="p-6">
-                <div className="hidden" aria-hidden="true">
-                    <CMSText k={videoUrlKey} defaultVal="" />
-                </div>
-                <h4 className="text-white font-extrabold text-lg mb-1">
+            <div className="p-6 flex flex-col gap-1">
+                <h4 className="text-white font-extrabold text-base leading-tight">
                     <CMSText k={titleKey} defaultVal={defaultTitle} />
                 </h4>
                 <p className="text-zinc-400 text-sm leading-relaxed">

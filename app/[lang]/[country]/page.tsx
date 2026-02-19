@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CMSText } from '@/components/cms/cms-text';
 import { CMSImage } from '@/components/cms/cms-image';
+import { CMSVideo } from '@/components/cms/cms-video';
 import { CMSService, supabase } from '@/services/supabase.conf';
 import { SupportedLanguage } from '@/context/adapt';
 import { CMSProvider } from '@/components/cms/cms-provider';
@@ -264,34 +265,48 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                                     vKey: 'country.video1.url',
                                     tKey: 'country.video1.title',
                                     dKey: 'country.video1.desc',
-                                    thumbKey: 'country.video1.thumbnail',
-                                    defThumb: '/images/Haiti_staffs/promotional/IMG_8237.JPG',
-                                    defTitle: 'Présentation du pays',
-                                    defDesc: "Une vue d\u2019ensemble de notre \u0153uvre locale.",
+                                    defUrl: 'https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20Super%20Seminaire.mp4',
+                                    defTitle: 'Super Séminaire',
+                                    defDesc: "Découvrez notre grand séminaire de formation et d'inspiration.",
                                 },
                                 {
                                     vKey: 'country.video2.url',
                                     tKey: 'country.video2.title',
                                     dKey: 'country.video2.desc',
-                                    thumbKey: 'country.video2.thumbnail',
-                                    defThumb: '/images/Haiti_staffs/in%20action/C5D.JPG',
-                                    defTitle: 'Clubs en action',
-                                    defDesc: "Nos clubs bibliques touchent des milliers d\u2019enfants.",
+                                    defUrl: 'https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20Materiels.mp4',
+                                    defTitle: 'Nos Matériels',
+                                    defDesc: "Aperçu des ressources pédagogiques utilisées sur le terrain.",
                                 },
-                            ] as const).map(({ vKey, tKey, dKey, thumbKey, defThumb, defTitle, defDesc }, i) => (
-                                <div key={i} className="group relative rounded-3xl overflow-hidden bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-300">
-                                    <div className="aspect-video relative overflow-hidden">
-                                        <CMSImage k={thumbKey} defaultSrc={defThumb} alt={defTitle} fill className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
-                                        <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
-                                                <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                                            </div>
-                                        </div>
+                                {
+                                    vKey: 'country.video3.url',
+                                    tKey: 'country.video3.title',
+                                    dKey: 'country.video3.desc',
+                                    defUrl: 'https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20KBN.mp4',
+                                    defTitle: 'Club de la Bonne Nouvelle (KBN)',
+                                    defDesc: "Le KBN en action : présentation de notre club biblique hebdomadaire.",
+                                },
+                                {
+                                    vKey: 'country.video4.url',
+                                    tKey: 'country.video4.title',
+                                    dKey: 'country.video4.desc',
+                                    defUrl: 'https://pfijkpxlsbyepxhwjsep.supabase.co/storage/v1/object/public/static/haiti/videos/AEE_Promo%20KATAK1.mp4',
+                                    defTitle: 'Formation KATAK — Moniteurs',
+                                    defDesc: "Le programme KATAK1 : formation et équipement de nos moniteurs bénévoles.",
+                                },
+                            ] as const).map(({ vKey, tKey, dKey, defUrl, defTitle, defDesc }, i) => (
+                                <div key={i} className="rounded-3xl overflow-hidden bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col">
+                                    <div className="aspect-video bg-zinc-950">
+                                        <CMSVideo
+                                            k={vKey}
+                                            defaultSrc={defUrl}
+                                            controls
+                                            preload="metadata"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
-                                    <div className="p-6">
-                                        <div className="hidden" aria-hidden="true"><CMSText k={vKey} defaultVal="" /></div>
-                                        <h4 className="text-white font-extrabold text-lg mb-1"><CMSText k={tKey} defaultVal={defTitle} /></h4>
+                                    <div className="p-6 flex flex-col gap-1">
+                                        <div className="hidden" aria-hidden="true"><CMSText k={vKey} defaultVal={defUrl} /></div>
+                                        <h4 className="text-white font-extrabold text-base leading-tight"><CMSText k={tKey} defaultVal={defTitle} /></h4>
                                         <p className="text-zinc-400 text-sm leading-relaxed"><CMSText k={dKey} defaultVal={defDesc} /></p>
                                     </div>
                                 </div>

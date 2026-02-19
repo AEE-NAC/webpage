@@ -37,7 +37,7 @@ export const CMSService = {
       .from('cms_content')
       .select('*')
       .or(orCondition)
-      .in('language', [lang, 'en']); // Fetch current lang AND english fallback
+      .in('language', [lang, 'fr', 'en']); // lang > fr (default fallback) > en
 
     if (error) {
       console.error(`${envLabel} [CMS Service] getPageContent ERROR:`, error.message);
@@ -55,9 +55,13 @@ export const CMSService = {
     const dictionary: Record<string, string> = {};
 
     // Helper to calculate score
+    // Priority chain: current_lang+country (4) > current_lang (3) > fr+country (2) > fr (2) > en (1)
+    // This ensures media/content created only in French appears in all other language pages.
     const getScore = (item: CMSContentItem) => {
-      if (item.language === lang && item.country_code === countryCode) return 3;
-      if (item.language === lang && !item.country_code) return 2;
+      if (item.language === lang && item.country_code === countryCode) return 4;
+      if (item.language === lang && !item.country_code) return 3;
+      if (item.language === 'fr' && item.country_code === countryCode) return 2;
+      if (item.language === 'fr' && !item.country_code) return 2;
       if (item.language === 'en') return 1;
       return 0;
     };
