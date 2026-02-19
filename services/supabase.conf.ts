@@ -29,10 +29,10 @@ export const CMSService = {
     
     console.info(`${envLabel} [CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}", extra: [${extraPrefixes.join(', ')}])`);
     
-    // Toujours inclure les clés globales (shared, nav, footer, layout, header) en plus de la page spécifique
-    // extraPrefixes permet de charger des clés d'autres pages (ex: 'home.' sur la page ministry)
+    // Toujours inclure les clés globales (shared, nav, footer, layout, header, home) en plus de la page spécifique
+    // extraPrefixes permet de charger des clés d'autres pages supplémentaires si besoin
     const extraNormalized = extraPrefixes.map(p => p.endsWith('.') ? p : `${p}.`);
-    const prefixes = [prefix, 'shared.', 'nav.', 'footer.', 'layout.', 'header.', ...extraNormalized];
+    const prefixes = [prefix, 'shared.', 'nav.', 'footer.', 'layout.', 'header.', 'home.', ...extraNormalized];
     const orCondition = prefixes.filter(Boolean).map(p => `key.ilike.${p}%`).join(',');
 
     // Fetch all potentially relevant rows for this namespace

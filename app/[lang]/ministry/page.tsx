@@ -172,7 +172,7 @@ export default async function MinistryPage({ params }: { params: Promise<{ lang:
   const { lang: langParam } = await params;
   const lang = langParam as SupportedLanguage;
 
-  const dictionary = await CMSService.getPageContent('ministry', lang, undefined, ['home']);
+  const dictionary = await CMSService.getPageContent('ministry', lang);
 
   return (
     <CMSProvider dictionary={dictionary}>
