@@ -83,9 +83,11 @@ const TestimonialsSection = ({ lang }: { lang: string }) => {
         
         <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
-                <span className="text-[#981a3c] font-black uppercase tracking-widest text-xs mb-3 block">Histoires d'impact</span>
+                <span className="text-[#981a3c] font-black uppercase tracking-widest text-xs mb-3 block">
+                    <CMSText k="shared.testimonials.badge" defaultVal="Histoires d'impact" />
+                </span>
                 <h2 className="text-3xl md:text-4xl font-extrabold text-[#2a2c41] dark:text-zinc-100">
-                    <CMSText k="home.testimonials.title" defaultVal="Ce qu'ils disent de nous" />
+                    <CMSText k="shared.testimonials.title" defaultVal="Ce qu'ils disent de nous" />
                 </h2>
                 <div className="w-12 h-1 bg-[#981a3c] mx-auto mt-4 rounded-full"></div>
             </div>

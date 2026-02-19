@@ -9,7 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
+/test/
 # testing
 /coverage
 
@@ -19,7 +19,7 @@
 
 # production
 /build
-
+/temp
 # misc
 .DS_Store
 *.pem

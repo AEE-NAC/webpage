@@ -103,9 +103,15 @@ export default function CMSAdminPage() {
     fetchTree();
   }, []);
 
-  // Update preview when route or lang changes
+  // Update preview when route changes, and auto-sync selectedLang from the path prefix
   useEffect(() => {
-    if (iframeRef.current && previewRoute) {
+    if (!previewRoute) return;
+    // Extract language from first path segment (e.g. /es/about -> es)
+    const detectedLang = previewRoute.split('/')[1] as SupportedLanguage;
+    if (locales.includes(detectedLang) && detectedLang !== selectedLang) {
+        setSelectedLang(detectedLang);
+    }
+    if (iframeRef.current) {
         iframeRef.current.src = `${previewRoute}?edit_mode=true`;
     }
   }, [previewRoute]);
@@ -1273,7 +1279,7 @@ export default function CMSAdminPage() {
                      <iframe 
                         ref={iframeRef}
                         id="preview-frame"
-                        src={`/${selectedLang}${previewRoute}?edit_mode=true`}
+                        src={previewRoute ? `${previewRoute}?edit_mode=true` : `/${selectedLang}?edit_mode=true`}
                         className="w-full h-full border-none"
                         title="Visual Preview"
                      />

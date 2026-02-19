@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { locales, SupportedLanguage } from '@/context/adapt';
+import { locales, SupportedLanguage, SUPPORTED_LANGUAGES } from '@/context/adapt';
 
 const LanguageSwitcher = () => {
   const pathname = usePathname();
@@ -12,14 +12,7 @@ const LanguageSwitcher = () => {
   // Derive current language from URL (e.g., /en/about -> en)
   const currentLang = pathname.split('/')[1] as SupportedLanguage || 'en';
 
-  const languages: { code: SupportedLanguage; country: string; name: string }[] = [
-    { code: 'en', country: 'us', name: 'EN' },
-    { code: 'fr', country: 'fr', name: 'FR' },
-    { code: 'es', country: 'es', name: 'ES' },
-    { code: 'ht', country: 'ht', name: 'KR' }
-  ];
-
-  const currentLanguageConfig = languages.find(l => l.code === currentLang) || languages[0];
+  const currentLanguageConfig = SUPPORTED_LANGUAGES.find(l => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
 
   const switchLanguage = (newLang: string) => {
     // Replace the first segment of the path
@@ -37,7 +30,7 @@ const LanguageSwitcher = () => {
         className="flex items-center gap-2 px-4 py-2 rounded-full text-[#2b2b3f] border border-[#981a3c] bg-[#fdfff4] hover:bg-zinc-100 transition-colors"
       >
         <img 
-          src={`https://flagcdn.com/w20/${currentLanguageConfig.country}.png`} 
+          src={`https://flagcdn.com/w20/${currentLanguageConfig.flag}.png`} 
           alt={currentLanguageConfig.name}
           className="w-5 h-3.75 rounded-[2px]"
         />
@@ -46,14 +39,14 @@ const LanguageSwitcher = () => {
 
       {isOpen && (
         <div className="absolute top-[calc(100%+4px)] left-0 z-999 w-full min-w-25 bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-lg">
-          {languages.map(lang => (
+          {SUPPORTED_LANGUAGES.map(lang => (
             <button
               key={lang.code}
               onClick={() => switchLanguage(lang.code)}
               className="w-full flex items-center gap-2 px-4 py-2 hover:bg-zinc-100 transition-colors text-left"
             >
               <img 
-                src={`https://flagcdn.com/w20/${lang.country}.png`} 
+                src={`https://flagcdn.com/w20/${lang.flag}.png`} 
                 alt={lang.name}
                 className="w-5 h-3.75 rounded-[2px]"
               />

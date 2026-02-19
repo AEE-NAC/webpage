@@ -5,6 +5,7 @@ import { SupportedLanguage } from "@/context/adapt";
 import Link from "next/link";
 import { CMSText } from "@/components/cms/cms-text";
 import { CMSImage } from "@/components/cms/cms-image";
+import { useCMS } from "@/components/cms/cms-provider";
 import { CMSWeeklyWord, CMSNewsletter } from "@/services/types";
 import dynamic from "next/dynamic";
 
@@ -16,7 +17,10 @@ const formatDate = (dateString: string, lang: string) => {
     return new Date(dateString).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-const FilterBar = ({ selectedYear, onYearChange, years, label }: { selectedYear: string, onYearChange: (y: string) => void, years: string[], label: string }) => (
+const FilterBar = ({ selectedYear, onYearChange, years, label }: { selectedYear: string, onYearChange: (y: string) => void, years: string[], label: React.ReactNode }) => {
+    const { dictionary } = useCMS();
+    const allYearsLabel = dictionary['shared.filter.all_years'] || 'Toutes les années';
+    return (
     <div className="flex items-center gap-3 mb-6">
         <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{label}</span>
         <select 
@@ -24,11 +28,12 @@ const FilterBar = ({ selectedYear, onYearChange, years, label }: { selectedYear:
             onChange={(e) => onYearChange(e.target.value)}
             className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-1 text-sm font-medium focus:ring-2 focus:ring-[#981a3c] outline-none transition-all"
         >
-            <option value="all">Toutes les années</option>
+            <option value="all">{allYearsLabel}</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
         </select>
     </div>
-);
+    );
+};
 
 // Composant interne pour la miniature PDF
 function PDFThumbnail({ url }: { url: string }) {
@@ -91,9 +96,9 @@ export function WeeklyWordFeed({ lang, initialWords }: { lang: SupportedLanguage
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-4">
             <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                 <span className="w-2 h-6 bg-[#981a3c] rounded-full"></span>
-                <CMSText k="home.weekly_words.title" defaultVal="Paroles de la Semaine" />
+                <CMSText k="shared.weekly_words.title" defaultVal="Paroles de la Semaine" />
             </h2>
-            <FilterBar selectedYear={year} onYearChange={setYear} years={years} label="Filtrer par" />
+                            <FilterBar selectedYear={year} onYearChange={setYear} years={years} label={<CMSText k="shared.feeds.filter_label" defaultVal="Filtrer par" />} />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -117,7 +122,7 @@ export function WeeklyWordFeed({ lang, initialWords }: { lang: SupportedLanguage
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-3 mb-4">{w.content?.replace(/<[^>]*>?/gm, '')}</p> 
                             <div className="mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center text-sm">
                                 <span className="font-medium text-zinc-900 dark:text-zinc-200">{w.author_name}</span>
-                                <span className="text-[#981a3c] font-medium group-hover:underline flex items-center gap-1">Read <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
+                                <span className="text-[#981a3c] font-medium group-hover:underline flex items-center gap-1"><CMSText k="shared.feeds.read_more" defaultVal="Lire" /> <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></span>
                             </div>
                         </div>
                     </div>
@@ -146,9 +151,9 @@ export function NewsletterFeed({ lang, initialNewsletters }: { lang: SupportedLa
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-4">
                 <h2 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                     <span className="w-2 h-6 bg-green-600 rounded-full"></span>
-                    <CMSText k="home.newsletters.title" defaultVal="Archives Newsletters" />
+                    <CMSText k="shared.newsletters.title" defaultVal="Archives Newsletters" />
                 </h2>
-                <FilterBar selectedYear={year} onYearChange={setYear} years={years} label="Archives de" />
+                <FilterBar selectedYear={year} onYearChange={setYear} years={years} label={<CMSText k="shared.feeds.archive_label" defaultVal="Archives de" />} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -178,7 +183,7 @@ export function DirectorGreeting() {
                     <div className="w-64 h-64 relative">
                         <div className="absolute inset-0 border-4 border-white/20 rounded-full transform -translate-x-4 translate-y-4"></div>
                         <CMSImage 
-                            k="home.director.image" 
+                            k="shared.director.image" 
                             defaultSrc="https://i.pravatar.cc/300?img=11" 
                             alt="Director" 
                             className="w-full h-full object-cover rounded-full shadow-2xl border-4 border-white"
@@ -190,21 +195,21 @@ export function DirectorGreeting() {
                 <div className="w-full md:w-2/3 text-center md:text-left space-y-6">
                     <div>
                         <span className="text-pink-200 font-bold uppercase tracking-wider text-sm mb-2 block">
-                            <CMSText k="home.director.subtitle" defaultVal="A Message from our Director" />
+                            <CMSText k="shared.director.subtitle" defaultVal="A Message from our Director" />
                         </span>
                         <h2 className="text-4xl font-bold font-serif">
-                            <CMSText k="home.director.title" defaultVal="Welcome to a New Season" />
+                            <CMSText k="shared.director.title" defaultVal="Welcome to a New Season" />
                         </h2>
                     </div>
                     <div className="text-lg text-pink-50 leading-relaxed font-light">
                         <CMSText 
                             as="div"
-                            k="home.director.message" 
+                            k="shared.director.message" 
                             defaultVal="It is my joy to welcome you to our community. As we look forward to what God is doing in the lives of children across our region, we invite you to join us in prayer and continuous support." 
                         />
                     </div>
                     <CMSImage 
-                        k="home.director.signature"
+                        k="shared.director.signature"
                         defaultSrc="/signature.png" // User must provide a placeholder if this doesn't exist, generic placeholder used
                         alt="Signature"
                         className="h-12 w-auto opacity-80 mx-auto md:mx-0 invert filter brightness-0"

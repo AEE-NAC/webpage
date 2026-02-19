@@ -75,11 +75,26 @@ export default function MinistersPage() {
     <CMSProvider dictionary={dictionary}>
         <div className="bg-gray-50 min-h-screen">
           <Header />
-          {/* Hidden CMS registration for TextRoll words */}
+          {/* Hidden CMS key registration — scanner-friendly static keys */}
           <div className="hidden" aria-hidden="true">
+              {/* TextRoll words */}
               <CMSText k="about.header.roll.word1" defaultVal="enfant" />
               <CMSText k="about.header.roll.word2" defaultVal="nation" />
               <CMSText k="about.header.roll.word3" defaultVal="jour" />
+              {/* Strategy items */}
+              <CMSText k="about.strategy.item1.title" defaultVal="La formation" />
+              <CMSText k="about.strategy.item1.content" defaultVal="Ce que veut l'AEE, c'est atteindre les enfants du monde entier avec l'Evangile par le biais de missionnaires formés. L'AEE dispose d'un vaste programme de formation..." />
+              <CMSText k="about.strategy.item2.title" defaultVal="Fourniture de supports pédagogiques" />
+              <CMSText k="about.strategy.item2.content" defaultVal="Pour atteindre efficacement les enfants, les enseignants ont besoin de matériels..." />
+              <CMSText k="about.strategy.item3.title" defaultVal="Assistance" />
+              <CMSText k="about.strategy.item3.content" defaultVal="La politique financière est de « demander à Dieu et de le dire à son peuple »..." />
+              {/* Values items */}
+              <CMSText k="about.values.item1" defaultVal="L'importance du leadership pieux à tous les niveaux" />
+              <CMSText k="about.values.item2" defaultVal="L'importance du bien-être spirituel de nos travailleurs" />
+              <CMSText k="about.values.item3" defaultVal="L'importance de la prière en tant que Fondation" />
+              <CMSText k="about.values.item4" defaultVal="L'importance de l'évangélisation des enfants" />
+              <CMSText k="about.values.item5" defaultVal="L'importance d'une présentation claire et biblique de l'Évangile" />
+              <CMSText k="about.values.item6" defaultVal="L'importance d'un engagement pour l'excellence, pour la gloire de Dieu" />
           </div>
           <header className="relative w-full min-h-screen">
             {/* Background Image with Overlay */}

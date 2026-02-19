@@ -7,7 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "indexing": "npx tsx scripts/index-cms.ts"
+    "indexing": "npx tsx scripts/index-cms.ts",
+    "fix-indexing": "npx tsx scripts/fix-indexing.ts",
+    "cms:export": "npx tsx scripts/export-cms.ts",
+    "cms:save": "npx tsx scripts/save-cms.ts",
+    "cms:insert-keys": "npx tsx scripts/insert-keys.ts",
+    "cms:missing": "npx tsx scripts/export-missing-i18n-keys.ts",
+    "cms:fix-missing": "npx tsx scripts/fix-missing.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

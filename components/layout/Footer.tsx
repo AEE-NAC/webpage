@@ -31,9 +31,9 @@ const Footer = () => {
                             <CMSText k="footer.quick_links.title" defaultVal="Quick Links" />
                         </h3>
                         <ul className="space-y-2">
-                            <li><Link className="hover:underline text-[#981a3c]" href="/"><CMSText k="header.nav.home" defaultVal="Home" /></Link></li>
-                            <li><Link className="hover:underline text-[#981a3c]" href="/about"><CMSText k="header.nav.about" defaultVal="About" /></Link></li>
-                            <li><Link className="hover:underline text-[#981a3c]" href="/#ministries"><CMSText k="header.nav.ministries" defaultVal="Ministries" /></Link></li>
+                            <li><Link className="hover:underline text-[#981a3c]" href="/"><CMSText k="nav.home" defaultVal="Home" /></Link></li>
+                            <li><Link className="hover:underline text-[#981a3c]" href="/about"><CMSText k="nav.about" defaultVal="About" /></Link></li>
+                            <li><Link className="hover:underline text-[#981a3c]" href="/#ministries"><CMSText k="nav.ministries" defaultVal="Ministries" /></Link></li>
                         </ul>
                     </div>
 

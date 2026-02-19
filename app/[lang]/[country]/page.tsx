@@ -28,6 +28,20 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
 
   return (
     <CMSProvider dictionary={dictionary}>
+        {/* Hidden CMS key registration — scanner-friendly static keys */}
+        <div className="hidden" aria-hidden="true">
+          <CMSText k="country.ministry.cbn.image" defaultVal="/static/CP_pichon.jpeg" />
+          <CMSText k="country.ministry.cbn.name" defaultVal="CBN" />
+          <CMSText k="country.ministry.c5j.image" defaultVal="/static/CP_pichon.jpeg" />
+          <CMSText k="country.ministry.c5j.name" defaultVal="C5J" />
+          <CMSText k="country.ministry.formation.image" defaultVal="/static/CP_pichon.jpeg" />
+          <CMSText k="country.ministry.formation.name" defaultVal="FORMATION" />
+          <CMSText k="country.hero.service_label" defaultVal="Au service des familles" />
+          <CMSText k="country.stats.children_label" defaultVal="Vies Transformées" />
+          <CMSText k="country.stats.founded_label" defaultVal="Fondation" />
+          <CMSText k="country.stats.churches_label" defaultVal="Partenaires" />
+          <CMSText k="country.hero.impact_local_label" defaultVal="Impact Local" />
+        </div>
         <div className="bg-[#f7f7f2] min-h-screen font-sans text-zinc-900 relative overflow-x-hidden">
             <Header />
             
@@ -55,7 +69,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                                             </div>
                                             <div className="h-px w-8 bg-zinc-200"></div>
                                             <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
-                                                <CMSText k="country.hero.community_label" defaultVal="Une Mission d'Amour" />
+                                                <CMSText k="country.hero.service_label" defaultVal="Une Mission d'Amour" />
                                             </span>
                                         </div>
                                         <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 leading-tight">
@@ -74,7 +88,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                                         </p>
                                         <div className="flex items-center gap-4 pt-2">
                                             <img src={`https://flagcdn.com/w40/${country.toLowerCase()}.png`} alt="Flag" className="h-4 w-auto rounded-sm shadow-sm" />
-                                            <span className="text-xs font-bold text-zinc-400 uppercase tracking-tighter">Impact Local • {countryCode}</span>
+                                            <span className="text-xs font-bold text-zinc-400 uppercase tracking-tighter"><CMSText k="country.hero.impact_local_label" defaultVal="Impact Local" /> • {countryCode}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +102,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             {/* STAT CARD */}
                             <div className="md:col-span-3 md:row-span-1 bg-[#f7f7f2]/90 backdrop-blur-sm rounded-[2.5rem] p-8 border border-white shadow-sm flex flex-col justify-center items-center text-center group">
                                 <CMSText k="country.stats.children" defaultVal="12.5k+" as="div" className={`text-4xl font-extrabold bg-clip-text text-transparent bg-linear-to-r ${flagGradient} mb-1`} />
-                                <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-400">Vies Transformées</span>
+                                <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-400"><CMSText k="country.stats.children_label" defaultVal="Vies Transformées" /></span>
                             </div>
 
                             {/* PHOTO 2 - Horizontal Card */}
@@ -126,11 +140,11 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                                 <div className="grid grid-cols-2 gap-4 pt-4">
                                     <div className="bg-white/60 p-4 rounded-2xl text-center shadow-sm border border-white">
                                         <div className="text-2xl font-bold text-[#981a3c]"><CMSText k="country.stats.founded" defaultVal="1995" /></div>
-                                        <div className="text-xs text-zinc-500 uppercase font-bold tracking-tighter">Fondation</div>
+                                        <div className="text-xs text-zinc-500 uppercase font-bold tracking-tighter"><CMSText k="country.stats.founded_label" defaultVal="Fondation" /></div>
                                     </div>
                                     <div className="bg-white/60 p-4 rounded-2xl text-center shadow-sm border border-white">
                                         <div className="text-2xl font-bold text-[#981a3c]"><CMSText k="country.stats.churches" defaultVal="120+" /></div>
-                                        <div className="text-xs text-zinc-500 uppercase font-bold tracking-tighter">Partenaires</div>
+                                        <div className="text-xs text-zinc-500 uppercase font-bold tracking-tighter"><CMSText k="country.stats.churches_label" defaultVal="Partenaires" /></div>
                                     </div>
                                 </div>
                             </div>

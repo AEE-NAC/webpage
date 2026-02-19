@@ -93,7 +93,7 @@ const Join = () => {
                     <div className="flex justify-between items-center mb-6 shrink-0 pt-2">
                         <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
                             <a href={`/${lang}`} className="">
-                                <img src="/static/cef_logo.svg" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" />
+                                <CMSImage k="layout.header.logo" defaultSrc="/images/logo_1st.png" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" width={80} height={32} />
                             </a>
                             <div className="h-4 w-px bg-zinc-400"></div>
                             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest"><CMSText k="join.header_label" defaultVal="Engagement" /></span>

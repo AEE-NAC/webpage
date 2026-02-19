@@ -38,7 +38,7 @@ const FlagMarker = ({ country }: { country: any }) => {
              <CMSText k={`impact.stat.${country.code.toLowerCase()}`} defaultVal={country.defaultStat} />
           </div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mt-1">
-              <CMSText k="home.impact.reached_label" defaultVal="Enfants touchés" />
+              <CMSText k="shared.impact.reached_label" defaultVal="Enfants touchés" />
           </div>
         </div>
       </Popup>

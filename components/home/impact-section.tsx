@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { CMSText } from '../cms/cms-text';
+import { useCMS } from '../cms/cms-provider';
 import dynamic from 'next/dynamic';
 
 // Dynamic import for Map to avoid SSR issues
@@ -12,13 +13,13 @@ const ImpactMap = dynamic(() => import('./impact-map'), {
 });
 
 const COUNTRIES_DATA = [
-    { code: 'CA', name: 'Canada', coords: [56.13, -106.34], defaultStat: "45,000" },
-    { code: 'GF', name: 'Guyane Française', coords: [3.93, -53.12], defaultStat: "2,500" },
-    { code: 'GP', name: 'Guadeloupe', coords: [16.26, -61.55], defaultStat: "5,500" },
-    { code: 'HT', name: 'Haïti', coords: [18.97, -72.28], defaultStat: "156,000" },
-    { code: 'MQ', name: 'Martinique', coords: [14.64, -61.02], defaultStat: "4,200" },
-    { code: 'MF', name: 'Saint Martin', coords: [18.07, -63.05], defaultStat: "1,200" },
-    { code: 'SX', name: 'Sint Maarten', coords: [18.04, -63.05], defaultStat: "1,100" },
+    { code: 'CA', name: 'Canada',           nameKey: 'shared.impact.country.ca.name', coords: [56.13, -106.34], defaultStat: "45,000" },
+    { code: 'GF', name: 'Guyane Française', nameKey: 'shared.impact.country.gf.name', coords: [3.93, -53.12],   defaultStat: "2,500" },
+    { code: 'GP', name: 'Guadeloupe',       nameKey: 'shared.impact.country.gp.name', coords: [16.26, -61.55],  defaultStat: "5,500" },
+    { code: 'HT', name: 'Haïti',            nameKey: 'shared.impact.country.ht.name', coords: [18.97, -72.28],  defaultStat: "156,000" },
+    { code: 'MQ', name: 'Martinique',       nameKey: 'shared.impact.country.mq.name', coords: [14.64, -61.02],  defaultStat: "4,200" },
+    { code: 'MF', name: 'Saint Martin',     nameKey: 'shared.impact.country.mf.name', coords: [18.07, -63.05],  defaultStat: "1,200" },
+    { code: 'SX', name: 'Sint Maarten',     nameKey: 'shared.impact.country.sx.name', coords: [18.04, -63.05],  defaultStat: "1,100" },
 ];
 
 const ACTIVITIES_DATA = [
@@ -37,6 +38,7 @@ const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" 
 const ImpactSection = () => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { amount: 0.2 });
+  const { dictionary } = useCMS();
   
   // TRACE: Monitoring de la vue
   useEffect(() => {
@@ -107,6 +109,43 @@ const ImpactSection = () => {
   // Adjusted padding and height class to fits within viewport accounting for header
   return (
     <section ref={sectionRef} className="relative bg-zinc-900 text-white overflow-hidden flex flex-col justify-center min-h-[calc(100vh-65px)] scroll-mt-16" id="ministries">
+        {/* Hidden CMS key registrations — scanner-friendly static keys */}
+        <div className="hidden" aria-hidden="true">
+          {/* Country names */}
+          <CMSText k="shared.impact.country.ca.name" defaultVal="Canada" />
+          <CMSText k="shared.impact.country.gf.name" defaultVal="Guyane Française" />
+          <CMSText k="shared.impact.country.gp.name" defaultVal="Guadeloupe" />
+          <CMSText k="shared.impact.country.ht.name" defaultVal="Haïti" />
+          <CMSText k="shared.impact.country.mq.name" defaultVal="Martinique" />
+          <CMSText k="shared.impact.country.mf.name" defaultVal="Saint Martin" />
+          <CMSText k="shared.impact.country.sx.name" defaultVal="Sint Maarten" />
+          {/* Country stats */}
+          <CMSText k="impact.stat.ca" defaultVal="45,000" />
+          <CMSText k="impact.stat.gf" defaultVal="2,500" />
+          <CMSText k="impact.stat.gp" defaultVal="5,500" />
+          <CMSText k="impact.stat.ht" defaultVal="156,000" />
+          <CMSText k="impact.stat.mq" defaultVal="4,200" />
+          <CMSText k="impact.stat.mf" defaultVal="1,200" />
+          <CMSText k="impact.stat.sx" defaultVal="1,100" />
+          {/* Activity titles & descriptions */}
+          <CMSText k="shared.impact.activities.gnc.title" defaultVal="Club de la Bonne Nouvelle" />
+          <CMSText k="shared.impact.activities.gnc.desc" defaultVal="Clubs bibliques hebdomadaires organisés dans les écoles et quartiers." />
+          <CMSText k="shared.impact.activities.5dc.title" defaultVal="Club de 5 Jours" />
+          <CMSText k="shared.impact.activities.5dc.desc" defaultVal="Programmes d'été missionnaires sur 5 jours consécutifs." />
+          <CMSText k="shared.impact.activities.jyc.title" defaultVal="JYC" />
+          <CMSText k="shared.impact.activities.jyc.desc" defaultVal="Connexion Jeunesse pour les adolescents et collégiens." />
+          <CMSText k="shared.impact.activities.train.title" defaultVal="Formation des Enseignants" />
+          <CMSText k="shared.impact.activities.train.desc" defaultVal="Équiper les croyants pour enseigner efficacement aux enfants." />
+          <CMSText k="shared.impact.activities.cpc.title" defaultVal="Club de Noël" />
+          <CMSText k="shared.impact.activities.cpc.desc" defaultVal="Événements ponctuels partageant le vrai sens de Noël." />
+          <CMSText k="shared.impact.activities.tcc.title" defaultVal="Chercheurs de Vérité" />
+          <CMSText k="shared.impact.activities.tcc.desc" defaultVal="Leçons bibliques par correspondance pour le discipulat." />
+          {/* Filter labels */}
+          <CMSText k="shared.filter.all_years" defaultVal="Toutes les années" />
+          <CMSText k="shared.feeds.filter_label" defaultVal="Filtrer par" />
+          <CMSText k="shared.feeds.archive_label" defaultVal="Archives de" />
+          <CMSText k="shared.feeds.read_more" defaultVal="Lire" />
+        </div>
         {/* Background Decorative */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-green-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
@@ -116,14 +155,14 @@ const ImpactSection = () => {
             {/* Header: Ministeres */}
             <div className="text-center mb-2 md:mb-4 shrink-0">
                 <span className="inline-block px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-semibold tracking-wider uppercase">
-                    <CMSText k="home.ministries.badge" defaultVal="Nos Ministères" />
+                    <CMSText k="shared.ministries.badge" defaultVal="Nos Ministères" />
                 </span>
             </div>
 
             {/* Interactive Slogan Navigation - Compact sizes */}
             <div className="flex flex-wrap justify-center items-baseline gap-2 md:gap-3 mb-6 md:mb-8 text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-center shrink-0">
                 <span className="text-zinc-600">
-                    <CMSText k="home.slogan.prefix" defaultVal="Nous servons" />
+                    <CMSText k="shared.slogan.prefix" defaultVal="Nous servons" />
                 </span>
                 
                 <button 
@@ -131,7 +170,7 @@ const ImpactSection = () => {
                     className={`transition-all duration-300 relative group px-2 outline-none ${activeTab === 'child' ? 'scale-105' : 'hover:opacity-80'}`}
                 >
                     <span className={`bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 ${activeTab === 'child' ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100'}`}>
-                        <CMSText k="home.slogan.word1" defaultVal="Chaque Enfant" />
+                        <CMSText k="shared.slogan.word1" defaultVal="Chaque Enfant" />
                     </span>
                     {activeTab === 'child' && <motion.div layoutId="underline" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-500 rounded-full" />}
                 </button>
@@ -143,7 +182,7 @@ const ImpactSection = () => {
                     className={`transition-all duration-300 relative group px-2 outline-none ${activeTab === 'nation' ? 'scale-105' : 'hover:opacity-80'}`}
                 >
                     <span className={`bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-300 ${activeTab === 'nation' ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100'}`}>
-                        <CMSText k="home.slogan.word2" defaultVal="Chaque Nation" />
+                        <CMSText k="shared.slogan.word2" defaultVal="Chaque Nation" />
                     </span>
                     {activeTab === 'nation' && <motion.div layoutId="underline" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-green-500 rounded-full" />}
                 </button>
@@ -155,7 +194,7 @@ const ImpactSection = () => {
                     className={`transition-all duration-300 relative group px-2 outline-none ${activeTab === 'day' ? 'scale-105' : 'hover:opacity-80'}`}
                 >
                     <span className={`bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-300 ${activeTab === 'day' ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100'}`}>
-                        <CMSText k="home.slogan.word3" defaultVal="Chaque Jour" />
+                        <CMSText k="shared.slogan.word3" defaultVal="Chaque Jour" />
                     </span>
                     {activeTab === 'day' && <motion.div layoutId="underline" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-yellow-500 rounded-full" />}
                 </button>
@@ -177,7 +216,7 @@ const ImpactSection = () => {
                             <div className="w-full md:w-1/3 bg-zinc-900/50 p-4 overflow-y-auto border-r border-zinc-700 custom-scrollbar scroll-smooth">
                                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2 sticky top-0 bg-zinc-900/90 backdrop-blur-sm py-2 z-10 -mx-2 px-2 border-b border-zinc-800">
                                     <span className="text-green-500">🌍</span> 
-                                    <CMSText k="home.impact.list_title" defaultVal="Zones d'Impact" />
+                                    <CMSText k="shared.impact.list_title" defaultVal="Zones d'Impact" />
                                 </h3>
                                 <div className="space-y-1.5">
                                     {COUNTRIES_DATA.map((country, idx) => (
@@ -200,7 +239,7 @@ const ImpactSection = () => {
                                             />
                                             <div className="flex-1 min-w-0">
                                                 <div className={`font-bold text-sm truncate ${activeCountryIndex === idx ? 'text-white' : 'text-zinc-400'}`}>
-                                                    {country.name}
+                                                    <CMSText k={country.nameKey} defaultVal={country.name} />
                                                 </div>
                                                 {activeCountryIndex === idx && (
                                                     <motion.div 
@@ -208,7 +247,7 @@ const ImpactSection = () => {
                                                         animate={{ opacity: 1 }} 
                                                         className="text-xs text-green-400 font-mono mt-0.5"
                                                     >
-                                                        <CMSText k={`impact.stat.${country.code.toLowerCase()}`} defaultVal={country.defaultStat} /> <CMSText k="home.impact.stat_unit" defaultVal="enfants" />
+                                                        <CMSText k={`impact.stat.${country.code.toLowerCase()}`} defaultVal={country.defaultStat} /> <CMSText k="shared.impact.stat_unit" defaultVal="enfants" />
                                                     </motion.div>
                                                 )}
                                             </div>
@@ -242,27 +281,27 @@ const ImpactSection = () => {
                              <div className="max-w-3xl text-center w-full">
                                 <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto rounded-full mb-6"></div>
                                 <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
-                                    <CMSText k="home.impact.verse_text" defaultVal='"Ce n est pas la volonté de votre Père qui est dans les cieux qu un seul de ces petits périsse."' />
+                                    <CMSText k="shared.impact.verse_text" defaultVal='"Ce n est pas la volonté de votre Père qui est dans les cieux qu un seul de ces petits périsse."' />
                                 </h3>
                                 <p className="text-blue-400 text-lg md:text-xl font-serif italic mb-8">
-                                    — <CMSText k="home.impact.verse_ref" defaultVal="Matthieu 18:14" />
+                                    — <CMSText k="shared.impact.verse_ref" defaultVal="Matthieu 18:14" />
                                 </p>
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-2xl mx-auto">
                                     <div className="bg-zinc-900/80 p-4 rounded-xl border border-blue-500/30 shadow-lg">
                                         <div className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white mb-1">
-                                            <CMSText k="home.impact.stat_reached" defaultVal="2.4M" />
+                                            <CMSText k="shared.impact.stat_reached" defaultVal="2.4M" />
                                         </div>
                                         <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-widest font-bold">
-                                            <CMSText k="home.impact.stat_label_reached" defaultVal="Enfants Touchés" />
+                                            <CMSText k="shared.impact.stat_label_reached" defaultVal="Enfants Touchés" />
                                         </div>
                                     </div>
                                     <div className="bg-zinc-900/80 p-4 rounded-xl border border-zinc-700 shadow-lg">
                                         <div className="text-3xl md:text-4xl font-extrabold text-zinc-500 mb-1">
-                                            <CMSText k="home.impact.stat_goal" defaultVal="3M" />
+                                            <CMSText k="shared.impact.stat_goal" defaultVal="3M" />
                                         </div>
                                         <div className="text-[10px] md:text-xs text-zinc-500 uppercase tracking-widest font-bold">
-                                            <CMSText k="home.impact.stat_label_goal" defaultVal="Objectif 2025" />
+                                            <CMSText k="shared.impact.stat_label_goal" defaultVal="Objectif 2025" />
                                         </div>
                                     </div>
                                 </div>
@@ -331,15 +370,15 @@ const ImpactSection = () => {
                                                         {activity.icon}
                                                     </div>
                                                     <h4 className={`text-2xl font-bold mb-4 leading-tight ${activity.color}`}>
-                                                        <CMSText k={`home.impact.activities.${activity.id}.title`} defaultVal={activity.title} />
+                                                        <CMSText k={`shared.impact.activities.${activity.id}.title`} defaultVal={activity.title} />
                                                     </h4>
                                                     <div className="w-10 h-1 bg-zinc-700 rounded-full mb-4"></div>
                                                     <p className="text-zinc-300 text-base leading-relaxed line-clamp-3">
-                                                        <CMSText k={`home.impact.activities.${activity.id}.desc`} defaultVal={activity.desc} />
+                                                        <CMSText k={`shared.impact.activities.${activity.id}.desc`} defaultVal={activity.desc} />
                                                     </p>
                                                 </div>
                                                 <div className={`w-full py-2 text-xs font-bold uppercase tracking-wider ${isActive ? activity.color : 'text-zinc-600'}`}>
-                                                    <CMSText k="home.impact.read_more" defaultVal="En Savoir Plus" /> →
+                                                    <CMSText k="shared.impact.read_more" defaultVal="En Savoir Plus" /> →
                                                 </div>
                                             </motion.div>
                                         );

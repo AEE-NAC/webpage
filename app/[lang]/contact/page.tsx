@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import { supabase } from '../../../services/supabase.conf';
+import React, { useState, useEffect } from 'react';
+import { supabase, CMSService } from '../../../services/supabase.conf';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
+import { CMSProvider } from '../../../components/cms/cms-provider';
 import { useParams, useRouter } from 'next/navigation';
 import { defaultLocale, SupportedLanguage } from '../../../context/adapt';
 
@@ -11,6 +12,11 @@ const Contact = () => {
   const params = useParams();
   const router = useRouter();
   const lang = (params?.lang as SupportedLanguage) || defaultLocale;
+  const [dictionary, setDictionary] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    CMSService.getPageContent('contact', lang).then(setDictionary);
+  }, [lang]);
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
@@ -50,6 +56,7 @@ const Contact = () => {
   };
 
   return (
+    <CMSProvider dictionary={dictionary}>
     <div className="h-screen flex justify-center items-center p-4 md:p-6 bg-zinc-50 font-sans overflow-hidden">
       <div className="w-full max-w-7xl h-full md:h-[90vh] flex flex-col md:flex-row gap-8">
         
@@ -80,7 +87,7 @@ const Contact = () => {
           <div className="flex justify-between items-center mb-6 shrink-0 pt-2">
             <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
               <a href={`/${lang}`} className="">
-                <img src="/static/cef_logo.svg" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" />
+                <CMSImage k="layout.header.logo" defaultSrc="/images/logo_1st.png" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" width={80} height={32} />
               </a>
               <div className="h-4 w-px bg-zinc-400"></div>
               <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
@@ -194,6 +201,7 @@ const Contact = () => {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
       `}</style>
     </div>
+    </CMSProvider>
   );
 };
 

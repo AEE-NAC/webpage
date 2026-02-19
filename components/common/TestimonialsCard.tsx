@@ -1,4 +1,5 @@
 import React from 'react';
+import { CMSImage } from '../cms/cms-image';
 
 interface TestimonialCardProps {
   name: string;
@@ -26,10 +27,13 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ name, title, text, im
             </span>
           </div>
         </div>
-        <img 
-          src="/images/logo_1st.png"
-          className="w-6 h-6 object-contain opacity-50" 
+        <CMSImage
+          k="layout.header.logo"
+          defaultSrc="/images/logo_1st.png"
+          className="w-6 h-6 object-contain opacity-50"
           alt="logo"
+          width={24}
+          height={24}
         />
       </div>
       

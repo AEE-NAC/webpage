@@ -126,6 +126,24 @@ const ImpliquezVous = () => {
 
   return (
     <CMSProvider dictionary={dictionary}>
+      {/* Hidden CMS key registration — scanner-friendly static keys for cards */}
+      <div className="hidden" aria-hidden="true">
+        <CMSText k="implicate.role.create_club.title" defaultVal="Créer un Club" />
+        <CMSText k="implicate.role.create_club.desc" defaultVal="Ouvrez les portes de l'Evangile dans votre quartier ou école en créant un Club de la Bonne Nouvelle ou un Club de 5 Jours." />
+        <CMSText k="implicate.role.create_club.btn" defaultVal="Démarrer un projet" />
+        <CMSText k="implicate.role.prayer_cell.title" defaultVal="Cellule de Prière" />
+        <CMSText k="implicate.role.prayer_cell.desc" defaultVal="Rejoignez notre réseau d'intercession pour soutenir spirituellement la mission auprès des enfants dans votre région." />
+        <CMSText k="implicate.role.prayer_cell.btn" defaultVal="Rejoindre la cellule" />
+        <CMSText k="implicate.role.volunteers.title" defaultVal="Volontaires" />
+        <CMSText k="implicate.role.volunteers.desc" defaultVal="Bénévoles, moniteurs et formateurs. Votre aide est précieuse pour l'impact local !" />
+        <CMSText k="implicate.role.volunteers.btn" defaultVal="Postuler" />
+        <CMSText k="implicate.role.fulltime.title" defaultVal="Ouvriers à temps plein" />
+        <CMSText k="implicate.role.fulltime.desc" defaultVal="Faites partie intégrante de notre équipe et contribuez pleinement à notre mission mondiale." />
+        <CMSText k="implicate.role.fulltime.btn" defaultVal="Voir les offres" />
+        <CMSText k="implicate.role.parttime.title" defaultVal="Ouvriers à temps partiel" />
+        <CMSText k="implicate.role.parttime.desc" defaultVal="Travaillez avec nous de manière flexible et adaptée à votre emploi du temps." />
+        <CMSText k="implicate.role.parttime.btn" defaultVal="Postuler" />
+      </div>
       <Header />
       <div className="bg-[#fdfff4ff] py-32 min-h-screen flex items-center">
         <div className="container mx-auto px-4">

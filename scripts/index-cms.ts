@@ -11,16 +11,44 @@ const CONF_PATH = path.join(process.cwd(), 'services', 'supabase.conf.ts');
 let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 let supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if(!supabaseUrl || !supabaseKey) {
-  // Fallback: Try to read from file
+// Priority 1: Read from .env files (.env.local > .env > .env.development)
+if (!supabaseUrl || !supabaseKey) {
+  const envFiles = ['.env.local', '.env', '.env.development', '.env.production'];
+  for (const envFile of envFiles) {
+    const envPath = path.join(process.cwd(), envFile);
+    if (!fs.existsSync(envPath)) continue;
+    try {
+      const envContent = fs.readFileSync(envPath, 'utf-8');
+      if (!supabaseUrl) {
+        const m = envContent.match(/^NEXT_PUBLIC_SUPABASE_URL\s*=\s*(.+)$/m);
+        if (m) supabaseUrl = m[1].trim().replace(/^['"]|['"]$/g, '');
+      }
+      if (!supabaseKey) {
+        const serviceM = envContent.match(/^SUPABASE_SERVICE_ROLE_KEY\s*=\s*(.+)$/m);
+        const anonM = envContent.match(/^NEXT_PUBLIC_SUPABASE_ANON_KEY\s*=\s*(.+)$/m);
+        if (serviceM) supabaseKey = serviceM[1].trim().replace(/^['"]|['"]$/g, '');
+        else if (anonM) supabaseKey = anonM[1].trim().replace(/^['"]|['"]$/g, '');
+      }
+      if (supabaseUrl && supabaseKey) break;
+    } catch(e) {
+      console.warn(`Could not read ${envFile}:`, e);
+    }
+  }
+}
+
+// Priority 2: Extract hardcoded fallback values from supabase.conf.ts
+if (!supabaseUrl || !supabaseKey) {
   try {
     if (fs.existsSync(CONF_PATH)) {
         const confContent = fs.readFileSync(CONF_PATH, 'utf-8');
-        const urlMatch = confContent.match(/supabaseUrl\s*=\s*['"]([^'"]+)['"]/);
-        const keyMatch = confContent.match(/supabaseKey\s*=\s*['"]([^'"]+)['"]/);
-        if(urlMatch) supabaseUrl = urlMatch[1];
-        // Only use the file key (usually Anon) if we didn't find one in env
-        if(!supabaseKey && keyMatch) supabaseKey = keyMatch[1];
+        if (!supabaseUrl) {
+          const urlMatch = confContent.match(/:\s*['"]([^'"]*supabase\.co[^'"]*)['"]/);
+          if (urlMatch) supabaseUrl = urlMatch[1];
+        }
+        if (!supabaseKey) {
+          const keyMatch = confContent.match(/:\s*'(eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]*)'/);
+          if (keyMatch) supabaseKey = keyMatch[1];
+        }
     }
   } catch(e) { 
     console.warn("Could not read supabase.conf.ts", e); 
@@ -28,7 +56,14 @@ if(!supabaseUrl || !supabaseKey) {
 }
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error("❌ Error: Could not find Supabase URL/Key. Please check .env or services/supabase.conf.ts");
+  console.error(
+    "\n❌  Cannot find Supabase URL/Key.\n" +
+    "    Create a .env.local file at the project root with:\n\n" +
+    "      NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co\n" +
+    "      SUPABASE_SERVICE_ROLE_KEY=eyJ...  (recommended for scripts)\n" +
+    "    or\n" +
+    "      NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...\n"
+  );
   process.exit(1);
 }
 

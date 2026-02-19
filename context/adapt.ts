@@ -2,7 +2,20 @@ import { GeoLocation } from './ip';
 
 export type SupportedLanguage = 'en' | 'fr' | 'es' | 'ht';
 
-export const locales: SupportedLanguage[] = ['en', 'fr', 'es', 'ht'];
+export interface LanguageDef {
+    code: SupportedLanguage;
+    name: string;
+    flag: string;
+}
+
+export const SUPPORTED_LANGUAGES: LanguageDef[] = [
+    { code: 'en', name: 'EN', flag: 'us' },
+    { code: 'fr', name: 'FR', flag: 'fr' },
+    { code: 'es', name: 'ES', flag: 'es' },
+    { code: 'ht', name: 'HT', flag: 'ht' } // HT or Kreyòl
+];
+
+export const locales: SupportedLanguage[] = SUPPORTED_LANGUAGES.map(l => l.code);
 export const defaultLocale: SupportedLanguage = 'en';
 
 export const SUPPORTED_COUNTRIES = [

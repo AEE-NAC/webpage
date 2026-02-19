@@ -6,12 +6,12 @@ import { CMSText } from '../cms/cms-text';
 import { usePathname } from 'next/navigation';
 
 const SUPPORTED_COUNTRIES = [
-    { code: 'HT', name: 'Haïti' },
-    { code: 'SX', name: 'Sint Maarten' },
-    { code: 'MF', name: 'Saint Martin' },
-    { code: 'MQ', name: 'Martinique' },
-    { code: 'GP', name: 'Guadeloupe' },
-    { code: 'GF', name: 'Guyane Française' },
+    { code: 'HT', name: 'Haïti',            nameKey: 'shared.impact.country.ht.name' },
+    { code: 'SX', name: 'Sint Maarten',     nameKey: 'shared.impact.country.sx.name' },
+    { code: 'MF', name: 'Saint Martin',     nameKey: 'shared.impact.country.mf.name' },
+    { code: 'MQ', name: 'Martinique',       nameKey: 'shared.impact.country.mq.name' },
+    { code: 'GP', name: 'Guadeloupe',       nameKey: 'shared.impact.country.gp.name' },
+    { code: 'GF', name: 'Guyane Française', nameKey: 'shared.impact.country.gf.name' },
 ];
 
 const CountryBar = () => {
@@ -33,7 +33,9 @@ const CountryBar = () => {
                         href={`/${currentLang}/${country.code}`}
                         className="px-4 py-1 text-sm text-white hover:text-white/80 cursor-pointer whitespace-nowrap transition-colors duration-200"
                     >
-                        <span className="text-white text-sm font-bold">{country.name}</span>
+                        <span className="text-white text-sm font-bold">
+                            <CMSText k={country.nameKey} defaultVal={country.name} />
+                        </span>
                     </Link>
                 ))}
             </div>

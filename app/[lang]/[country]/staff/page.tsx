@@ -23,7 +23,7 @@ export default async function CountryStaffPage(props: { params: Promise<{ lang: 
                     <div className="container mx-auto px-4 text-center relative z-10">
                         <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wide mb-4 flex items-center gap-2 w-fit mx-auto">
                             <img src={`https://flagcdn.com/w20/${country.toLowerCase()}.png`} className="w-4 h-3 rounded-[2px]" alt="Flag"/>
-                            <span>Leadership National</span>
+                            <span><CMSText k="country.staff.badge" defaultVal="Leadership National" /></span>
                         </span>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-900 mb-4 drop-shadow-sm">
                             <CMSText k="country.staff.title" defaultVal={`Notre Équipe en ${country}`} />

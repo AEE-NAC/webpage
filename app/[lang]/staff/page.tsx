@@ -46,6 +46,24 @@ export default async function StaffPage({ params }: { params: Promise<{ lang: Su
 
     return (
         <CMSProvider dictionary={dictionary}>
+            {/* Hidden CMS key registrations for template literal keys (scanner skips `${}`) */}
+            <div className="hidden" aria-hidden="true">
+                <CMSText k="staff.member.belthane.name" defaultVal="Belthane Harigan" />
+                <CMSText k="staff.member.belthane.role" defaultVal="Directeur régional" />
+                <CMSImage k="staff.member.belthane.image" defaultSrc="/placeholders/staff_1.jpg" alt="" />
+                <CMSText k="staff.member.guy.name" defaultVal="Guy Pierre Chavannes" />
+                <CMSText k="staff.member.guy.role" defaultVal="Directeur de Zones" />
+                <CMSImage k="staff.member.guy.image" defaultSrc="/placeholders/staff_2.jpg" alt="" />
+                <CMSText k="staff.member.bev.name" defaultVal="Bev Huff" />
+                <CMSText k="staff.member.bev.role" defaultVal="Directeur Éducation" />
+                <CMSImage k="staff.member.bev.image" defaultSrc="/placeholders/staff_3.jpg" alt="" />
+                <CMSText k="staff.member.janette.name" defaultVal="Janette Sanders" />
+                <CMSText k="staff.member.janette.role" defaultVal="Directeur littérature" />
+                <CMSImage k="staff.member.janette.image" defaultSrc="/placeholders/staff_4.jpg" alt="" />
+                <CMSText k="staff.member.rodia.name" defaultVal="Rodia G.P Chavannes" />
+                <CMSText k="staff.member.rodia.role" defaultVal="Assistant Directeur Éducation" />
+                <CMSImage k="staff.member.rodia.image" defaultSrc="/placeholders/staff_5.jpg" alt="" />
+            </div>
             <div className="flex min-h-screen flex-col bg-white">
                 <Header />
                 

@@ -51,14 +51,14 @@ const DEFAULT_COLLECTION_POINTS = [
 
 const NAC_REGION_CODES = ['HT', 'SX', 'MF', 'MQ', 'GP', 'GF', 'CA', 'US'];
 
-const ministries = [
-  { id: 3, name: 'MBE (Ministère Biblique dans les Ecoles)' },
-  { id: 4, name: 'CBN/KBN (Club de la Bonne Nouvelle/Klèb Bòn Nouvèl)' },
-  { id: 5, name: 'Clubs Spéciaux : CFA (Club de Fin d Année)' },
-  { id: 6, name: 'Clubs Spéciaux : Club de Pâques' },
-  { id: 7, name: 'Clubs Spéciaux : Autres' },
-  { id: 8, name: 'JCA (Jeunesse Chrétienne en Action)' },
-  { id: 9, name: 'C5J/K5J (Club de 5 Jours/Klèb 5 Jou)' },
+const MINISTRIES_DATA = [
+  { id: 3, key: 'mbe',    defaultName: 'MBE (Ministère Biblique dans les Ecoles)' },
+  { id: 4, key: 'cbn',    defaultName: 'CBN/KBN (Club de la Bonne Nouvelle/Klèb Bòn Nouvèl)' },
+  { id: 5, key: 'cfa',    defaultName: 'Clubs Spéciaux : CFA (Club de Fin d Année)' },
+  { id: 6, key: 'paques', defaultName: 'Clubs Spéciaux : Club de Pâques' },
+  { id: 7, key: 'autres', defaultName: 'Clubs Spéciaux : Autres' },
+  { id: 8, key: 'jca',    defaultName: 'JCA (Jeunesse Chrétienne en Action)' },
+  { id: 9, key: 'c5j',    defaultName: 'C5J/K5J (Club de 5 Jours/Klèb 5 Jou)' },
 ];
 
 // Helper for Flag URL
@@ -76,6 +76,12 @@ const Donation = () => {
 
   // Helper for attributes regex scanner
   const cms = (k: string, v: string) => dictionary[k] || v;
+
+  // Resolve ministry names from CMS
+  const ministries = MINISTRIES_DATA.map(m => ({
+    ...m,
+    name: cms(`donate.ministry.${m.key}.name`, m.defaultName)
+  }));
 
   // Step Management: 1=Type, 2=Details, 3=Result (Info)
   const [step, setStep] = useState(1);
@@ -131,6 +137,20 @@ const Donation = () => {
     setMaterials(newMaterials);
   };
 
+  // Resolve collection points from CMS
+  const collectionPoints = [
+    {
+      name: cms('donate.collect.point1.name', 'Bureau National AEE Haïti'),
+      address: cms('donate.collect.point1.address', 'Delmas 31, Rue Jacques 1er #14, Port-au-Prince'),
+      coords: DEFAULT_COLLECTION_POINTS[0].coords
+    },
+    {
+      name: cms('donate.collect.point2.name', 'Église Biblique de la Grâce'),
+      address: cms('donate.collect.point2.address', 'Pétion-Ville, Haïti'),
+      coords: DEFAULT_COLLECTION_POINTS[1].coords
+    }
+  ];
+
   const isInRegion = NAC_REGION_CODES.includes(userCountry);
 
   const handleSubmitContact = async (e: React.FormEvent) => {
@@ -178,6 +198,26 @@ const Donation = () => {
 
   return (
     <CMSProvider dictionary={dictionary}>
+    {/* Hidden CMS key registration — scanner-friendly static keys */}
+    <div className="hidden" aria-hidden="true">
+      <CMSText k="donate.ministry.mbe.name" defaultVal="MBE (Ministère Biblique dans les Ecoles)" />
+      <CMSText k="donate.ministry.cbn.name" defaultVal="CBN/KBN (Club de la Bonne Nouvelle/Klèb Bòn Nouvèl)" />
+      <CMSText k="donate.ministry.cfa.name" defaultVal="Clubs Spéciaux : CFA (Club de Fin d Année)" />
+      <CMSText k="donate.ministry.paques.name" defaultVal="Clubs Spéciaux : Club de Pâques" />
+      <CMSText k="donate.ministry.autres.name" defaultVal="Clubs Spéciaux : Autres" />
+      <CMSText k="donate.ministry.jca.name" defaultVal="JCA (Jeunesse Chrétienne en Action)" />
+      <CMSText k="donate.ministry.c5j.name" defaultVal="C5J/K5J (Club de 5 Jours/Klèb 5 Jou)" />
+      <CMSText k="donate.type.monetary" defaultVal="Don Financier" />
+      <CMSText k="donate.type.material" defaultVal="Don Matériel" />
+      <CMSText k="donate.type.service" defaultVal="Offre de Service" />
+      <CMSText k="donate.type_desc.monetary" defaultVal="Carte, Virement, MonCash" />
+      <CMSText k="donate.type_desc.material" defaultVal="Livres, Vêtements, Équipement" />
+      <CMSText k="donate.type_desc.service" defaultVal="Bénévolat, Compétences" />
+      <CMSText k="donate.collect.point1.name" defaultVal="Bureau National AEE Haïti" />
+      <CMSText k="donate.collect.point1.address" defaultVal="Delmas 31, Rue Jacques 1er #14, Port-au-Prince" />
+      <CMSText k="donate.collect.point2.name" defaultVal="Église Biblique de la Grâce" />
+      <CMSText k="donate.collect.point2.address" defaultVal="Pétion-Ville, Haïti" />
+    </div>
     <div className="h-screen flex justify-center items-center p-4 md:p-6 bg-zinc-50 font-sans overflow-hidden">
       <div className="w-full max-w-7xl h-full md:h-[90vh] flex flex-col md:flex-row gap-8">
         
@@ -185,7 +225,7 @@ const Donation = () => {
         <div className="w-full md:w-1/2 bg-zinc-200 relative overflow-hidden transition-all duration-500 ease-in-out rounded-3xl shadow-xl h-full border border-zinc-200/50">
           {showMap ? (
              <div className="absolute inset-0 z-10 animate-in fade-in duration-700">
-                <DonationMap points={DEFAULT_COLLECTION_POINTS} />
+                <DonationMap points={collectionPoints} />
                 <div className="absolute top-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg z-1000 border border-gray-200">
                     <p className="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -221,7 +261,7 @@ const Donation = () => {
              <div className="flex justify-between items-center mb-6 shrink-0 pt-2">
                 <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
                   <a href={`/${lang}`} className="">
-                    <img src="/images/logo_1st.png" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" />
+                    <CMSImage k="layout.header.logo" defaultSrc="/images/logo_1st.png" alt="Logo" className="h-8 w-auto grayscale hover:grayscale-0 transition-all" width={80} height={32} />
                   </a>
                   <div className="h-4 w-px bg-zinc-400"></div>
                   <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest"><CMSText k="donate.header_label" defaultVal="Support" /></span>
@@ -417,7 +457,7 @@ const Donation = () => {
                                             <CMSText k="donate.info.collect_title" defaultVal="Points de Collecte" />
                                         </h3>
                                         <div className="space-y-3">
-                                            {DEFAULT_COLLECTION_POINTS.map((pt, i) => (
+                                            {collectionPoints.map((pt, i) => (
                                                 <div key={i} className="bg-white p-4 rounded-xl border border-green-100/50 shadow-sm hover:border-green-300 cursor-pointer transition-all">
                                                     <p className="font-bold text-green-800 text-sm mb-1">{pt.name}</p>
                                                     <p className="text-xs text-zinc-500">{pt.address}</p>

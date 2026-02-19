@@ -52,13 +52,13 @@ const Ministries = () => {
             <div className="container">
                 <div className="space-y-4 text-center">
                     <div className="inline-block rounded-full bg-[#f2e288] px-4 py-1 text-sm text-[#0f0f0fff] font-medium">
-                        <CMSText k="home.ministries.badge" defaultVal="Our Ministries" />
+                        <CMSText k="shared.ministries.badge" defaultVal="Our Ministries" />
                     </div>
                     <h2 className="text-3xl font-bold text-[#0f0f0fff]">
-                        <CMSText k="home.ministries.title" defaultVal="Transforming Lives" />
+                        <CMSText k="shared.ministries.title" defaultVal="Transforming Lives" />
                     </h2>
                     <p className="text-[#878578ff] max-w-2xl mx-auto">
-                        <CMSText k="home.ministries.desc" defaultVal="Discover how we impact the community." />
+                        <CMSText k="shared.ministries.desc" defaultVal="Discover how we impact the community." />
                     </p>
                 </div>
                 
