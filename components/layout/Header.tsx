@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import SignupButton from '../common/btn-signup';
 import CountryBar from '../common/country_bar';
+import LanguageSwitcher from '../common/lang-switcher';
 import { CMSText } from '../cms/cms-text';
 import { CMSImage } from '../cms/cms-image';
 import { useParams, usePathname } from 'next/navigation';
@@ -99,9 +100,19 @@ const Header = () => {
                             <Link href={getPath('/staff')} className="text-lg font-medium" onClick={() => setMenuOpen(false)}>
                                 <CMSText k="nav.staff" defaultVal="Our Team" />
                             </Link>
-                            
-                            <div className="mt-2 pt-4 border-t border-zinc-200">
-                                <SignupButton />
+
+                            <div className="mt-2 pt-4 border-t border-zinc-200 flex flex-col gap-3">
+                                <Link href={`/${lang}/donation`} onClick={() => setMenuOpen(false)}
+                                    className="w-full text-center bg-[#981a3c] hover:bg-[#7a1530] text-white font-semibold py-2.5 px-4 rounded-md text-sm transition-colors">
+                                    <CMSText k="header.btn.donate" defaultVal="Donate" />
+                                </Link>
+                                <Link href={`/${lang}/join`} onClick={() => setMenuOpen(false)}
+                                    className="w-full text-center bg-[#2b2b3f] hover:bg-[#1f1f2e] text-white font-semibold py-2.5 px-4 rounded-md text-sm transition-colors">
+                                    <CMSText k="header.btn.join" defaultVal="Join Us" />
+                                </Link>
+                                <div className="flex justify-center pt-1">
+                                    <LanguageSwitcher />
+                                </div>
                             </div>
                         </div>
                     </nav>
