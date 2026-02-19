@@ -28,8 +28,8 @@ export const CMSService = {
     
     console.info(`${envLabel} [CMS Service] getPageContent: Chargement (prefix: "${prefix}", lang: "${lang}", region: "${countryCode || 'N/A'}")`);
     
-    // Toujours inclure les clés globales (shared, nav, footer) en plus de la page spécifique
-    const prefixes = [prefix, 'shared.', 'nav.', 'footer.'];
+    // Toujours inclure les clés globales (shared, nav, footer, layout) en plus de la page spécifique
+    const prefixes = [prefix, 'shared.', 'nav.', 'footer.', 'layout.'];
     const orCondition = prefixes.map(p => `key.ilike.${p}%`).join(',');
 
     // Fetch all potentially relevant rows for this namespace

@@ -96,7 +96,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
 
                             {/* PHOTO 1 - Large Vertical */}
                             <div className="md:col-span-4 md:row-span-2 relative rounded-[2.5rem] overflow-hidden shadow-lg border-8 border-white group transition-all hover:shadow-2xl">
-                                <CMSImage k="country.hero.img1" defaultSrc="https://placehold.co/800x1200" alt="Action" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" fill />
+                                <CMSImage k="country.hero.img1" defaultSrc="/images/Haiti_staffs/promotional/IMG_8226.JPG" alt="Action" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" fill />
                             </div>
 
                             {/* STAT CARD */}
@@ -107,7 +107,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
 
                             {/* PHOTO 2 - Horizontal Card */}
                             <div className="md:col-span-3 md:row-span-1 relative rounded-[2.5rem] overflow-hidden shadow-lg border-8 border-white group">
-                                <CMSImage k="country.hero.img2" defaultSrc="https://placehold.co/600x400" alt="Formation" className="w-full h-full object-cover transition-transform duration-700" fill />
+                                <CMSImage k="country.hero.img2" defaultSrc="/images/Haiti_staffs/in%20action/C5D.JPG" alt="Formation" className="w-full h-full object-cover transition-transform duration-700" fill />
                             </div>
                         </div>
                     </div>
@@ -122,7 +122,7 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                                     <div className="absolute -inset-4 bg-[#981a3c]/10 rounded-full blur-2xl"></div>
                                     <CMSImage 
                                         k="country.history.image" 
-                                        defaultSrc="https://placehold.co/600x400" 
+                                        defaultSrc="/images/Haiti_staffs/promotional/IMG_3779.JPG" 
                                         alt="History" 
                                         className="relative rounded-2xl shadow-xl border border-zinc-100 rotate-2 hover:rotate-0 transition-transform duration-300 w-full" 
                                         width={600} 
@@ -198,13 +198,15 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                             </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {/* Static placeholders enriched by CMS text - Ideally dynamic from Supabase filtered by Country */}
-                            {['cbn', 'c5j', 'formation'].map((m) => (
-                                <div key={m} className="group relative overflow-hidden rounded-xl bg-zinc-100 aspect-video">
-                                    <CMSImage k={`country.ministry.${m}.image`} defaultSrc="/static/CP_pichon.jpeg" alt={m} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" fill />
-                                    {/* Fixed gradient class name if applicable, ensure valid standard utility or custom alias */}
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex items-end p-4">
-                                        <h3 className="text-white font-bold text-lg"><CMSText k={`country.ministry.${m}.name`} defaultVal={m.toUpperCase()} /></h3>
+                            {([
+                                { id: 'cbn', def: '/images/Haiti_staffs/in%20action/C5D.JPG' },
+                                { id: 'c5j', def: '/images/Haiti_staffs/in%20action/MBE.jpg' },
+                                { id: 'formation', def: '/images/Haiti_staffs/in%20action/JCA.jpg' },
+                            ] as const).map(({ id, def }) => (
+                                <div key={id} className="group relative overflow-hidden rounded-2xl bg-zinc-100 aspect-video shadow-md hover:shadow-xl transition-shadow">
+                                    <CMSImage k={`country.ministry.${id}.image`} defaultSrc={def} alt={id} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" fill />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex items-end p-5">
+                                        <h3 className="text-white font-extrabold text-lg"><CMSText k={`country.ministry.${id}.name`} defaultVal={id.toUpperCase()} /></h3>
                                     </div>
                                 </div>
                             ))}
@@ -212,7 +214,93 @@ export default async function CountryHome({ params }: { params: Promise<{ lang: 
                     </div>
                 </section>
 
-                {/* 5. CTA IMPLICATION */}
+                {/* 5. GALERIE PHOTOS */}
+                <section className="py-24 bg-zinc-950 overflow-hidden">
+                    <div className="container mx-auto px-4 max-w-6xl">
+                        <div className="text-center mb-12">
+                            <span className="inline-block text-[#981a3c] text-[10px] font-black uppercase tracking-[0.35em] mb-3">Galerie</span>
+                            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+                                <CMSText k="country.gallery.title" defaultVal="Nos Moments Forts" />
+                            </h2>
+                            <p className="text-zinc-400 mt-2 max-w-xl mx-auto text-sm">
+                                <CMSText k="country.gallery.subtitle" defaultVal="Chaque image, une vie touchée par la grâce de Dieu." />
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {([
+                                { key: 'country.gallery.img1', def: '/images/Haiti_staffs/promotional/IMG_8237.JPG', tall: true },
+                                { key: 'country.gallery.img2', def: '/images/Haiti_staffs/in%20action/C5D_2.JPG', tall: false },
+                                { key: 'country.gallery.img3', def: '/images/Haiti_staffs/promotional/IMG_0014.JPG', tall: false },
+                                { key: 'country.gallery.img4', def: '/images/Haiti_staffs/promotional/IMG_8246.JPG', tall: false },
+                                { key: 'country.gallery.img5', def: '/images/Haiti_staffs/in%20action/JCA_1.jpg', tall: false },
+                                { key: 'country.gallery.img6', def: '/images/Haiti_staffs/promotional/IMG_8226.JPG', tall: false },
+                                { key: 'country.gallery.img7', def: '/images/Haiti_staffs/in%20action/IMG_0308.JPG', tall: false },
+                                { key: 'country.gallery.img8', def: '/images/Haiti_staffs/promotional/IMG_3779.JPG', tall: false },
+                            ] as const).map(({ key, def, tall }, i) => (
+                                <div key={i} className={`relative overflow-hidden rounded-2xl group ${tall ? 'row-span-2' : ''} aspect-square`}>
+                                    <CMSImage k={key} defaultSrc={def} alt="" fill className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-colors duration-300" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* 6. VIDÉOS PROMOTIONNELLES */}
+                <section className="py-24 bg-white border-b border-zinc-100">
+                    <div className="container mx-auto px-4 max-w-5xl">
+                        <div className="text-center mb-12">
+                            <span className="inline-block text-[#981a3c] text-[10px] font-black uppercase tracking-[0.35em] mb-3">Vidéos</span>
+                            <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900">
+                                <CMSText k="country.videos.title" defaultVal="Nos Vidéos Promotionnelles" />
+                            </h2>
+                            <p className="text-zinc-500 mt-2 max-w-xl mx-auto text-sm">
+                                <CMSText k="country.videos.subtitle" defaultVal="Voyez l'impact de notre œuvre en images." />
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {([
+                                {
+                                    vKey: 'country.video1.url',
+                                    tKey: 'country.video1.title',
+                                    dKey: 'country.video1.desc',
+                                    thumbKey: 'country.video1.thumbnail',
+                                    defThumb: '/images/Haiti_staffs/promotional/IMG_8237.JPG',
+                                    defTitle: 'Présentation du pays',
+                                    defDesc: "Une vue d\u2019ensemble de notre \u0153uvre locale.",
+                                },
+                                {
+                                    vKey: 'country.video2.url',
+                                    tKey: 'country.video2.title',
+                                    dKey: 'country.video2.desc',
+                                    thumbKey: 'country.video2.thumbnail',
+                                    defThumb: '/images/Haiti_staffs/in%20action/C5D.JPG',
+                                    defTitle: 'Clubs en action',
+                                    defDesc: "Nos clubs bibliques touchent des milliers d\u2019enfants.",
+                                },
+                            ] as const).map(({ vKey, tKey, dKey, thumbKey, defThumb, defTitle, defDesc }, i) => (
+                                <div key={i} className="group relative rounded-3xl overflow-hidden bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-300">
+                                    <div className="aspect-video relative overflow-hidden">
+                                        <CMSImage k={thumbKey} defaultSrc={defThumb} alt={defTitle} fill className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                                        <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
+                                                <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="hidden" aria-hidden="true"><CMSText k={vKey} defaultVal="" /></div>
+                                        <h4 className="text-white font-extrabold text-lg mb-1"><CMSText k={tKey} defaultVal={defTitle} /></h4>
+                                        <p className="text-zinc-400 text-sm leading-relaxed"><CMSText k={dKey} defaultVal={defDesc} /></p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* 7. CTA IMPLICATION */}
                 <section className="py-24 bg-[#981a3c] text-white overflow-hidden relative">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                     <div className="container mx-auto px-4 text-center relative z-10">

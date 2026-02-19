@@ -38,6 +38,20 @@ export const CMSImage = ({ k, defaultSrc, alt, fill, ...props }: CMSImageProps) 
   }
 
   // Use Optimized Next Image for local assets
+  // Guard: Next.js <Image> requires either `fill` or explicit `width` — fall back to <img> if neither is provided
+  if (!fill && !props.width) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <img
+        src={src}
+        alt={alt}
+        data-cms-key={k}
+        style={{ ...props.style, cursor: 'context-menu' }}
+        className={props.className as string | undefined}
+      />
+    );
+  }
+
   return (
     <Image
       {...props}

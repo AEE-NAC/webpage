@@ -137,25 +137,39 @@ const run = async () => {
   if (pageArg) console.log(`  Page filter       : ${pageArg}.*`);
   console.log('');
 
-  // ── Fetch all global rows for the target languages ──────────────────────
-  let query = supabase
-    .from('cms_content')
-    .select('key, language, content_type, value')
-    .in('language', targetLangs)
-    .is('country_code', null);
+  // ── Fetch ALL global rows for the target languages (paginated) ─────────
+  const PAGE_SIZE = 1000;
+  let allRows: DBRow[] = [];
+  let from = 0;
+  let hasMore = true;
 
-  if (pageArg) {
-    query = query.ilike('key', `${pageArg}.%`);
+  while (hasMore) {
+    let query = supabase
+      .from('cms_content')
+      .select('key, language, content_type, value')
+      .in('language', targetLangs)
+      .is('country_code', null)
+      .order('key')
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (pageArg) {
+      query = query.ilike('key', `${pageArg}.%`);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('❌  DB error:', error.message);
+      process.exit(1);
+    }
+
+    const page = (data ?? []) as DBRow[];
+    allRows = allRows.concat(page);
+    hasMore = page.length === PAGE_SIZE;
+    from += PAGE_SIZE;
   }
 
-  const { data, error } = await query.order('key');
-
-  if (error) {
-    console.error('❌  DB error:', error.message);
-    process.exit(1);
-  }
-
-  const rows = (data ?? []) as DBRow[];
+  const rows = allRows;
   console.log(`📦  Loaded ${rows.length} row(s) from Supabase.\n`);
 
   // ── Build a nested map: key → lang → { value, type } ───────────────────

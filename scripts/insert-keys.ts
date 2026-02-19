@@ -102,23 +102,89 @@ async function insertKeys() {
                 keysInCode.set(key, { key, value: defaultSrc, type: 'image' });
             }
         }
+
+        // ── Dynamic keys declared in data arrays ────────────────────────────
+        // Covers patterns like: titleKey: 'ministry.club.cbn.title', defaultTitle: '...'
+        //                       bgKey: 'ministry.club.cbn.bg', bgDefaultSrc: '...'
+        //                       cmsKey: 'ministry.history.wb.gold', defaultLabel: '...'
+        const dataKeyRegex = /\b(\w*[Kk]ey)\s*:\s*(['"`])([\w][\w.]+)\2/g;
+        while ((match = dataKeyRegex.exec(content)) !== null) {
+            const propName = match[1]; // e.g. "titleKey", "bgKey", "cmsKey"
+            const key = match[3];      // e.g. "ministry.club.cbn.title"
+            // Skip template literals, UI keys, or keys that are already collected
+            if (!key.includes('${') && key.includes('.') && !keysInCode.has(key)) {
+                // Determine type: image if the property name or key suggests an image
+                const isImage = /logo|bg|Bg|image|Image|src|Src/i.test(propName) ||
+                                /\.logo$|\.bg$|\.image$/.test(key);
+                // Try to find associated default value in the surrounding ~600 chars
+                const context = content.slice(match.index, match.index + 600);
+                let defaultVal = '';
+                // For text keys: look for default(Title|Desc|Badge|Label|Icon|Val|val)
+                const textDefaultMatch = context.match(
+                    /\bdefault(?:Title|Desc|Badge|Label|Icon|Num|Val|val)\s*:\s*(['"`])([\s\S]*?)\1/
+                );
+                // For image keys: look for *DefaultSrc or defaultSrc
+                const imgDefaultMatch = context.match(
+                    /\b\w*[Dd]efault[Ss]rc\s*:\s*(['"`])([\s\S]*?)\1/
+                );
+                if (isImage && imgDefaultMatch) {
+                    defaultVal = imgDefaultMatch[2];
+                } else if (!isImage && textDefaultMatch) {
+                    defaultVal = textDefaultMatch[2];
+                }
+                keysInCode.set(key, { key, value: defaultVal, type: isImage ? 'image' : 'text' });
+            }
+        }
+
+        // ── Inline array pattern: { key: 'some.cms.key', val: '...' } ───────
+        // Covers patterns like: { key: 'ministry.moniteur.point1', val: 'Texte...' }
+        //                       { numKey: 'ministry.stat.x.num', defaultNum: '192', labelKey: '...', defaultLabel: '...' }
+        const inlineObjRegex = /\{[^{}]*?\b(?:key|numKey|labelKey)\s*:\s*(['"`])([\w][\w.]+)\1[^{}]*?\}/gs;
+        while ((match = inlineObjRegex.exec(content)) !== null) {
+            const block = match[0];
+            // Extract all key: 'value' pairs inside this block
+            const pairRegex = /\b(\w*[Kk]ey)\s*:\s*(['"`])([\w][\w.]+)\2/g;
+            let pairMatch;
+            while ((pairMatch = pairRegex.exec(block)) !== null) {
+                const key = pairMatch[3];
+                if (key.includes('.') && !keysInCode.has(key)) {
+                    // Find companion default value
+                    const valMatch = block.match(/\bval\s*:\s*(['"`])([\s\S]*?)\1/);
+                    const defNumMatch = block.match(/\bdefaultNum\s*:\s*(['"`])([\s\S]*?)\1/);
+                    const defLabelMatch = block.match(/\bdefaultLabel\s*:\s*(['"`])([\s\S]*?)\1/);
+                    let defaultVal = '';
+                    if (valMatch) defaultVal = valMatch[2];
+                    else if (defNumMatch) defaultVal = defNumMatch[2];
+                    else if (defLabelMatch) defaultVal = defLabelMatch[2];
+                    keysInCode.set(key, { key, value: defaultVal, type: 'text' });
+                }
+            }
+        }
     });
 
     console.log(`✅ Scanned files. Found ${keysInCode.size} keys in code.`);
 
-    // 2. Get existing keys from Supabase
-    const { data: existingRows, error } = await supabase
-        .from('cms_content')
-        .select('key')
-        .eq('language', 'en')
-        .is('country_code', null);
-
-    if (error) {
-        console.error("❌ Error fetching from Supabase:", error.message);
-        return;
+    // 2. Get ALL existing keys from Supabase (paginated to bypass the 1000-row default limit)
+    const existingKeysSet = new Set<string>();
+    let from = 0;
+    const PAGE_SIZE = 1000;
+    let hasMore = true;
+    while (hasMore) {
+        const { data: pageRows, error } = await supabase
+            .from('cms_content')
+            .select('key')
+            .eq('language', 'en')
+            .is('country_code', null)
+            .range(from, from + PAGE_SIZE - 1);
+        if (error) {
+            console.error("❌ Error fetching from Supabase:", error.message);
+            return;
+        }
+        (pageRows ?? []).forEach(r => existingKeysSet.add(r.key));
+        hasMore = (pageRows ?? []).length === PAGE_SIZE;
+        from += PAGE_SIZE;
     }
 
-    const existingKeysSet = new Set(existingRows?.map(r => r.key));
     const keysToInsert: any[] = [];
 
     for (const [key, item] of keysInCode) {
