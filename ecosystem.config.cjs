@@ -1,8 +1,8 @@
 module.exports = {
   apps: [{
     name: 'websiteaee',
-    script: 'node_modules/vite/bin/vite.js',
-    args: 'preview',
+    script: './node_modules/next/dist/bin/next',
+    args: 'start',
     cwd: '/home/ubuntu/webpage',  // adaptez le chemin si besoin
     instances: 1,  // ou 'max' pour utiliser tous les CPU
     exec_mode: 'fork',  // 'cluster' si instances > 1
