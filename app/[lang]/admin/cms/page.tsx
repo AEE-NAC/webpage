@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 // Import AuthService to verify session client-side (or check cookie existence)
-import { CMSService, supabase } from "@/services/supabase.conf";
+import { supabase } from "@/services/supabase.conf";
+import { CMSService } from "@/services/directus.conf";
 import { CMSPopover, CMSWeeklyWord, CMSNewsletter } from "@/services/types"; // Import types
 import { SupportedLanguage, locales, SUPPORTED_COUNTRIES } from "@/context/adapt";
 import { useRouter } from "next/navigation";

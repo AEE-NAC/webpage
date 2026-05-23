@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { SUPPORTED_COUNTRIES } from '@/context/adapt';
-import { CMSService } from '@/services/supabase.conf'; // Used for generic API calls if needed
+import { CMSService } from '@/services/directus.conf'; // Used for generic API calls if needed
 
 export default function InvitesManager() {
     const { lang } = useParams();

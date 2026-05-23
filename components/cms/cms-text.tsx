@@ -5,13 +5,14 @@ import { useCMS } from './cms-provider';
 
 interface CMSTextProps {
   k: string;
+  itemId?: string; // ID Directus pour Visual Editor
   defaultVal?: string;
   as?: any;
   className?: string;
   [key: string]: any;
 }
 
-export const CMSText = ({ k, defaultVal = "", as: Component = "span", className, ...props }: CMSTextProps) => {
+export const CMSText = ({ k, itemId, defaultVal = "", as: Component = "span", className, ...props }: CMSTextProps) => {
   const { dictionary, loading } = useCMS();
   
   // Check if key exists in dictionary
@@ -33,8 +34,21 @@ export const CMSText = ({ k, defaultVal = "", as: Component = "span", className,
 
   if (loading && !defaultVal) return <span className="opacity-50">...</span>;
 
+  // Attributs pour Directus Visual Editor
+  const visualEditorAttrs = itemId ? {
+    'data-directus-element': 'text' as any,
+    'data-directus-field': k,
+    'data-directus-item-id': itemId
+  } : {};
+
   return (
-    <Component className={className} {...props} data-cms-key={k} data-cms-source={isFromDB ? 'db' : 'code'}>
+    <Component 
+      className={className} 
+      {...props} 
+      data-cms-key={k} 
+      data-cms-source={isFromDB ? 'db' : 'code'}
+      {...visualEditorAttrs}
+    >
       {displayVal}
     </Component>
   );

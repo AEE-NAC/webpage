@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
-import { SupportedLanguage } from "@/context/adapt";
-import { CMSService } from "@/services/supabase.conf";
+import { SupportedLanguage, locales } from "@/context/adapt";
+import { CMSService } from "@/services/directus.conf";
 import { CMSProvider } from "@/components/cms/cms-provider";
 import { CMSPopupManager } from "@/components/cms/cms-popup-manager";
 import { VisualEditorListener } from "@/components/admin/visual-editor-listener"; // Import Listener
 import { AnniversaryModal } from "@/components/common/anniversary-modal";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,9 @@ export default async function RootLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang: langParam } = await params;
+  if (!locales.includes(langParam as SupportedLanguage)) {
+    notFound();
+  }
   const lang = langParam as SupportedLanguage;
   
   // Fetch content for the current language server-side

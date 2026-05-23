@@ -4,7 +4,7 @@ import Footer from '../../../components/layout/Footer';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
 import { CMSProvider } from '../../../components/cms/cms-provider';
-import { CMSService } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 import { SupportedLanguage } from '../../../context/adapt';
 
 const STAFF_MEMBERS = [

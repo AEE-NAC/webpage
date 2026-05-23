@@ -30,9 +30,9 @@ export const CMSProvider = ({
         const keyCount = Object.keys(dictionary).length;
         if (keyCount > 0) {
             console.info(`%c[CMS Provider] Initialized for locale "${locale}"`, "color: #981a3c; font-weight: bold; font-size: 12px;");
-            console.info(`%c[CMS Provider] Loaded ${keyCount} translation keys from Supabase.`, "color: #981a3c;");
+            console.info(`%c[CMS Provider] Loaded ${keyCount} translation keys from Directus.`, "color: #981a3c;");
         } else {
-            console.warn(`%c[CMS Provider] initialized EMPTY for locale "${locale}". Check Supabase connection or if build step fetched data.`, "background: yellow; color: black; font-size: 12px;");
+            console.warn(`%c[CMS Provider] initialized EMPTY for locale "${locale}". Check Directus connection or if build step fetched data.`, "background: yellow; color: black; font-size: 12px;");
         }
     }, [dictionary, locale]);
 

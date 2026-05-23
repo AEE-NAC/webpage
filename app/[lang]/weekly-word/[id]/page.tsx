@@ -1,4 +1,4 @@
-import { CMSService } from "@/services/supabase.conf";
+import { CMSService } from "@/services/directus.conf";
 import { SupportedLanguage } from "@/context/adapt";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import Image from "next/image";
 export default async function WeeklyWordPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
     const { lang: langParam, id } = await params;
     const lang = langParam as SupportedLanguage;
-    const word = await CMSService.getWeeklyWordById(id);
+    const word = await CMSService.getWeeklyWordById(id, lang);
 
     if (!word) return notFound();
 

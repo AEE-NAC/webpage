@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { supabase, CMSService } from '../../../services/supabase.conf';
+import { supabase } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
 import { CMSProvider } from '../../../components/cms/cms-provider';

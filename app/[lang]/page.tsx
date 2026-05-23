@@ -4,17 +4,21 @@ import Footer from '@/components/layout/Footer';
 import About from '@/components/layout/About';
 import Carousel from '@/components/layout/carousel';
 import { CMSText } from '@/components/cms/cms-text';
-import { SupportedLanguage } from '@/context/adapt';
+import { SupportedLanguage, locales } from '@/context/adapt';
+import { notFound } from 'next/navigation';
 
 // Ensure these imports are present
 import { WeeklyWordFeed, NewsletterFeed, DirectorGreeting } from '@/components/home/feeds';
 import ImpactSection from '@/components/home/impact-section';
 import TestimonialsSection from '@/components/home/testimonials-section';
-import { CMSService } from "@/services/supabase.conf";
+import { CMSService } from "@/services/directus.conf";
 import { CMSWeeklyWord, CMSNewsletter } from '@/services/types';
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang: langParam } = await params;
+  if (!locales.includes(langParam as SupportedLanguage)) {
+    notFound();
+  }
   const lang = langParam as SupportedLanguage;
   
   console.info(`[Server] Rendering Home Page for lang: ${lang}`);

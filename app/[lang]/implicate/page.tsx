@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../../components/layout/Header';
 import Footer from '../../../components/layout/Footer';
-import { supabase, CMSService } from '../../../services/supabase.conf';
+import { supabase } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSProvider } from '../../../components/cms/cms-provider';
 import { motion } from 'framer-motion';

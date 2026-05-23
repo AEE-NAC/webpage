@@ -7,7 +7,7 @@ import Header from '../../../components/layout/Header';
 import TextRoll from '../../../components/specific/textroll';
 import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
-import { CMSService } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 import { CMSProvider, useCMS } from '../../../components/cms/cms-provider';
 import { useParams } from 'next/navigation';
 

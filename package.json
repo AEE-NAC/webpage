@@ -7,15 +7,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
     "indexing": "npx tsx scripts/index-cms.ts",
     "fix-indexing": "npx tsx scripts/fix-indexing.ts",
     "cms:export": "npx tsx scripts/export-cms.ts",
     "cms:save": "npx tsx scripts/save-cms.ts",
     "cms:insert-keys": "npx tsx scripts/insert-keys.ts",
     "cms:missing": "npx tsx scripts/export-missing-i18n-keys.ts",
-    "cms:fix-missing": "npx tsx scripts/fix-missing.ts"
+    "cms:fix-missing": "npx tsx scripts/fix-missing.ts",
+    "cms:fix-schema": "npx tsx scripts/update-directus-schema.ts",
+    "cms:migrate-assets": "npx tsx scripts/migrate-supabase-assets-to-directus.ts",
+    "migrate:cms": "npx tsx scripts/migrate-supabase-to-directus.ts --all",
+    "test:directus": "npx tsx scripts/test-directus-connection.ts"
   },
   "dependencies": {
+    "@directus/sdk": "^21.3.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-separator": "^1.1.8",
@@ -52,6 +58,7 @@
     "tailwindcss": "^4",
     "tsx": "^4.7.1",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.0.5"
   }
 }

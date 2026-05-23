@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { CMSService } from '@/services/supabase.conf';
+import { CMSService } from '@/services/directus.conf';
 import { CMSPopover } from '@/services/types';
 import { CookieService } from '@/services/cookies';
 import { useCMS } from './cms-provider';

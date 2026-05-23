@@ -8,7 +8,8 @@ import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { defaultLocale, SupportedLanguage, SUPPORTED_COUNTRIES } from '../../../context/adapt';
-import { supabase, CMSService } from '../../../services/supabase.conf';
+import { supabase } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 
 // Dynamic Map Import to avoid SSR issues
 const DonationMap = dynamic(async () => {

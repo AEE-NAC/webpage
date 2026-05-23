@@ -5,7 +5,8 @@ import { CMSText } from '../../../components/cms/cms-text';
 import { CMSImage } from '../../../components/cms/cms-image';
 import { useParams, useRouter } from 'next/navigation';
 import { defaultLocale, SupportedLanguage } from '../../../context/adapt';
-import { supabase, CMSService } from '../../../services/supabase.conf';
+import { supabase } from '../../../services/supabase.conf';
+import { CMSService } from '../../../services/directus.conf';
 import { CMSProvider } from '../../../components/cms/cms-provider';
 
 const Join = () => {
